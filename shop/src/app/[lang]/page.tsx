@@ -65,8 +65,15 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         id="stores"
         className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-24 sm:px-6 md:grid-cols-[0.8fr_1fr] md:gap-14"
       >
-        <div className="relative mx-auto aspect-square w-full max-w-xs overflow-hidden rounded-[2rem] shadow-[0_30px_60px_-30px_rgba(42,26,21,0.35)] md:max-w-none">
-          <Image src={`${BASE}/brand/girl-34-1200.webp`} alt="" fill sizes="(min-width: 768px) 40vw, 320px" className="object-cover" />
+        {/* 3D-логотип из brand/png: тень и кромка уже в картинке */}
+        <div className="relative mx-auto aspect-square w-full max-w-sm md:max-w-none">
+          <Image
+            src={`${BASE}/brand/beautybrand-34-3d.webp`}
+            alt=""
+            fill
+            sizes="(min-width: 768px) 40vw, 384px"
+            className="object-contain"
+          />
         </div>
         <div>
         <h2 className="font-display text-2xl font-medium tracking-[-0.01em] sm:text-3xl">{t.stores.title}</h2>
