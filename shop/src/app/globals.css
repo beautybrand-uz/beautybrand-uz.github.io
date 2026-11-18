@@ -1,26 +1,176 @@
 @import "tailwindcss";
 
+/* Палитра взята из логотипа: бумага, эспрессо волос, нюд губ, розовое дерево */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f9f7f0;
+  --well: #f1ebe2;
+  --ink: #2a1a15;
+  --cocoa: #6e5045;
+  --nude: #ead2c6;
+  --rose: #a3425a;
+  --rose-deep: #7e2f44;
+  --line: #e2d7cb;
+  color-scheme: light;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-well: var(--well);
+  --color-ink: var(--ink);
+  --color-cocoa: var(--cocoa);
+  --color-nude: var(--nude);
+  --color-rose: var(--rose);
+  --color-rose-deep: var(--rose-deep);
+  --color-line: var(--line);
+  --font-sans: var(--font-golos);
+  --font-display: var(--font-unbounded);
+  --font-script: var(--font-script);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-golos), system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--rose);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--nude);
+}
+
+/* Ценник-бирка, как 🏷️ в постах канала: скошенный край и дырочка под нитку */
+.tag {
+  --tag-h: 2rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: var(--tag-h);
+  padding: 0 0.75rem 0 1.35rem;
+  background: var(--rose);
+  color: #fff;
+  font-family: var(--font-unbounded), sans-serif;
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  clip-path: polygon(0.7rem 0, 100% 0, 100% 100%, 0.7rem 100%, 0 50%);
+  border-radius: 0 3px 3px 0;
+}
+.tag::before {
+  content: "";
+  position: absolute;
+  left: 0.6rem;
+  top: 50%;
+  width: 0.38rem;
+  height: 0.38rem;
+  margin-top: -0.19rem;
+  border-radius: 50%;
+  background: var(--paper);
+}
+.tag-lg {
+  --tag-h: 3rem;
+  font-size: 1.25rem;
+  padding: 0 1.1rem 0 1.9rem;
+  clip-path: polygon(1rem 0, 100% 0, 100% 100%, 1rem 100%, 0 50%);
+}
+.tag-lg::before {
+  left: 0.85rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-top: -0.25rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0 1.4rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 120ms ease;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+.btn-primary:hover {
+  background: var(--rose-deep);
+}
+.btn-ghost {
+  border: 1px solid var(--ink);
+  color: var(--ink);
+}
+.btn-ghost:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.field {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  font-size: 16px; /* без автозума на iOS */
+  color: var(--ink);
+}
+.field::placeholder {
+  color: #a8968c;
+}
+.field:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+.field[aria-invalid="true"] {
+  border-color: var(--rose);
+}
+
+/* Шторка корзины */
+.drawer {
+  transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.drawer-backdrop {
+  transition: opacity 240ms ease;
+}
+
+@keyframes bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+.bump {
+  animation: bump 320ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
