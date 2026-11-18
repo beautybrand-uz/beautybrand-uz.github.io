@@ -9,8 +9,21 @@ type Dict = {
   langName: string;
   currency: string;
   meta: { title: string; description: string };
-  nav: { catalog: string; stores: string; telegram: string; cart: string };
-  hero: { title: string; lead: string; toCatalog: string; toChannel: string };
+  nav: { catalog: string; stores: string; telegram: string; cart: string; boutique: string };
+  maison: {
+    label: string;
+    lead: string;
+    stats: [string, string][];
+    toAromas: string;
+    channel: string;
+    decants: string;
+    decantsLead: string;
+    bottles: string;
+    bottlesLead: string;
+    bannerText: string;
+    cta: string;
+  };
+  hero: { title: string; lead: string; toCatalog: string; toChannel: string; facts: string[] };
   catalog: {
     title: string;
     all: string;
@@ -44,6 +57,10 @@ type Dict = {
     post: string;
     original: string;
     pickup: string;
+    order: string;
+    orderText: (name: string, price: string) => string;
+    bottle: string;
+    boutique: string;
   };
   cart: {
     title: string;
@@ -105,12 +122,30 @@ const ru: Dict = {
     description:
       "Брендовая косметика со всего мира: Dior, Tom Ford, Charlotte Tilbury, Kérastase и другие. Только оригинал, всё в наличии. Заказ в Telegram.",
   },
-  nav: { catalog: "Каталог", stores: "Магазины", telegram: "Telegram-канал", cart: "Корзина" },
+  nav: { catalog: "Каталог", stores: "Магазины", telegram: "Telegram-канал", cart: "Корзина", boutique: "Парфюм-бутик" },
+  maison: {
+    label: "Парфюмерный бутик",
+    lead: "Нишевая и люксовая парфюмерия. Попробуйте аромат на распив от 5 мл — и закажите полный флакон, когда влюбитесь.",
+    stats: [
+      ["5 и 10 мл", "распив оригиналов"],
+      ["Флаконы", "полные, под заказ"],
+      ["Отзывы", "каждую неделю в канале"],
+    ],
+    toAromas: "Смотреть ароматы",
+    channel: "Канал бутика",
+    decants: "На распив",
+    decantsLead: "Оригинальные ароматы в объёме 5 и 10 мл — можно оформить через корзину.",
+    bottles: "Флаконы под заказ",
+    bottlesLead: "Полные флаконы, цена в долларах. Нажмите на аромат — заказ уйдёт менеджеру в Telegram.",
+    bannerText: "Нишевая парфюмерия на распив от 5 мл и полные флаконы под заказ.",
+    cta: "Перейти в бутик",
+  },
   hero: {
     title: "Оригинальная косметика со всего мира",
     lead: "Всё в наличии в двух магазинах в Ташкенте. Соберите корзину — заказ уйдёт менеджеру в Telegram.",
     toCatalog: "Смотреть каталог",
     toChannel: "Наш Telegram-канал",
+    facts: ["Только оригинал", "Всё в наличии", "2 магазина в Ташкенте"],
   },
   catalog: {
     title: "Каталог",
@@ -165,6 +200,10 @@ const ru: Dict = {
     post: "Пост в канале",
     original: "Только оригинал",
     pickup: "Самовывоз из двух магазинов в Ташкенте",
+    order: "Заказать в Telegram",
+    orderText: (name, price) => `Здравствуйте! Хочу заказать ${name} — ${price}.`,
+    bottle: "Полный флакон под заказ",
+    boutique: "Парфюмерный бутик",
   },
   cart: {
     title: "Корзина",
@@ -229,12 +268,30 @@ const uz: Dict = {
     description:
       "Butun dunyodan brend kosmetika: Dior, Tom Ford, Charlotte Tilbury, Kérastase va boshqalar. Faqat original, hammasi mavjud. Buyurtma Telegramda.",
   },
-  nav: { catalog: "Katalog", stores: "Do‘konlar", telegram: "Telegram-kanal", cart: "Savat" },
+  nav: { catalog: "Katalog", stores: "Do‘konlar", telegram: "Telegram-kanal", cart: "Savat", boutique: "Atir butigi" },
+  maison: {
+    label: "Atir butigi",
+    lead: "Nish va lyuks parfyumeriya. Atirni 5 ml dan quyma holda sinab ko‘ring — yoqib qolsa, to‘liq flakon buyurtma qiling.",
+    stats: [
+      ["5 va 10 ml", "originallar quymasi"],
+      ["Flakonlar", "to‘liq, buyurtma asosida"],
+      ["Sharhlar", "har hafta kanalda"],
+    ],
+    toAromas: "Atirlarni ko‘rish",
+    channel: "Butik kanali",
+    decants: "Quyma",
+    decantsLead: "5 va 10 ml hajmdagi original atirlar — savat orqali buyurtma berish mumkin.",
+    bottles: "Buyurtma asosida flakonlar",
+    bottlesLead: "To‘liq flakonlar, narxi dollarda. Atirni bosing — buyurtma Telegramda menejerga yuboriladi.",
+    bannerText: "5 ml dan nish parfyumeriya quymasi va buyurtma asosida to‘liq flakonlar.",
+    cta: "Butikka o‘tish",
+  },
   hero: {
     title: "Butun dunyodan original kosmetika",
     lead: "Hammasi Toshkentdagi ikki do‘konimizda mavjud. Savatni to‘ldiring — buyurtma Telegramda menejerga yuboriladi.",
     toCatalog: "Katalogni ko‘rish",
     toChannel: "Telegram-kanalimiz",
+    facts: ["Faqat original", "Hammasi mavjud", "Toshkentda 2 ta do‘kon"],
   },
   catalog: {
     title: "Katalog",
@@ -289,6 +346,10 @@ const uz: Dict = {
     post: "Kanaldagi post",
     original: "Faqat original",
     pickup: "Toshkentdagi ikki do‘kondan olib ketish",
+    order: "Telegramda buyurtma berish",
+    orderText: (name, price) => `Assalomu alaykum! ${name} buyurtma bermoqchiman — ${price}.`,
+    bottle: "To‘liq flakon buyurtma asosida",
+    boutique: "Atir butigi",
   },
   cart: {
     title: "Savat",

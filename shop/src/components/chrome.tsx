@@ -7,7 +7,7 @@ export function Wordmark({ lang }: { lang: Locale }) {
   return (
     <Link href={`/${lang}`} className="flex items-baseline gap-1 text-ink" aria-label="BeautyBrand Uz">
       <span className="font-script text-[2rem] leading-none sm:text-[2.3rem]">Beautybrand</span>
-      <span className="font-display text-[0.65rem] font-semibold text-rose">uz</span>
+      <span className="font-sans text-[0.7rem] font-bold tracking-wide text-rose">uz</span>
     </Link>
   );
 }
@@ -21,6 +21,9 @@ export function Header({ lang }: { lang: Locale }) {
         <nav className="ml-6 hidden gap-6 text-sm text-cocoa md:flex">
           <Link href={`/${lang}/catalog`} className="hover:text-ink">
             {t.nav.catalog}
+          </Link>
+          <Link href={`/${lang}/maison`} className="hover:text-ink">
+            {t.nav.boutique}
           </Link>
           <Link href={`/${lang}#stores`} className="hover:text-ink">
             {t.nav.stores}

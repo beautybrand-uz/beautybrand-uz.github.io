@@ -202,7 +202,7 @@ export function CartDrawer({ lang }: { lang: Locale }) {
                             +
                           </button>
                         </div>
-                        <span className="font-display text-sm">{formatPrice(price * l.qty, t.currency)}</span>
+                        <span className="text-sm font-semibold tabular-nums">{formatPrice(price * l.qty, t.currency)}</span>
                       </div>
                     </div>
                   </li>

@@ -48,7 +48,7 @@ export function CategoryPromos({ lang }: { lang: Locale }) {
           return (
             <Link
               key={c}
-              href={`/${lang}/c/${c}`}
+              href={c === "fragrance" ? `/${lang}/maison` : `/${lang}/c/${c}`}
               className={`group relative flex overflow-hidden rounded-2xl bg-well ${SPAN[c] ?? ""}`}
             >
               {cover ? (
@@ -101,7 +101,7 @@ export function CategoryPromos({ lang }: { lang: Locale }) {
             <span className="min-w-0">
               <span className="block text-sm text-white/80">{sale.brand}</span>
               <span className="block font-medium leading-snug">{sale.name}</span>
-              <span className="mt-1 block font-display text-sm">{formatPrice(sale.price, t.currency)}</span>
+              <span className="mt-1 block text-sm font-semibold">{formatPrice(sale.price, t.currency)}</span>
             </span>
           </Link>
         ) : null}

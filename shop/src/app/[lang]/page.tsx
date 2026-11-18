@@ -4,6 +4,8 @@ import { CategoryPromos } from "@/components/category-promos";
 import { BrandWall, HowToOrder, NewArrivalsReel } from "@/components/home-sections";
 import { TelegramIcon } from "@/components/cart-drawer";
 import { HoursCard } from "@/components/contact";
+import { MaisonBanner } from "@/components/maison";
+import { Reveal } from "@/components/reveal";
 import { getDict, isLocale } from "@/lib/i18n";
 import { HOURS, PHONE, SITE_URL, STORES, TELEGRAM, telegramLink } from "@/lib/site";
 
@@ -44,11 +46,13 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     <>
       <section className="mx-auto grid max-w-6xl items-center gap-7 px-4 pt-4 sm:px-6 md:grid-cols-[1fr_1.05fr] md:gap-10 md:pt-6">
         <div className="order-2 pb-6 md:order-1 md:pb-0">
-          <h1 className="max-w-[14ch] font-display text-[2rem] font-medium leading-[1.08] tracking-[-0.02em] sm:text-[2.6rem] lg:text-[3.3rem]">
+          <h1 className="rise max-w-[13ch] font-display text-[2.5rem] font-medium leading-[1.02] sm:text-[3.3rem] lg:text-[4.1rem]">
             {t.hero.title}
           </h1>
-          <p className="mt-5 max-w-[42ch] text-[1.05rem] leading-relaxed text-cocoa">{t.hero.lead}</p>
-          <div className="mt-8 flex flex-col gap-2.5 sm:flex-row">
+          <p className="rise mt-5 max-w-[42ch] text-[1.05rem] leading-relaxed text-cocoa" style={{ animationDelay: "90ms" }}>
+            {t.hero.lead}
+          </p>
+          <div className="rise mt-8 flex flex-col gap-2.5 sm:flex-row" style={{ animationDelay: "180ms" }}>
             <a href="#promo-title" className="btn btn-primary">
               {t.hero.toCatalog}
             </a>
@@ -57,8 +61,18 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
               {t.hero.toChannel}
             </a>
           </div>
+          <ul className="rise mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm text-cocoa" style={{ animationDelay: "270ms" }}>
+            {t.hero.facts.map((f) => (
+              <li key={f} className="flex items-center gap-2">
+                <span className="text-[0.6rem] text-gold" aria-hidden>
+                  ✦
+                </span>
+                {f}
+              </li>
+            ))}
+          </ul>
         </div>
-        <div className="order-1 mx-auto w-full max-w-[26rem] md:order-2 md:max-w-none">
+        <div className="rise-image order-1 mx-auto w-full max-w-[26rem] md:order-2 md:max-w-none">
           <div className="relative aspect-square overflow-hidden rounded-[2rem] shadow-[0_30px_60px_-30px_rgba(42,26,21,0.35)]">
             <Image
               src={`${BASE}/brand/girl-glam-1200.webp`}
@@ -73,10 +87,14 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       </section>
 
       <CategoryPromos lang={lang} />
-
-      <NewArrivalsReel lang={lang} />
+      <MaisonBanner lang={lang} />
+      <Reveal>
+        <NewArrivalsReel lang={lang} />
+      </Reveal>
       <BrandWall lang={lang} />
-      <HowToOrder lang={lang} />
+      <Reveal>
+        <HowToOrder lang={lang} />
+      </Reveal>
 
       <section
         id="stores"

@@ -38,8 +38,8 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/p/[slug
     description: p.description[lang],
     offers: {
       "@type": "Offer",
-      price: p.price,
-      priceCurrency: "UZS",
+      price: p.usd ? Math.min(...p.usd.map((u) => u.usd)) : p.price,
+      priceCurrency: p.usd ? "USD" : "UZS",
       availability: "https://schema.org/InStock",
       url: `${SITE_URL}/${lang}/p/${p.slug}`,
     },
@@ -47,11 +47,14 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/p/[slug
 
   return (
     <div className="mx-auto max-w-6xl px-4 pt-5 sm:px-6">
-      <Link href={`/${lang}/c/${p.category}`} className="inline-flex items-center gap-1.5 py-2 text-sm text-cocoa hover:text-ink">
+      <Link
+        href={p.boutique ? `/${lang}/maison` : `/${lang}/c/${p.category}`}
+        className="inline-flex items-center gap-1.5 py-2 text-sm text-cocoa hover:text-ink"
+      >
         <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
           <path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
         </svg>
-        {t.product.back}: {t.categories[p.category]}
+        {p.boutique ? "Maison De Mari" : `${t.product.back}: ${t.categories[p.category]}`}
       </Link>
 
       <div className="mt-3 grid gap-8 md:grid-cols-2 md:gap-12">
@@ -68,7 +71,7 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/p/[slug
             <li>{t.product.pickup}</li>
             <li>
               <a
-                href={telegramLink(`${TELEGRAM.channel}/${p.post}`)}
+                href={telegramLink(`${p.channel ?? TELEGRAM.channel}/${p.post}`)}
                 target="_blank"
                 rel="noopener"
                 className="underline underline-offset-4 hover:text-ink"

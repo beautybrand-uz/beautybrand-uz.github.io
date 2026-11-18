@@ -62,7 +62,7 @@ export const RemotionRoot: React.FC = () => {
 
       {/* Ролики на каждый товар — для пакетного рендера */}
       <Folder name="Products">
-        {products.map((p) => (
+        {products.filter((p) => !p.usd).map((p) => (
           <Composition
             key={p.slug}
             id={`P-${p.slug}`}

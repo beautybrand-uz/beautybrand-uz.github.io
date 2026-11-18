@@ -68,18 +68,22 @@ export function BuyBox({ slug, lang }: { slug: string; lang: Locale }) {
   const t = getDict(lang);
   const p = getProduct(slug)!;
   const { add, setOpen } = useCart();
-  const [variant, setVariant] = useState(p.variants?.[0]?.label);
+  // флаконы под заказ (цена в $) заказываются через Telegram, а не через корзину
+  const isUsd = !!p.usd;
+  const options = p.variants ?? p.usd?.map((u) => ({ label: u.label, price: u.usd }));
+  const [variant, setVariant] = useState(options?.[0]?.label);
   const [added, setAdded] = useState(false);
-  const price = p.variants?.find((v) => v.label === variant)?.price ?? p.price;
+  const price = options?.find((v) => v.label === variant)?.price ?? p.price;
+  const priceText = isUsd ? `${price} $` : formatPrice(price, t.currency);
   const fullName = `${p.brand} ${p.name}${variant ? ` (${variant})` : ""}`;
 
   return (
     <div>
-      {p.variants ? (
+      {options ? (
         <fieldset className="mt-7">
           <legend className="mb-2.5 text-sm font-medium">{t.product.variant}</legend>
           <div className="flex flex-wrap gap-2">
-            {p.variants.map((v) => (
+            {options.map((v) => (
               <label
                 key={v.label}
                 className={`cursor-pointer rounded-full border px-4 py-2.5 text-sm transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-rose ${
@@ -104,12 +108,28 @@ export function BuyBox({ slug, lang }: { slug: string; lang: Locale }) {
       ) : null}
 
       <div className="mt-7 flex items-end gap-3">
-        <span className="tag tag-lg">{formatPrice(price, t.currency)}</span>
+        <span className="tag tag-lg">{priceText}</span>
         {p.oldPrice ? <s className="pb-1 text-sm text-cocoa">{formatPrice(p.oldPrice, t.currency)}</s> : null}
       </div>
 
+      {p.bottle ? (
+        <p className="mt-4 text-sm text-cocoa">
+          {t.product.bottle}: {p.bottle}
+        </p>
+      ) : null}
+
       <div className="mt-7 flex flex-col gap-2.5 sm:flex-row">
-        {added ? (
+        {isUsd ? (
+          <a
+            href={telegramLink(TELEGRAM.manager, t.product.orderText(fullName, priceText))}
+            target="_blank"
+            rel="noopener"
+            className="btn btn-primary flex-1"
+          >
+            <TelegramIcon />
+            {t.product.order}
+          </a>
+        ) : added ? (
           <button type="button" className="btn btn-primary flex-1 bg-rose" onClick={() => setOpen(true)}>
             <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
               <path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -128,6 +148,7 @@ export function BuyBox({ slug, lang }: { slug: string; lang: Locale }) {
             {t.product.add}
           </button>
         )}
+        {isUsd ? null : (
         <a
           href={telegramLink(TELEGRAM.manager, t.product.askText(fullName))}
           target="_blank"
@@ -137,6 +158,7 @@ export function BuyBox({ slug, lang }: { slug: string; lang: Locale }) {
           <TelegramIcon />
           {t.product.ask}
         </a>
+        )}
       </div>
     </div>
   );

@@ -140,6 +140,18 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
   );
 }
 
+/** Цена на карточке: «от …» при разных вариантах, «$» для флаконов под заказ */
+export function priceLabel(p: ProductWithImages, lang: Locale) {
+  const t = getDict(lang);
+  if (p.usd) {
+    const min = Math.min(...p.usd.map((u) => u.usd));
+    return p.usd.length > 1 ? (lang === "ru" ? `от ${min} $` : `${min} $ dan`) : `${min} $`;
+  }
+  const many = p.variants && new Set(p.variants.map((v) => v.price)).size > 1;
+  const base = formatPrice(p.price, t.currency);
+  return many ? (lang === "ru" ? `от ${base}` : `${base} dan`) : base;
+}
+
 export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang: Locale; priority?: boolean }) {
   const t = getDict(lang);
   const { add } = useCart();
@@ -167,7 +179,7 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
         ) : null}
       </Link>
       <div className="absolute bottom-2.5 right-2.5">
-          {p.variants ? (
+          {p.variants || p.usd ? (
             <Link
               href={href}
               className="grid size-10 shrink-0 place-items-center rounded-full bg-paper text-ink shadow-sm transition-colors hover:bg-ink hover:text-paper"
@@ -211,11 +223,7 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
           </Link>
         </h3>
         <div className="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-3">
-          <span className="tag">
-            {p.variants && new Set(p.variants.map((v) => v.price)).size > 1 ? (lang === "ru" ? "от " : "") : ""}
-            {formatPrice(p.price, t.currency)}
-            {p.variants && new Set(p.variants.map((v) => v.price)).size > 1 && lang === "uz" ? " dan" : ""}
-          </span>
+          <span className="tag">{priceLabel(p, lang)}</span>
           {p.oldPrice ? <s className="text-xs text-cocoa">{formatPrice(p.oldPrice, t.currency)}</s> : null}
         </div>
       </div>

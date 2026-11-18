@@ -64,7 +64,7 @@ export function CartButton({ label }: { label: string }) {
       </svg>
       <span className="hidden sm:inline">{label}</span>
       <span
-        className={`min-w-5 rounded-full bg-paper px-1.5 text-center font-display text-[0.7rem] leading-5 text-ink ${
+        className={`min-w-5 rounded-full bg-paper px-1.5 text-center font-sans text-[0.75rem] font-bold leading-5 text-ink ${
           bump ? "bump" : ""
         }`}
       >

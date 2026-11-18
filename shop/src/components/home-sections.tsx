@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { TelegramIcon } from "./cart-drawer";
-import { BRANDS, products } from "@/data/products";
+import { BRANDS } from "@/data/products";
 import { getDict, type Locale } from "@/lib/i18n";
 import { TELEGRAM, telegramLink } from "@/lib/site";
 
@@ -45,31 +45,41 @@ export function NewArrivalsReel({ lang }: { lang: Locale }) {
   );
 }
 
-/** Бренды крупным шрифтом — клик открывает каталог с этим брендом */
+/** Бренды — компактная бегущая строка; клик открывает каталог с этим брендом */
 export function BrandWall({ lang }: { lang: Locale }) {
   const t = getDict(lang);
-  const count = (b: string) => products.filter((p) => p.brand === b).length;
+  const Row = ({ hidden }: { hidden?: boolean }) => (
+    <ul className="flex shrink-0 items-center" aria-hidden={hidden || undefined}>
+      {BRANDS.map((b) => (
+        <li key={b} className="flex items-center">
+          <Link
+            href={`/${lang}/catalog?brand=${encodeURIComponent(b)}`}
+            tabIndex={hidden ? -1 : undefined}
+            className="whitespace-nowrap px-5 font-display text-xl uppercase tracking-[0.12em] text-ink/70 transition-colors hover:text-rose sm:px-7 sm:text-2xl"
+          >
+            {b}
+          </Link>
+          <span className="text-[0.6rem] text-gold" aria-hidden>
+            ✦
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
   return (
-    <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
-      <div className="flex items-end justify-between gap-4">
-        <h2 className="font-display text-2xl font-medium tracking-[-0.01em] sm:text-3xl">{t.home.brandsTitle}</h2>
+    <section className="pt-20">
+      <div className="mx-auto flex max-w-6xl items-end justify-between gap-4 px-4 sm:px-6">
+        <h2 className="font-display text-3xl font-medium sm:text-4xl">{t.home.brandsTitle}</h2>
         <Link href={`/${lang}/catalog`} className="shrink-0 text-sm text-cocoa underline underline-offset-4 hover:text-ink">
           {t.home.brandsAll}
         </Link>
       </div>
-      <ul className="mt-6 flex flex-wrap gap-x-2 gap-y-3">
-        {BRANDS.map((b) => (
-          <li key={b}>
-            <Link
-              href={`/${lang}/catalog?brand=${encodeURIComponent(b)}`}
-              className="group inline-flex items-baseline gap-1.5 rounded-full border border-line bg-white/60 px-4 py-2.5 transition-colors hover:border-ink hover:bg-ink hover:text-paper sm:px-5 sm:py-3"
-            >
-              <span className="font-display text-base font-medium sm:text-lg">{b}</span>
-              <span className="text-xs text-cocoa group-hover:text-paper/70">{count(b)}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <div className="marquee marquee-mask mt-6 border-y border-line py-5">
+        <div className="marquee-track flex w-max">
+          <Row />
+          <Row hidden />
+        </div>
+      </div>
     </section>
   );
 }

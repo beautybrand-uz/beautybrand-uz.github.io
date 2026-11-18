@@ -1,4 +1,5 @@
 import images from "./images.json";
+import { maison } from "./maison";
 
 export type Category = "makeup" | "skin" | "hair" | "fragrance" | "body" | "tools" | "sets";
 
@@ -20,6 +21,14 @@ export type Product = {
   imageKey?: string;
   /** Ролик из video/ (композиция ProductPromo), путь в public */
   video?: string;
+  /** Товар парфюмерного бутика Maison De Mari */
+  boutique?: boolean;
+  /** Канал, откуда пост (по умолчанию beauty_branduz) */
+  channel?: string;
+  /** Флаконы под заказ — цена в долларах, заказ через Telegram (не через корзину) */
+  usd?: { label: string; usd: number }[];
+  /** Флакон под заказ к товару на распив, например «100 ml — 250 $» */
+  bottle?: string;
 };
 
 export const CATEGORIES: Category[] = ["makeup", "skin", "hair", "fragrance", "body", "tools", "sets"];
@@ -346,6 +355,8 @@ const data: Product[] = [
       uz: "Tozalik va tetiklik ifori: yengil gulli notalar va mayin mushk. 5 va 10 ml quyma. 70 ml flakon narxini Telegramda aniqlang.",
     },
     post: 16027,
+    boutique: true,
+    bottle: "70 ml — 290 $",
   },
   {
     slug: "bleu-de-chanel-parfum",
@@ -362,6 +373,8 @@ const data: Product[] = [
       uz: "Chuqur va nafis erkaklar ifori. 5 va 10 ml quyma. 100 ml flakonlar narxini Telegramda aniqlang.",
     },
     post: 16018,
+    boutique: true,
+    bottle: "100 ml — 200 $ (EDP), 320 $ (L’Exclusif)",
   },
   {
     slug: "makeup-by-mario-ethereal-eyes-nature",
@@ -399,6 +412,7 @@ const data: Product[] = [
     },
     post: 15999,
   },
+  ...maison,
 ];
 
 const imageMap = images as Record<string, string[]>;
