@@ -36,7 +36,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             height={1200}
             priority
             sizes="(min-width: 768px) 50vw, 90vw"
-            className="h-auto w-full"
+            className="h-auto w-full [mask-image:radial-gradient(closest-side,#000_78%,transparent)]"
           />
         </div>
       </section>

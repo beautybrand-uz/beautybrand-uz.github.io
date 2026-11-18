@@ -49,6 +49,7 @@ body {
   background: var(--nude);
 }
 
+@layer components {
 /* Ценник-бирка, как 🏷️ в постах канала: скошенный край и дырочка под нитку */
 .tag {
   --tag-h: 2rem;
@@ -144,6 +145,7 @@ body {
 }
 .field[aria-invalid="true"] {
   border-color: var(--rose);
+}
 }
 
 /* Шторка корзины */

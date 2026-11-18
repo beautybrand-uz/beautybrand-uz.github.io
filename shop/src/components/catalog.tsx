@@ -135,6 +135,7 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
 
   return (
     <article className="group flex h-full flex-col">
+      <div className="relative">
       <Link href={href} className="relative block aspect-[4/5] overflow-hidden rounded-xl bg-well">
         {p.images[0] ? (
           <Image
@@ -152,28 +153,11 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
           </span>
         ) : null}
       </Link>
-      <div className="flex flex-1 flex-col pt-3">
-        <p className="text-xs text-cocoa">{p.brand}</p>
-        <h3 className="mt-0.5 text-[0.95rem] font-medium leading-snug">
-          <Link href={href} className="hover:text-rose-deep">
-            {p.name}
-          </Link>
-        </h3>
-        <div className="mt-auto flex items-end justify-between gap-2 pt-3">
-          <div className="flex flex-col items-start gap-1">
-            {p.oldPrice ? (
-              <s className="text-xs text-cocoa">{formatPrice(p.oldPrice, t.currency)}</s>
-            ) : null}
-            <span className="tag">
-              {p.variants && new Set(p.variants.map((v) => v.price)).size > 1 ? (lang === "ru" ? "от " : "") : ""}
-              {formatPrice(p.price, t.currency)}
-              {p.variants && new Set(p.variants.map((v) => v.price)).size > 1 && lang === "uz" ? " dan" : ""}
-            </span>
-          </div>
+      <div className="absolute bottom-2.5 right-2.5">
           {p.variants ? (
             <Link
               href={href}
-              className="grid size-9 shrink-0 place-items-center rounded-full border border-ink text-ink transition-colors hover:bg-ink hover:text-paper"
+              className="grid size-10 shrink-0 place-items-center rounded-full bg-paper text-ink shadow-sm transition-colors hover:bg-ink hover:text-paper"
               aria-label={`${t.catalog.choose}: ${p.name}`}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
@@ -188,7 +172,7 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
                 setJustAdded(true);
                 setTimeout(() => setJustAdded(false), 1400);
               }}
-              className={`grid size-9 shrink-0 place-items-center rounded-full transition-colors ${
+              className={`grid size-10 shrink-0 place-items-center rounded-full shadow-sm transition-colors ${
                 justAdded ? "bg-rose text-white" : "bg-ink text-paper hover:bg-rose-deep"
               }`}
               aria-label={`${t.product.add}: ${p.name}`}
@@ -204,6 +188,22 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
               )}
             </button>
           )}
+      </div>
+      </div>
+      <div className="flex flex-1 flex-col pt-3">
+        <p className="text-xs text-cocoa">{p.brand}</p>
+        <h3 className="mt-0.5 text-[0.95rem] font-medium leading-snug">
+          <Link href={href} className="hover:text-rose-deep">
+            {p.name}
+          </Link>
+        </h3>
+        <div className="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-3">
+          <span className="tag">
+            {p.variants && new Set(p.variants.map((v) => v.price)).size > 1 ? (lang === "ru" ? "от " : "") : ""}
+            {formatPrice(p.price, t.currency)}
+            {p.variants && new Set(p.variants.map((v) => v.price)).size > 1 && lang === "uz" ? " dan" : ""}
+          </span>
+          {p.oldPrice ? <s className="text-xs text-cocoa">{formatPrice(p.oldPrice, t.currency)}</s> : null}
         </div>
       </div>
     </article>

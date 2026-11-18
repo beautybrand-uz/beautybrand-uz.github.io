@@ -15,6 +15,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/p/[slug]">
   const p = getProduct(slug);
   if (!p || !isLocale(lang)) return {};
   return {
+    metadataBase: new URL(SITE_URL),
     title: `${p.brand} ${p.name}`,
     description: p.description[lang],
     alternates: { canonical: `/${lang}/p/${slug}`, languages: { ru: `/ru/p/${slug}`, uz: `/uz/p/${slug}` } },
