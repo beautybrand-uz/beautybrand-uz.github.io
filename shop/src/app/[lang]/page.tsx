@@ -12,7 +12,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
   return (
     <>
-      <section className="mx-auto grid max-w-6xl items-center gap-2 px-4 pt-4 sm:px-6 md:grid-cols-[1fr_1.05fr] md:gap-10 md:pt-6">
+      <section className="mx-auto grid max-w-6xl items-center gap-7 px-4 pt-4 sm:px-6 md:grid-cols-[1fr_1.05fr] md:gap-10 md:pt-6">
         <div className="order-2 pb-6 md:order-1 md:pb-0">
           <h1 className="max-w-[14ch] font-display text-[2rem] font-medium leading-[1.08] tracking-[-0.02em] sm:text-[2.6rem] lg:text-[3.3rem]">
             {t.hero.title}
@@ -30,13 +30,13 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         </div>
         <div className="order-1 mx-auto w-full max-w-[26rem] md:order-2 md:max-w-none">
           <Image
-            src="/brand/logo-1200.webp"
+            src="/brand/logo-girl-1200.webp"
             alt="BeautyBrand"
             width={1200}
             height={1200}
             priority
             sizes="(min-width: 768px) 50vw, 90vw"
-            className="h-auto w-full [mask-image:radial-gradient(closest-side,#000_78%,transparent)]"
+            className="h-auto w-full rounded-[2rem] shadow-[0_30px_60px_-30px_rgba(42,26,21,0.35)]"
           />
         </div>
       </section>
