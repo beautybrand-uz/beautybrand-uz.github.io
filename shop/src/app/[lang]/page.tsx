@@ -41,18 +41,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
               sizes="(min-width: 768px) 50vw, 90vw"
               className="object-cover"
             />
-            {/* Зацикленный ролик из video/ (композиция HeroLoop); при отключённой анимации остаётся картинка */}
-            <video
-              className="absolute inset-0 size-full object-cover motion-reduce:hidden"
-              src={`${BASE}/videos/hero-loop.mp4`}
-              poster={`${BASE}/brand/girl-glam-1200.webp`}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              aria-hidden
-            />
           </div>
         </div>
       </section>

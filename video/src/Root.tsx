@@ -1,6 +1,5 @@
 import { Composition, Folder } from "remotion";
 import { LOGO, products } from "./brand";
-import { HERO_FRAMES, HeroLoop } from "./HeroLoop";
 import { LogoIntro, type LogoIntroProps } from "./LogoIntro";
 import { NewArrivals, newArrivalsFrames, type NewArrivalsProps } from "./NewArrivals";
 import { PRODUCT_PROMO_FRAMES, ProductPromo } from "./ProductPromo";
@@ -60,17 +59,6 @@ export const RemotionRoot: React.FC = () => {
         defaultProps={{ slug: "bobbi-brown-extra-plump-lip-serum", lang: "ru" as const }}
       />
 
-      <Composition
-        id="HeroLoop"
-        component={HeroLoop}
-        durationInFrames={HERO_FRAMES}
-        fps={30}
-        width={1080}
-        height={1080}
-        defaultProps={{
-          slugs: ["dior-glow-stick-012-rosewood", "tom-ford-highlighter-01-capri", "armani-blush-balm-05", "burberry-eye-quad"],
-        }}
-      />
 
       {/* Ролики на каждый товар — для пакетного рендера */}
       <Folder name="Products">
