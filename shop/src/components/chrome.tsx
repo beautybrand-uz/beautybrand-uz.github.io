@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CartButton, LangSwitch } from "./header-client";
 import { getDict, type Locale } from "@/lib/i18n";
-import { STORES, TELEGRAM, telegramLink } from "@/lib/site";
+import { HOURS, PHONE, STORES, TELEGRAM, telegramLink } from "@/lib/site";
 
 export function Wordmark({ lang }: { lang: Locale }) {
   return (
@@ -58,10 +58,26 @@ export function Footer({ lang }: { lang: Locale }) {
               </li>
             ))}
           </ul>
+          <p className="mt-6 text-sm font-semibold">{t.contact.hours}</p>
+          <ul className="mt-3 space-y-1 text-sm text-paper/70">
+            {HOURS.map((h) => (
+              <li key={h.open + h.days.join()}>
+                {h.days.length > 1
+                  ? `${t.contact.days[h.days[0]]}–${t.contact.days[h.days[h.days.length - 1]]}`
+                  : t.contact.days[h.days[0]]}
+                : {t.contact.daily(h.open, h.close)}
+              </li>
+            ))}
+          </ul>
         </div>
         <div>
           <p className="text-sm font-semibold">{t.footer.order}</p>
           <ul className="mt-3 space-y-2 text-sm text-paper/70">
+            <li>
+              <a href={`tel:${PHONE.tel}`} className="font-semibold text-paper hover:text-nude">
+                {PHONE.display}
+              </a>
+            </li>
             {TELEGRAM.managers.map((m) => (
               <li key={m}>
                 <a href={telegramLink(m)} target="_blank" rel="noopener" className="hover:text-paper">

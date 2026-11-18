@@ -29,7 +29,7 @@ export const T = {
     sale: "Скидка",
     was: "Было",
     now: "Сейчас",
-    stores: "Ц5 – Киёт, 60 · Ц1 – Буюк Ипак Йули, 26",
+    stores: "Ц5 – пр. Шарафа Рашидова, 60 · Ц1 – Буюк Ипак Йули, 26",
     site: "beautybrand.uz",
   },
   uz: {
@@ -40,13 +40,14 @@ export const T = {
     sale: "Chegirma",
     was: "Oldin",
     now: "Hozir",
-    stores: "Ts5 – Kiyot, 60 · Ts1 – Buyuk Ipak Yo‘li, 26",
+    stores: "Ts5 – Sharof Rashidov, 60 · Ts1 – Buyuk Ipak Yo‘li, 26",
     site: "beautybrand.uz",
   },
 };
 
 export const LOGO = "brand/girl-glam-1200.webp";
 export const MANAGER = "@beautybrandcosmetics";
+export const PHONE = "+998 90 901 28 88";
 
 export { getProduct, products };
 
@@ -183,7 +184,7 @@ export const EndCard: React.FC<{ lang: Lang; start?: number }> = ({ lang, start 
       >
         {t.stores}
         <br />
-        {t.site}
+        {PHONE} · {t.site}
       </div>
     </AbsoluteFill>
   );

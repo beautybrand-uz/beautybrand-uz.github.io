@@ -3,10 +3,37 @@ import { notFound } from "next/navigation";
 import { CategoryPromos } from "@/components/category-promos";
 import { BrandWall, HowToOrder, NewArrivalsReel } from "@/components/home-sections";
 import { TelegramIcon } from "@/components/cart-drawer";
+import { HoursCard } from "@/components/contact";
 import { getDict, isLocale } from "@/lib/i18n";
-import { STORES, TELEGRAM, telegramLink } from "@/lib/site";
+import { HOURS, PHONE, SITE_URL, STORES, TELEGRAM, telegramLink } from "@/lib/site";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+const DAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+// Данные магазина для Google и Яндекса: адрес, телефон, часы работы
+const localBusiness = {
+  "@context": "https://schema.org",
+  "@type": "Store",
+  name: "BeautyBrand Uz",
+  url: SITE_URL,
+  telephone: PHONE.tel,
+  image: `${SITE_URL}/brand/girl-glam-1200.webp`,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Sharaf Rashidov Avenue 60",
+    postalCode: "100017",
+    addressLocality: "Tashkent",
+    addressCountry: "UZ",
+  },
+  openingHoursSpecification: HOURS.map((h) => ({
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: h.days.map((d) => DAY[d]),
+    opens: h.open,
+    closes: h.close,
+  })),
+  sameAs: [telegramLink(TELEGRAM.channel)],
+};
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -68,7 +95,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <div>
         <h2 className="font-display text-2xl font-medium tracking-[-0.01em] sm:text-3xl">{t.stores.title}</h2>
         <p className="mt-2 text-cocoa">{t.stores.lead}</p>
-        <div className="mt-6 grid gap-3">
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
           {STORES.map((s) => (
             <a
               key={s.id}
@@ -93,8 +120,12 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             </a>
           ))}
         </div>
+        <div className="mt-3">
+          <HoursCard lang={lang} />
+        </div>
         </div>
       </section>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness) }} />
     </>
   );
 }

@@ -83,6 +83,16 @@ type Dict = {
     msgComment: string;
   };
   stores: { title: string; lead: string };
+  contact: {
+    hours: string;
+    open: string;
+    closed: string;
+    opensAt: (t: string) => string;
+    phone: string;
+    call: string;
+    days: string[];
+    daily: (from: string, to: string) => string;
+  };
   footer: { original: string; order: string };
   notFound: { title: string; action: string };
 };
@@ -197,7 +207,17 @@ const ru: Dict = {
     title: "Магазины в Ташкенте",
     lead: "Можно прийти, посмотреть и забрать заказ.",
   },
-  footer: { original: "Брендовая косметика со всего мира. Только оригинал.", order: "Заказы в Telegram" },
+  footer: { original: "Брендовая косметика со всего мира. Только оригинал.", order: "Контакты" },
+  contact: {
+    hours: "Часы работы",
+    open: "Открыто",
+    closed: "Закрыто",
+    opensAt: (t) => `откроется в ${t}`,
+    phone: "Телефон",
+    call: "Позвонить",
+    days: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+    daily: (a, b) => `${a}–${b}`,
+  },
   notFound: { title: "Такой страницы нет", action: "Вернуться в каталог" },
 };
 
@@ -311,7 +331,17 @@ const uz: Dict = {
     title: "Toshkentdagi do‘konlar",
     lead: "Kelib ko‘rishingiz va buyurtmani olib ketishingiz mumkin.",
   },
-  footer: { original: "Butun dunyodan brend kosmetika. Faqat original.", order: "Buyurtmalar Telegramda" },
+  footer: { original: "Butun dunyodan brend kosmetika. Faqat original.", order: "Aloqa" },
+  contact: {
+    hours: "Ish vaqti",
+    open: "Ochiq",
+    closed: "Yopiq",
+    opensAt: (t) => `${t} da ochiladi`,
+    phone: "Telefon",
+    call: "Qo‘ng‘iroq qilish",
+    days: ["Ya", "Du", "Se", "Ch", "Pa", "Ju", "Sh"],
+    daily: (a, b) => `${a}–${b}`,
+  },
   notFound: { title: "Bunday sahifa yo‘q", action: "Katalogga qaytish" },
 };
 
