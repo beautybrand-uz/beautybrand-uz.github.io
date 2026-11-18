@@ -1,0 +1,23 @@
+{
+  "name": "beautybrand-video",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Видео для бьюти-бренда на Remotion",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render LogoIntro out/logo-intro.mp4",
+    "still": "remotion still LogoIntro out/logo-intro.png --frame=100",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.544",
+    "@remotion/google-fonts": "4.0.544",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "remotion": "4.0.544"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "typescript": "^5.8.0"
+  }
+}
