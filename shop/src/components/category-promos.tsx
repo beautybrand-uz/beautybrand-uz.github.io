@@ -1,10 +1,20 @@
+import fs from "node:fs";
+import path from "node:path";
 import Image from "next/image";
 import Link from "next/link";
 import { CATEGORIES, products, type Category } from "@/data/products";
 import { getDict, type Locale } from "@/lib/i18n";
 import { formatPrice } from "@/lib/site";
 
-// Обложка раздела — фото товара, которое лучше всего его показывает
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+// Своя рекламная картинка раздела: brand/categories → shop/public/brand/categories (make_categories.py)
+function bannerFor(c: Category) {
+  const file = path.join(process.cwd(), "public", "brand", "categories", `${c}.webp`);
+  return fs.existsSync(file) ? `${BASE}/brand/categories/${c}.webp` : undefined;
+}
+
+// Запасной вариант, пока картинки нет, — фото товара, которое лучше всего показывает раздел
 const COVER: Record<Category, string> = {
   makeup: "dior-backstage-glow-maximizer-007",
   skin: "dior-hydra-life-fresh-sorbet-creme",
@@ -33,7 +43,7 @@ export function CategoryPromos({ lang }: { lang: Locale }) {
       </h2>
       <div className="grid auto-rows-[11rem] grid-cols-2 gap-3 sm:auto-rows-[13rem] md:grid-cols-4 md:gap-4">
         {CATEGORIES.filter((c) => count(c) > 0).map((c) => {
-          const cover = products.find((p) => p.slug === COVER[c])?.images[0];
+          const cover = bannerFor(c) ?? products.find((p) => p.slug === COVER[c])?.images[0];
           const big = c === "makeup";
           return (
             <Link
