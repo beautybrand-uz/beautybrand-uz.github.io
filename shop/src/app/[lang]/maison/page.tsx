@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/catalog";
 import { MaisonHero } from "@/components/maison";
 import { Reveal } from "@/components/reveal";
+import { ReviewsFeed } from "@/components/reviews";
 import { products } from "@/data/products";
 import { getDict, isLocale } from "@/lib/i18n";
 import { SITE_URL } from "@/lib/site";
@@ -50,6 +51,7 @@ export default async function MaisonPage({ params }: PageProps<"/[lang]/maison">
         <p className="mt-2 max-w-[60ch] text-cocoa">{t.bottlesLead}</p>
         <Grid items={bottles} />
       </section>
+      <ReviewsFeed lang={lang} />
     </>
   );
 }

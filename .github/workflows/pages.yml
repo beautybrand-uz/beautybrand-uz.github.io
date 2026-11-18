@@ -35,6 +35,9 @@ jobs:
       - run: npm run build
         env:
           GITHUB_PAGES: "1"
+          # ключи Supabase для отзывов (Settings → Secrets and variables → Actions); без них отзывы уходят в Telegram
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
       - name: Redirect root to language
         run: |
           touch out/.nojekyll

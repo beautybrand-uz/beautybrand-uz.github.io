@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BuyBox, Gallery } from "@/components/product-client";
+import { ProductReviews } from "@/components/reviews";
 import { getProduct, products } from "@/data/products";
 import { LOCALES, getDict, isLocale } from "@/lib/i18n";
 import { SITE_URL, TELEGRAM, telegramLink } from "@/lib/site";
@@ -82,6 +83,7 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/p/[slug
           </ul>
         </div>
       </div>
+      <ProductReviews slug={p.slug} productName={`${p.brand} ${p.name}`} lang={lang} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </div>
   );

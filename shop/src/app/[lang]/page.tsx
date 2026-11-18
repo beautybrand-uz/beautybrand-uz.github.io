@@ -6,6 +6,7 @@ import { TelegramIcon } from "@/components/cart-drawer";
 import { HoursCard } from "@/components/contact";
 import { MaisonBanner } from "@/components/maison";
 import { Reveal } from "@/components/reveal";
+import { ReviewsFeed } from "@/components/reviews";
 import { getDict, isLocale } from "@/lib/i18n";
 import { HOURS, PHONE, SITE_URL, STORES, TELEGRAM, telegramLink } from "@/lib/site";
 
@@ -92,6 +93,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <NewArrivalsReel lang={lang} />
       </Reveal>
       <BrandWall lang={lang} />
+      <ReviewsFeed lang={lang} />
       <Reveal>
         <HowToOrder lang={lang} />
       </Reveal>

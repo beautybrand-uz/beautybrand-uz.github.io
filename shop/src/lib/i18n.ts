@@ -44,6 +44,7 @@ type Dict = {
     newCta: string;
     brandsTitle: string;
     brandsAll: string;
+    moreBrands: (n: number) => string;
     howTitle: string;
     how: [string, string][];
   };
@@ -112,6 +113,30 @@ type Dict = {
   };
   footer: { original: string; order: string };
   notFound: { title: string; action: string };
+  reviews: {
+    title: string;
+    lead: string;
+    product: string;
+    empty: string;
+    count: (n: number) => string;
+    outOf: string;
+    write: string;
+    rating: string;
+    ratingLabel: (n: number) => string;
+    name: string;
+    text: string;
+    textHint: string;
+    submit: string;
+    sending: string;
+    thanks: string;
+    thanksTg: string;
+    errRating: string;
+    errName: string;
+    errText: string;
+    errSend: string;
+    fromChannel: string;
+    loadError: string;
+  };
 };
 
 const ru: Dict = {
@@ -174,6 +199,7 @@ const ru: Dict = {
     newCta: "Новинки в Telegram",
     brandsTitle: "Бренды в наличии",
     brandsAll: "Весь каталог",
+    moreBrands: (n) => `и ещё ${n} ${plural(n, "бренд", "бренда", "брендов")}`,
     howTitle: "Как заказать",
     how: [
       ["Выберите", "Добавьте товары в корзину на сайте."],
@@ -258,6 +284,30 @@ const ru: Dict = {
     daily: (a, b) => `${a}–${b}`,
   },
   notFound: { title: "Такой страницы нет", action: "Вернуться в каталог" },
+  reviews: {
+    title: "Отзывы",
+    lead: "Что говорят покупатели и наши подписчики об ароматах и косметике.",
+    product: "Отзывы",
+    empty: "Пока нет отзывов. Будьте первым — это поможет другим с выбором.",
+    count: (n) => `${n} ${plural(n, "отзыв", "отзыва", "отзывов")}`,
+    outOf: "из 5",
+    write: "Оставить отзыв",
+    rating: "Ваша оценка",
+    ratingLabel: (n) => `${n} из 5`,
+    name: "Имя",
+    text: "Отзыв",
+    textHint: "Как вам товар? Стойкость, аромат, текстура…",
+    submit: "Отправить отзыв",
+    sending: "Отправляем…",
+    thanks: "Спасибо! Отзыв появится на сайте после проверки.",
+    thanksTg: "Откроется Telegram с текстом отзыва — нажмите «Отправить». Менеджер опубликует его после проверки.",
+    errRating: "Поставьте оценку от 1 до 5 звёзд",
+    errName: "Введите имя",
+    errText: "Напишите хотя бы пару слов",
+    errSend: "Не получилось отправить отзыв. Проверьте интернет и попробуйте ещё раз.",
+    fromChannel: "Из канала Maison De Mari",
+    loadError: "Не удалось загрузить отзывы.",
+  },
 };
 
 const uz: Dict = {
@@ -320,6 +370,7 @@ const uz: Dict = {
     newCta: "Yangiliklar Telegramda",
     brandsTitle: "Mavjud brendlar",
     brandsAll: "Butun katalog",
+    moreBrands: (n) => `yana ${n} ta brend`,
     howTitle: "Qanday buyurtma berish",
     how: [
       ["Tanlang", "Mahsulotlarni saytdagi savatga qo‘shing."],
@@ -404,6 +455,30 @@ const uz: Dict = {
     daily: (a, b) => `${a}–${b}`,
   },
   notFound: { title: "Bunday sahifa yo‘q", action: "Katalogga qaytish" },
+  reviews: {
+    title: "Sharhlar",
+    lead: "Xaridorlar va obunachilarimiz atirlar va kosmetika haqida nima deyishadi.",
+    product: "Sharhlar",
+    empty: "Hozircha sharhlar yo‘q. Birinchi bo‘ling — bu boshqalarga tanlashda yordam beradi.",
+    count: (n) => `${n} ta sharh`,
+    outOf: "5 dan",
+    write: "Sharh qoldirish",
+    rating: "Sizning bahoingiz",
+    ratingLabel: (n) => `5 dan ${n}`,
+    name: "Ism",
+    text: "Sharh",
+    textHint: "Mahsulot qanday? Bardoshliligi, hidi, teksturasi…",
+    submit: "Sharhni yuborish",
+    sending: "Yuborilmoqda…",
+    thanks: "Rahmat! Sharh tekshiruvdan so‘ng saytda paydo bo‘ladi.",
+    thanksTg: "Sharh matni bilan Telegram ochiladi — «Yuborish»ni bosing. Menejer uni tekshirib, e’lon qiladi.",
+    errRating: "1 dan 5 gacha yulduz qo‘ying",
+    errName: "Ismingizni kiriting",
+    errText: "Kamida bir necha so‘z yozing",
+    errSend: "Sharhni yuborib bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.",
+    fromChannel: "Maison De Mari kanalidan",
+    loadError: "Sharhlarni yuklab bo‘lmadi.",
+  },
 };
 
 function plural(n: number, one: string, few: string, many: string) {
