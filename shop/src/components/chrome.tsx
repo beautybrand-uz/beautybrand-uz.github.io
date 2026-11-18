@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CartButton, LangSwitch } from "./header-client";
+import { SocialLinks } from "./social";
 import { getDict, type Locale } from "@/lib/i18n";
 import { HOURS, PHONE, STORES, TELEGRAM, telegramLink } from "@/lib/site";
 
@@ -49,6 +50,9 @@ export function Footer({ lang }: { lang: Locale }) {
         <div>
           <p className="font-script text-4xl leading-none">Beautybrand</p>
           <p className="mt-3 max-w-xs text-sm text-paper/70">{t.footer.original}</p>
+          <div className="mt-5">
+            <SocialLinks tone="dark" />
+          </div>
         </div>
         <div>
           <p className="text-sm font-semibold">{t.stores.title}</p>

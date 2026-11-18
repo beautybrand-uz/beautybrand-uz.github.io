@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getDict, type Locale } from "@/lib/i18n";
 import { PHONE, hoursFor } from "@/lib/site";
+import { SocialLinks } from "./social";
 
 /** Текущее время в Ташкенте (UTC+5) — независимо от часового пояса посетителя */
 function tashkentNow() {
@@ -78,6 +79,9 @@ export function HoursCard({ lang }: { lang: Locale }) {
         </svg>
         {t.call}: {PHONE.display}
       </a>
+      <div className="mt-4 flex justify-center">
+        <SocialLinks size="sm" />
+      </div>
     </div>
   );
 }
