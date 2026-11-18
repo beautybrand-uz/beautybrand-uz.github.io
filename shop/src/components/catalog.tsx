@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCart } from "./cart";
 import { BRANDS, CATEGORIES, products, type Category, type ProductWithImages } from "@/data/products";
 import { getDict, type Locale } from "@/lib/i18n";
@@ -16,6 +16,12 @@ export function Catalog({ lang, category }: { lang: Locale; category?: Category 
   const brands = category ? BRANDS.filter((b) => products.some((p) => p.category === category && p.brand === b)) : BRANDS;
   const [brand, setBrand] = useState("");
   const [q, setQ] = useState("");
+
+  // ссылка вида /ru/catalog?brand=Dior сразу открывает каталог с этим брендом
+  useEffect(() => {
+    const b = new URLSearchParams(window.location.search).get("brand");
+    if (b && BRANDS.includes(b)) setBrand(b);
+  }, []);
 
   const counts = useMemo(() => {
     const m = new Map<Category, number>();

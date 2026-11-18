@@ -25,6 +25,15 @@ type Dict = {
   categories: Record<Category, string>;
   categoryLead: Record<Category, string>;
   promo: { title: string; cta: string; sale: string; allSection: string };
+  home: {
+    newTitle: string;
+    newText: string;
+    newCta: string;
+    brandsTitle: string;
+    brandsAll: string;
+    howTitle: string;
+    how: [string, string][];
+  };
   product: {
     back: string;
     variant: string;
@@ -114,6 +123,19 @@ const ru: Dict = {
     sets: "Подарочные наборы и адвент-календари",
   },
   promo: { title: "Что вы ищете?", cta: "Смотреть", sale: "Скидка", allSection: "Все разделы" },
+  home: {
+    newTitle: "Новинки недели",
+    newText: "Короткий обзор свежего поступления. Новые позиции появляются в нашем Telegram-канале каждый день — подписывайтесь, чтобы не пропустить.",
+    newCta: "Новинки в Telegram",
+    brandsTitle: "Бренды в наличии",
+    brandsAll: "Весь каталог",
+    howTitle: "Как заказать",
+    how: [
+      ["Выберите", "Добавьте товары в корзину на сайте."],
+      ["Отправьте", "Заказ уйдёт менеджеру в Telegram — текст соберётся сам."],
+      ["Получите", "Заберите в магазине Ц5 или Ц1 или закажите доставку по Ташкенту."],
+    ],
+  },
   categories: {
     makeup: "Макияж",
     skin: "Уход за лицом",
@@ -215,6 +237,19 @@ const uz: Dict = {
     sets: "Sovg‘a to‘plamlari va advent-kalendarlar",
   },
   promo: { title: "Nima qidiryapsiz?", cta: "Ko‘rish", sale: "Chegirma", allSection: "Barcha bo‘limlar" },
+  home: {
+    newTitle: "Hafta yangiliklari",
+    newText: "Yangi kelgan mahsulotlarning qisqa sharhi. Yangi mahsulotlar har kuni Telegram-kanalimizda paydo bo‘ladi — o‘tkazib yubormaslik uchun obuna bo‘ling.",
+    newCta: "Yangiliklar Telegramda",
+    brandsTitle: "Mavjud brendlar",
+    brandsAll: "Butun katalog",
+    howTitle: "Qanday buyurtma berish",
+    how: [
+      ["Tanlang", "Mahsulotlarni saytdagi savatga qo‘shing."],
+      ["Yuboring", "Buyurtma Telegramda menejerga yuboriladi — matn o‘zi tayyorlanadi."],
+      ["Oling", "Ts5 yoki Ts1 do‘konidan olib keting yoki Toshkent bo‘ylab yetkazib berishni buyurtma qiling."],
+    ],
+  },
   categories: {
     makeup: "Makiyaj",
     skin: "Yuz parvarishi",

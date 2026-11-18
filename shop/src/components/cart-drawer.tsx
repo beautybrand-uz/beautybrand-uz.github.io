@@ -131,7 +131,7 @@ export function CartDrawer({ lang }: { lang: Locale }) {
         {lines.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-5 px-8 text-center">
             <p className="text-cocoa">{t.cart.empty}</p>
-            <Link href={`/${lang}#catalog`} onClick={() => setOpen(false)} className="btn btn-primary">
+            <Link href={`/${lang}/catalog`} onClick={() => setOpen(false)} className="btn btn-primary">
               {t.cart.emptyAction}
             </Link>
           </div>

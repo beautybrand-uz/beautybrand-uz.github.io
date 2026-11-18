@@ -19,7 +19,7 @@ export function Header({ lang }: { lang: Locale }) {
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
         <Wordmark lang={lang} />
         <nav className="ml-6 hidden gap-6 text-sm text-cocoa md:flex">
-          <Link href={`/${lang}#catalog`} className="hover:text-ink">
+          <Link href={`/${lang}/catalog`} className="hover:text-ink">
             {t.nav.catalog}
           </Link>
           <Link href={`/${lang}#stores`} className="hover:text-ink">

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Catalog } from "@/components/catalog";
 import { CategoryPromos } from "@/components/category-promos";
+import { BrandWall, HowToOrder, NewArrivalsReel } from "@/components/home-sections";
 import { TelegramIcon } from "@/components/cart-drawer";
 import { getDict, isLocale } from "@/lib/i18n";
 import { STORES, TELEGRAM, telegramLink } from "@/lib/site";
@@ -22,7 +22,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           </h1>
           <p className="mt-5 max-w-[42ch] text-[1.05rem] leading-relaxed text-cocoa">{t.hero.lead}</p>
           <div className="mt-8 flex flex-col gap-2.5 sm:flex-row">
-            <a href="#catalog" className="btn btn-primary">
+            <a href="#promo-title" className="btn btn-primary">
               {t.hero.toCatalog}
             </a>
             <a href={telegramLink(TELEGRAM.channel)} target="_blank" rel="noopener" className="btn btn-ghost">
@@ -47,10 +47,9 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
       <CategoryPromos lang={lang} />
 
-      <section id="catalog" className="mx-auto max-w-6xl px-4 pt-14 sm:px-6">
-        <h2 className="mb-4 font-display text-2xl font-medium tracking-[-0.01em] sm:text-3xl">{t.catalog.title}</h2>
-        <Catalog lang={lang} />
-      </section>
+      <NewArrivalsReel lang={lang} />
+      <BrandWall lang={lang} />
+      <HowToOrder lang={lang} />
 
       <section
         id="stores"
