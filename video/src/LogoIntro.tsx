@@ -118,10 +118,12 @@ export const LogoIntro: React.FC<LogoIntroProps> = ({
           <Img
             src={staticFile(logoFile)}
             style={{
-              width: 260,
-              height: 260,
-              objectFit: "contain",
-              marginBottom: 70,
+              width: 720,
+              height: 720,
+              objectFit: "cover",
+              borderRadius: 56,
+              boxShadow: "0 50px 90px -50px rgba(42,26,21,.45)",
+              marginBottom: 90,
               opacity: logoIn,
               transform: `scale(${interpolate(logoIn, [0, 1], [0.85, 1])})`,
             }}

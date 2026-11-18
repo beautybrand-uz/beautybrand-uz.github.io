@@ -8,29 +8,54 @@ import { getProduct } from "@/data/products";
 import { getDict, type Locale } from "@/lib/i18n";
 import { TELEGRAM, formatPrice, telegramLink } from "@/lib/site";
 
-export function Gallery({ images, alt }: { images: string[]; alt: string }) {
+type Slide = { kind: "image"; src: string } | { kind: "video"; src: string; poster: string };
+
+export function Gallery({ images, video, alt }: { images: string[]; video?: string; alt: string }) {
+  const slides: Slide[] = [
+    ...images.map((src) => ({ kind: "image" as const, src })),
+    ...(video ? [{ kind: "video" as const, src: video, poster: images[0] ?? "" }] : []),
+  ];
   const [active, setActive] = useState(0);
+  const current = slides[active];
   return (
     <div>
       <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-well">
-        {images[active] ? (
-          <Image src={images[active]} alt={alt} fill priority sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+        {current?.kind === "image" ? (
+          <Image src={current.src} alt={alt} fill priority sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+        ) : current?.kind === "video" ? (
+          <video
+            key={current.src}
+            src={current.src}
+            poster={current.poster}
+            className="absolute inset-0 size-full bg-paper object-contain"
+            controls
+            autoPlay
+            muted
+            playsInline
+          />
         ) : null}
       </div>
-      {images.length > 1 ? (
+      {slides.length > 1 ? (
         <div className="mt-3 flex gap-2.5">
-          {images.map((src, i) => (
+          {slides.map((s, i) => (
             <button
-              key={src}
+              key={s.src}
               type="button"
               onClick={() => setActive(i)}
-              aria-label={`${alt}, ${i + 1}`}
+              aria-label={s.kind === "video" ? `${alt}, видео` : `${alt}, ${i + 1}`}
               aria-current={i === active ? "true" : undefined}
               className={`relative size-16 overflow-hidden rounded-lg bg-well ring-offset-2 ring-offset-paper transition ${
                 i === active ? "ring-2 ring-ink" : "opacity-70 hover:opacity-100"
               }`}
             >
-              <Image src={src} alt="" fill sizes="64px" className="object-cover" />
+              <Image src={s.kind === "video" ? s.poster : s.src} alt="" fill sizes="64px" className="object-cover" />
+              {s.kind === "video" ? (
+                <span className="absolute inset-0 grid place-items-center bg-ink/35 text-paper">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                    <path d="M8 5.5v13l11-6.5-11-6.5Z" />
+                  </svg>
+                </span>
+              ) : null}
             </button>
           ))}
         </div>

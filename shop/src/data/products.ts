@@ -18,6 +18,8 @@ export type Product = {
   post: number;
   /** Ключ в images.json, если фото общие с другим товаром */
   imageKey?: string;
+  /** Ролик из video/ (композиция ProductPromo), путь в public */
+  video?: string;
 };
 
 export const CATEGORIES: Category[] = ["makeup", "skin", "hair", "fragrance", "body", "tools", "sets"];
@@ -82,6 +84,7 @@ const data: Product[] = [
       uz: "Krem-stik qizartirgich. Teri pH darajasiga moslashib, o‘ziga xos pushti-yog‘och tusini beradi.",
     },
     post: 16236,
+    video: "/videos/product-dior-glow-stick-012-rosewood.mp4",
   },
   {
     slug: "makeup-by-mario-softsculpt-shaping-stick",
@@ -399,10 +402,13 @@ const data: Product[] = [
 ];
 
 const imageMap = images as Record<string, string[]>;
+// префикс для GitHub Pages; в видео-проекте process может отсутствовать
+const BASE = typeof process !== "undefined" ? (process.env.NEXT_PUBLIC_BASE_PATH ?? "") : "";
 
 export const products = data.map((p) => ({
   ...p,
-  images: (imageMap[p.imageKey ?? p.slug] ?? []).map((src) => (process.env.NEXT_PUBLIC_BASE_PATH ?? "") + src),
+  images: (imageMap[p.imageKey ?? p.slug] ?? []).map((src) => BASE + src),
+  video: p.video ? BASE + p.video : undefined,
 }));
 
 export type ProductWithImages = (typeof products)[number];

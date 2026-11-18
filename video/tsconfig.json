@@ -5,11 +5,19 @@
     "jsx": "react-jsx",
     "strict": true,
     "noEmit": true,
-    "lib": ["dom", "es2018"],
+    "lib": [
+      "dom",
+      "es2018"
+    ],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "resolveJsonModule": true
   },
-  "include": ["src", "remotion.config.ts"]
+  "include": [
+    "src",
+    "remotion.config.ts",
+    "../shop/src/data"
+  ]
 }

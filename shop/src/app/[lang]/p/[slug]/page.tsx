@@ -55,7 +55,7 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/p/[slug
       </Link>
 
       <div className="mt-3 grid gap-8 md:grid-cols-2 md:gap-12">
-        <Gallery images={p.images} alt={`${p.brand} ${p.name}`} />
+        <Gallery images={p.images} video={p.video} alt={`${p.brand} ${p.name}`} />
         <div className="md:pt-4">
           <p className="text-sm text-cocoa">{p.brand}</p>
           <h1 className="mt-1 font-display text-[1.7rem] font-medium leading-tight tracking-[-0.02em] sm:text-[2.1rem]">

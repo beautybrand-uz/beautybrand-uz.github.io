@@ -5,6 +5,8 @@ import { TelegramIcon } from "@/components/cart-drawer";
 import { getDict, isLocale } from "@/lib/i18n";
 import { STORES, TELEGRAM, telegramLink } from "@/lib/site";
 
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
@@ -29,15 +31,28 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           </div>
         </div>
         <div className="order-1 mx-auto w-full max-w-[26rem] md:order-2 md:max-w-none">
-          <Image
-            src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/brand/logo-girl-1200.webp`}
-            alt="BeautyBrand"
-            width={1200}
-            height={1200}
-            priority
-            sizes="(min-width: 768px) 50vw, 90vw"
-            className="h-auto w-full rounded-[2rem] shadow-[0_30px_60px_-30px_rgba(42,26,21,0.35)]"
-          />
+          <div className="relative aspect-square overflow-hidden rounded-[2rem] shadow-[0_30px_60px_-30px_rgba(42,26,21,0.35)]">
+            <Image
+              src={`${BASE}/brand/girl-glam-1200.webp`}
+              alt="BeautyBrand"
+              fill
+              priority
+              sizes="(min-width: 768px) 50vw, 90vw"
+              className="object-cover"
+            />
+            {/* Зацикленный ролик из video/ (композиция HeroLoop); при отключённой анимации остаётся картинка */}
+            <video
+              className="absolute inset-0 size-full object-cover motion-reduce:hidden"
+              src={`${BASE}/videos/hero-loop.mp4`}
+              poster={`${BASE}/brand/girl-glam-1200.webp`}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-hidden
+            />
+          </div>
         </div>
       </section>
 
@@ -46,10 +61,17 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <Catalog lang={lang} />
       </section>
 
-      <section id="stores" className="mx-auto max-w-6xl px-4 pt-24 sm:px-6">
+      <section
+        id="stores"
+        className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-24 sm:px-6 md:grid-cols-[0.8fr_1fr] md:gap-14"
+      >
+        <div className="relative mx-auto aspect-square w-full max-w-xs overflow-hidden rounded-[2rem] shadow-[0_30px_60px_-30px_rgba(42,26,21,0.35)] md:max-w-none">
+          <Image src={`${BASE}/brand/girl-34-1200.webp`} alt="" fill sizes="(min-width: 768px) 40vw, 320px" className="object-cover" />
+        </div>
+        <div>
         <h2 className="font-display text-2xl font-medium tracking-[-0.01em] sm:text-3xl">{t.stores.title}</h2>
         <p className="mt-2 text-cocoa">{t.stores.lead}</p>
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="mt-6 grid gap-3">
           {STORES.map((s) => (
             <a
               key={s.id}
@@ -73,6 +95,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
               </svg>
             </a>
           ))}
+        </div>
         </div>
       </section>
     </>
