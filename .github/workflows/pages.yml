@@ -1,0 +1,61 @@
+# Сайт на GitHub Pages: https://malik-alaska2.github.io/beautybrand/
+name: Deploy shop to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ["shop/**", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: shop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: shop/package-lock.json
+      - run: npm ci
+      # proxy.ts (редирект на язык) не работает в статическом экспорте — его заменяет index.html ниже
+      - run: rm -f src/proxy.ts
+      - run: npm run build
+        env:
+          GITHUB_PAGES: "1"
+      - name: Redirect root to language
+        run: |
+          touch out/.nojekyll
+          cat > out/index.html <<'HTML'
+          <!doctype html>
+          <html lang="ru"><head><meta charset="utf-8">
+          <title>BeautyBrand Uz</title>
+          <meta http-equiv="refresh" content="0; url=./ru/">
+          <script>location.replace((navigator.language || "").toLowerCase().startsWith("uz") ? "./uz/" : "./ru/");</script>
+          </head><body><a href="./ru/">BeautyBrand Uz</a></body></html>
+          HTML
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: shop/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

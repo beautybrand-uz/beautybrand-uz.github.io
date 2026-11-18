@@ -402,7 +402,7 @@ const imageMap = images as Record<string, string[]>;
 
 export const products = data.map((p) => ({
   ...p,
-  images: imageMap[p.imageKey ?? p.slug] ?? [],
+  images: (imageMap[p.imageKey ?? p.slug] ?? []).map((src) => (process.env.NEXT_PUBLIC_BASE_PATH ?? "") + src),
 }));
 
 export type ProductWithImages = (typeof products)[number];

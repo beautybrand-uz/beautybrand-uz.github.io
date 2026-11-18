@@ -30,7 +30,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         </div>
         <div className="order-1 mx-auto w-full max-w-[26rem] md:order-2 md:max-w-none">
           <Image
-            src="/brand/logo-girl-1200.webp"
+            src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/brand/logo-girl-1200.webp`}
             alt="BeautyBrand"
             width={1200}
             height={1200}
