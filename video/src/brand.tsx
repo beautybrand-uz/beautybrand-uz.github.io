@@ -139,7 +139,19 @@ export const EndCard: React.FC<{ lang: Lang; start?: number }> = ({ lang, start 
       />
       <div
         style={{
-          marginTop: 80,
+          marginTop: 36,
+          fontFamily: script,
+          fontSize: 150,
+          lineHeight: 1.1,
+          color: C.ink,
+          opacity: b,
+        }}
+      >
+        Beautybrand
+      </div>
+      <div
+        style={{
+          marginTop: 40,
           display: "flex",
           alignItems: "center",
           gap: 22,
