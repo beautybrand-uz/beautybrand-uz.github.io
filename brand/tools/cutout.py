@@ -119,11 +119,47 @@ def cutout(bgr):
     return rgba[y0:y1, x0:x1]
 
 
+def paper_texture(bgr, size):
+    """Чистая бумага без рисунка: полоса с левого края, отражённая и размноженная на весь кадр."""
+    h, w = bgr.shape[:2]
+    # цвет бумаги — по полям исходника; фактура — мягкое зерно без повторов и полос
+    edge = np.concatenate([bgr[:, : int(0.06 * w)].reshape(-1, 3), bgr[:, -int(0.06 * w) :].reshape(-1, 3)])
+    base = np.median(edge, 0).astype(np.float32)
+    rng = np.random.default_rng(7)
+    fine = cv2.GaussianBlur(rng.normal(0, 1, (size, size)).astype(np.float32), (0, 0), 1.0) * 5
+    soft = cv2.GaussianBlur(rng.normal(0, 1, (size, size)).astype(np.float32), (0, 0), 40) * 220
+    # лёгкая виньетка: к краям чуть темнее, как на исходной бумаге
+    yy, xx = np.mgrid[0:size, 0:size].astype(np.float32) / size - 0.5
+    vignette = -10 * (xx**2 + yy**2)
+    tex = (fine + soft + vignette)[..., None]
+    return np.clip(base + tex, 0, 255).astype(np.uint8)
+
+
+def with_margin(bgr, cut_rgba, scale=0.86, top=0.06):
+    """Девушка целиком на бумажном фоне: отступ сверху, голова не упирается в край."""
+    size = bgr.shape[0]
+    canvas = paper_texture(bgr, size).astype(np.float32)
+    ch, cw = cut_rgba.shape[:2]
+    k = scale * size / max(ch, cw) if max(ch, cw) > size * scale else scale
+    fig = cv2.resize(cut_rgba, (int(cw * k), int(ch * k)), interpolation=cv2.INTER_AREA)
+    fh, fw = fig.shape[:2]
+    x0 = (size - fw) // 2
+    y0 = int(top * size)
+    y1 = min(y0 + fh, size)
+    fig = fig[: y1 - y0]
+    a = fig[:, :, 3:4].astype(np.float32) / 255
+    region = canvas[y0:y1, x0 : x0 + fw]
+    canvas[y0:y1, x0 : x0 + fw] = region * (1 - a) + fig[:, :, :3].astype(np.float32) * a
+    return canvas.astype(np.uint8)
+
+
 def main():
     for key, path in SOURCES.items():
         clean, _ = erase_text(read(path))
-        write(f"brand/girl-{key}.png", clean)
-        write(f"brand/png/girl-{key}-cutout.png", cutout(clean))
+        cut = cutout(clean)
+        write(f"brand/png/girl-{key}-cutout.png", cut)
+        # полный кадр: без надписи и с отступом над головой
+        write(f"brand/girl-{key}.png", with_margin(clean, cut))
         print("ok", key)
 
 
