@@ -3,7 +3,7 @@
 
   python brand/tools/make_logos.py      (запускать из корня проекта)
 
-1. Обрезает низ с надписью «Beautybrand» -> brand/girl-*.png (квадрат, без текста)
+1. Берёт brand/girl-*.png без надписи (их делает brand/tools/cutout.py — запускать первым)
 2. Делает PNG с прозрачным фоном, тенью и объёмной кромкой -> brand/png/
 3. Кладёт веб-версии для сайта и видео -> shop/public/brand/
 4. Обновляет превью для соцсетей -> shop/src/app/opengraph-image.jpg
@@ -15,19 +15,13 @@ SOURCES = {
     "classic": "brand/Гламурный портрет с ярким синим глазом.png",
     "34": "brand/Портрет женщины с тюбиком MAC.png",
 }
-# Надпись в исходниках начинается примерно на 1070 px из 1254 — режем чуть выше
-CUT = 1050
-
 CARD, R, PAD = 1200, 96, 150
 SHADOW = (42, 26, 21)
 
 
-def no_text(path: str) -> Image.Image:
-    im = Image.open(path).convert("RGB")
-    s = im.size[0] / 1254
-    cut = int(CUT * s)
-    left = (im.size[0] - cut) // 2
-    return im.crop((left, 0, left + cut, cut)).resize((CARD, CARD), Image.LANCZOS)
+def no_text(key: str) -> Image.Image:
+    # полный кадр без надписи — делает brand/tools/cutout.py (надпись стёрта, волосы не обрезаны)
+    return Image.open(f"brand/girl-{key}.png").convert("RGB").resize((CARD, CARD), Image.LANCZOS)
 
 
 def rounded_mask(size, r, scale=4):
@@ -83,9 +77,8 @@ def card_3d(art_rgb: Image.Image) -> Image.Image:
 
 
 def main():
-    for key, path in SOURCES.items():
-        art = no_text(path)
-        art.save(f"brand/girl-{key}.png", optimize=True)
+    for key in SOURCES:
+        art = no_text(key)
         art.save(f"shop/public/brand/girl-{key}-1200.webp", quality=88)
 
         c = card_3d(art)
