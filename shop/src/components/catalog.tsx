@@ -8,9 +8,12 @@ import { BRANDS, CATEGORIES, products, type Category, type ProductWithImages } f
 import { getDict, type Locale } from "@/lib/i18n";
 import { formatPrice } from "@/lib/site";
 
-export function Catalog({ lang }: { lang: Locale }) {
+/** `category` — страница раздела: категория зафиксирована, чипы категорий скрыты */
+export function Catalog({ lang, category }: { lang: Locale; category?: Category }) {
   const t = getDict(lang);
-  const [cat, setCat] = useState<Category | "all">("all");
+  const [catState, setCat] = useState<Category | "all">("all");
+  const cat = category ?? catState;
+  const brands = category ? BRANDS.filter((b) => products.some((p) => p.category === category && p.brand === b)) : BRANDS;
   const [brand, setBrand] = useState("");
   const [q, setQ] = useState("");
 
@@ -30,12 +33,16 @@ export function Catalog({ lang }: { lang: Locale }) {
     );
   }, [cat, brand, q]);
 
-  const filtered = cat !== "all" || brand || q;
+  const filtered = (!category && cat !== "all") || brand || q;
 
   return (
     <div>
       <div className="sticky top-16 z-20 -mx-4 border-b border-line/70 bg-paper/95 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6">
-        <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0">
+        <div
+          className={`-mx-4 mb-3 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 ${
+            category ? "hidden" : ""
+          }`}
+        >
           <Chip active={cat === "all"} onClick={() => setCat("all")}>
             {t.catalog.all} <span className="opacity-60">{products.length}</span>
           </Chip>
@@ -45,7 +52,7 @@ export function Catalog({ lang }: { lang: Locale }) {
             </Chip>
           ))}
         </div>
-        <div className="mt-3 flex gap-2">
+        <div className="flex gap-2">
           <label className="relative flex-1">
             <span className="sr-only">{t.catalog.search}</span>
             <svg
@@ -70,7 +77,7 @@ export function Catalog({ lang }: { lang: Locale }) {
             <span className="sr-only">{t.catalog.brand}</span>
             <select className="field h-11 min-h-0 py-0" value={brand} onChange={(e) => setBrand(e.target.value)}>
               <option value="">{t.catalog.allBrands}</option>
-              {BRANDS.map((b) => (
+              {brands.map((b) => (
                 <option key={b} value={b}>
                   {b}
                 </option>

@@ -23,6 +23,8 @@ type Dict = {
     choose: string;
   };
   categories: Record<Category, string>;
+  categoryLead: Record<Category, string>;
+  promo: { title: string; cta: string; sale: string; allSection: string };
   product: {
     back: string;
     variant: string;
@@ -102,6 +104,16 @@ const ru: Dict = {
     reset: "Сбросить фильтры",
     choose: "Выбрать",
   },
+  categoryLead: {
+    makeup: "Палетки, румяна, хайлайтеры и всё для губ",
+    skin: "Кремы и уход для сияющей кожи",
+    hair: "Сыворотки, спреи и термозащита",
+    fragrance: "Нишевые и классические ароматы на разлив",
+    body: "Баттеры и уход за телом",
+    tools: "Кисти для лица и глаз",
+    sets: "Подарочные наборы и адвент-календари",
+  },
+  promo: { title: "Что вы ищете?", cta: "Смотреть", sale: "Скидка", allSection: "Все разделы" },
   categories: {
     makeup: "Макияж",
     skin: "Уход за лицом",
@@ -193,6 +205,16 @@ const uz: Dict = {
     reset: "Filtrlarni tozalash",
     choose: "Tanlash",
   },
+  categoryLead: {
+    makeup: "Paletkalar, qizartirgichlar, haylayterlar va lab uchun hammasi",
+    skin: "Yorqin teri uchun kremlar va parvarish",
+    hair: "Zardoblar, spreylar va termohimoya",
+    fragrance: "Nish va klassik atirlar quyma holda",
+    body: "Tana uchun batterlar va parvarish",
+    tools: "Yuz va ko‘z uchun cho‘tkalar",
+    sets: "Sovg‘a to‘plamlari va advent-kalendarlar",
+  },
+  promo: { title: "Nima qidiryapsiz?", cta: "Ko‘rish", sale: "Chegirma", allSection: "Barcha bo‘limlar" },
   categories: {
     makeup: "Makiyaj",
     skin: "Yuz parvarishi",

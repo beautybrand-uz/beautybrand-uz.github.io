@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Catalog } from "@/components/catalog";
+import { CategoryPromos } from "@/components/category-promos";
 import { TelegramIcon } from "@/components/cart-drawer";
 import { getDict, isLocale } from "@/lib/i18n";
 import { STORES, TELEGRAM, telegramLink } from "@/lib/site";
@@ -55,6 +56,8 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           </div>
         </div>
       </section>
+
+      <CategoryPromos lang={lang} />
 
       <section id="catalog" className="mx-auto max-w-6xl px-4 pt-14 sm:px-6">
         <h2 className="mb-4 font-display text-2xl font-medium tracking-[-0.01em] sm:text-3xl">{t.catalog.title}</h2>
