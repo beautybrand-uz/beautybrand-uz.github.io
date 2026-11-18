@@ -159,7 +159,7 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
   const href = `/${lang}/p/${p.slug}`;
 
   return (
-    <article className="group flex h-full flex-col">
+    <article className="group flex h-full flex-col font-product">
       <div className="relative">
       <Link href={href} className="relative block aspect-[4/5] overflow-hidden rounded-xl bg-well">
         {p.images[0] ? (
@@ -216,8 +216,8 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
       </div>
       </div>
       <div className="flex flex-1 flex-col pt-3">
-        <p className="text-xs text-cocoa">{p.brand}</p>
-        <h3 className="mt-0.5 text-[0.95rem] font-medium leading-snug">
+        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-cocoa">{p.brand}</p>
+        <h3 className="mt-1 text-[1rem] font-semibold leading-snug tracking-[-0.015em] text-balance">
           <Link href={href} className="hover:text-rose-deep">
             {p.name}
           </Link>

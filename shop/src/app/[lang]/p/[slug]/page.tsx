@@ -58,11 +58,11 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/p/[slug
         {p.boutique ? "Maison De Mari" : `${t.product.back}: ${t.categories[p.category]}`}
       </Link>
 
-      <div className="mt-3 grid gap-8 md:grid-cols-2 md:gap-12">
+      <div className="mt-3 grid gap-8 font-product md:grid-cols-2 md:gap-12">
         <Gallery images={p.images} video={p.video} alt={`${p.brand} ${p.name}`} />
         <div className="md:pt-4">
-          <p className="text-sm text-cocoa">{p.brand}</p>
-          <h1 className="mt-1 font-display text-[1.7rem] font-medium leading-tight tracking-[-0.02em] sm:text-[2.1rem]">
+          <p className="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-cocoa">{p.brand}</p>
+          <h1 className="mt-2 text-[2rem] font-semibold leading-[1.04] tracking-[-0.035em] text-balance sm:text-[2.5rem]">
             {p.name}
           </h1>
           <p className="mt-5 max-w-[60ch] leading-relaxed">{p.description[lang]}</p>

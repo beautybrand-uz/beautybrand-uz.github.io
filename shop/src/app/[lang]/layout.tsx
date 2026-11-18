@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Golos_Text, Great_Vibes, Playfair_Display } from "next/font/google";
+import { Golos_Text, Great_Vibes, Onest, Playfair_Display } from "next/font/google";
 import { notFound } from "next/navigation";
 import "../globals.css";
 import { CartProvider } from "@/components/cart";
@@ -9,6 +9,8 @@ import { LOCALES, getDict, isLocale } from "@/lib/i18n";
 import { SITE_URL } from "@/lib/site";
 
 const golos = Golos_Text({ variable: "--font-golos", subsets: ["latin", "cyrillic"] });
+// Карточки товаров — современный гротеск (выбран из трёх вариантов типографики)
+const onest = Onest({ variable: "--font-onest", subsets: ["latin", "latin-ext", "cyrillic"] });
 // Заголовки — элегантная антиква с кириллицей; цены и интерфейс — Golos Text
 const playfair = Playfair_Display({ variable: "--font-playfair", subsets: ["latin", "cyrillic"], weight: ["400", "500", "600"], style: ["normal", "italic"] });
 const script = Great_Vibes({ variable: "--font-script", subsets: ["latin"], weight: "400" });
@@ -37,7 +39,7 @@ export default async function LangLayout({ children, params }: LayoutProps<"/[la
   if (!isLocale(lang)) notFound();
 
   return (
-    <html lang={lang} className={`${golos.variable} ${playfair.variable} ${script.variable} antialiased`}>
+    <html lang={lang} className={`${golos.variable} ${onest.variable} ${playfair.variable} ${script.variable} antialiased`}>
       <body className="flex min-h-dvh flex-col">
         <CartProvider>
           <Header lang={lang} />

@@ -26,6 +26,7 @@
   --color-line: var(--line);
   --font-sans: var(--font-golos);
   --font-display: var(--font-playfair);
+  --font-product: var(--font-onest);
   --color-gold: var(--gold);
   --font-script: var(--font-script);
 }
@@ -242,4 +243,14 @@ body {
   .marquee {
     overflow-x: auto;
   }
+}
+
+/* Карточки товаров на Onest: ценник тоже на нём, жирнее и плотнее */
+.font-product .tag {
+  font-family: var(--font-onest), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.font-product {
+  font-variant-numeric: lining-nums;
 }
