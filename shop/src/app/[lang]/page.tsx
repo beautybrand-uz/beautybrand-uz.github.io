@@ -74,16 +74,25 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             ))}
           </ul>
         </div>
-        {/* Только героиня без фона, с мягкой объёмной тенью */}
-        <div className="rise-image relative order-1 flex min-h-[min(112vw,34rem)] items-end justify-center lg:order-2 lg:min-h-0">
+        {/* Героиня на фоне мазка мерцающих теней (brand/tools/swatch.py) */}
+        <div className="rise-image relative isolate order-1 flex min-h-[min(110vw,32rem)] items-end justify-center lg:order-2 lg:min-h-0">
+          <Image
+            src={`${BASE}/brand/swatch.webp`}
+            alt=""
+            width={1300}
+            height={1600}
+            priority
+            sizes="(min-width: 1024px) 34vw, 80vw"
+            className="absolute left-1/2 top-[2%] -z-10 h-[84%] w-auto max-w-none -translate-x-[46%] -rotate-[4deg] opacity-95"
+          />
           <Image
             src={`${BASE}/brand/girl-glam-cutout.webp`}
             alt="BeautyBrand"
             width={986}
             height={1161}
             priority
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            className="h-auto max-h-[min(calc(100svh-6rem),52rem)] w-auto max-w-full object-contain [filter:drop-shadow(0_2px_3px_rgba(42,26,21,0.18))_drop-shadow(0_22px_28px_rgba(42,26,21,0.22))_drop-shadow(0_50px_60px_rgba(42,26,21,0.12))]"
+            sizes="(min-width: 1024px) 40vw, 90vw"
+            className="relative h-auto max-h-[min(calc(100svh-10rem),44rem)] w-auto max-w-[88%] object-contain [filter:drop-shadow(0_2px_3px_rgba(42,26,21,0.2))_drop-shadow(0_16px_18px_rgba(42,26,21,0.2))]"
           />
         </div>
       </section>
