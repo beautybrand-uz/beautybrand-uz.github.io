@@ -1,4 +1,4 @@
-# Сайт на GitHub Pages: https://malik-alaska2.github.io/beautybrand/
+# Сайт на GitHub Pages: https://beautybrand-uz.github.io/ (и старый адрес malik-alaska2.github.io/beautybrand/)
 name: Deploy shop to GitHub Pages
 
 on:
@@ -34,7 +34,9 @@ jobs:
       - run: rm -f src/proxy.ts
       - run: npm run build
         env:
-          GITHUB_PAGES: "1"
+          # в репозитории beautybrand-uz.github.io сайт открывается с корня, в остальных — с /<имя репозитория>
+          GITHUB_PAGES: ${{ endsWith(github.event.repository.name, '.github.io') && '0' || '1' }}
+          STATIC_EXPORT: "1"
           # ключи Supabase для отзывов (Settings → Secrets and variables → Actions); без них отзывы уходят в Telegram
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
