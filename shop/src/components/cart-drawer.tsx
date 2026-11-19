@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { lineProduct, useCart } from "./cart";
 import { getDict, type Locale } from "@/lib/i18n";
 import { STORES, TELEGRAM, formatPrice, telegramLink } from "@/lib/site";
+import { rest, supabaseEnabled } from "@/lib/supabase";
 
 type Method = string; // id магазина или "delivery"
 
@@ -80,9 +81,37 @@ export function CartDrawer({ lang }: { lang: Locale }) {
     return Object.keys(e).length === 0;
   }
 
+  /** Копия заказа в базу для админки. Telegram остаётся основным каналом, поэтому ошибка здесь не мешает заказу. */
+  function saveOrder() {
+    if (!supabaseEnabled) return;
+    const items = lines
+      .map((l) => {
+        const info = lineProduct(l);
+        return info
+          ? { slug: l.slug, name: `${info.product.brand} ${info.product.name}`, variant: l.variant ?? null, qty: l.qty, price: info.price }
+          : null;
+      })
+      .filter(Boolean);
+    rest("orders", {
+      method: "POST",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({
+        name: name.trim(),
+        phone: phone.trim(),
+        method,
+        address: method === "delivery" ? address.trim() : null,
+        comment: comment.trim() || null,
+        items,
+        total,
+        lang,
+      }),
+    }).catch(() => {});
+  }
+
   function send() {
     if (!validate()) return;
     window.open(telegramLink(TELEGRAM.manager, buildMessage()), "_blank", "noopener");
+    saveOrder();
     setSent(true);
   }
 

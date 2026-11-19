@@ -74,19 +74,8 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             ))}
           </ul>
         </div>
-        <div className="rise-image relative order-1 isolate min-h-[min(112vw,36rem)] overflow-hidden rounded-[2rem] bg-[#ece2d6] lg:order-2 lg:min-h-0">
-          {/* мягкий свет за фигурой */}
-          <span
-            aria-hidden
-            className="absolute left-1/2 top-[38%] -z-10 size-[min(90%,40rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#f8efe6,transparent)]"
-          />
-          {/* подпись бренда крупным рукописным шрифтом за героиней */}
-          <span
-            aria-hidden
-            className="absolute left-1/2 top-[7%] -z-10 -translate-x-1/2 select-none whitespace-nowrap text-center font-script text-[clamp(4rem,9.5vw,11rem)] leading-none text-[#f7efe6]"
-          >
-            Beautybrand
-          </span>
+        {/* Только героиня без фона, с мягкой объёмной тенью */}
+        <div className="rise-image relative order-1 flex min-h-[min(112vw,34rem)] items-end justify-center lg:order-2 lg:min-h-0">
           <Image
             src={`${BASE}/brand/girl-glam-cutout.webp`}
             alt="BeautyBrand"
@@ -94,7 +83,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             height={1161}
             priority
             sizes="(min-width: 1024px) 50vw, 100vw"
-            className="absolute bottom-0 left-1/2 h-[92%] w-auto max-w-none -translate-x-1/2 object-contain object-bottom drop-shadow-[0_30px_40px_rgba(42,26,21,0.18)]"
+            className="h-auto max-h-[min(calc(100svh-6rem),52rem)] w-auto max-w-full object-contain [filter:drop-shadow(0_2px_3px_rgba(42,26,21,0.18))_drop-shadow(0_22px_28px_rgba(42,26,21,0.22))_drop-shadow(0_50px_60px_rgba(42,26,21,0.12))]"
           />
         </div>
       </section>
