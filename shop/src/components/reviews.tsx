@@ -1,5 +1,6 @@
 "use client";
 
+import { Swatch } from "@/components/swatch";
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 import { channelReviews, type ChannelReview } from "@/data/channel-reviews";
@@ -241,7 +242,8 @@ export function ProductReviews({ slug, productName, lang }: { slug: string; prod
   return (
     <section className="mt-16 border-t border-line pt-10" aria-labelledby="reviews-title">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <h2 id="reviews-title" className="font-display text-3xl font-medium">
+        <h2 id="reviews-title" className="relative isolate inline-block font-display text-3xl font-medium">
+          <Swatch name="gold" className="-left-[0.35em] top-1/2 h-[1.9em] w-auto max-w-none -translate-y-1/2 opacity-90 -rotate-2" />
           {t.product}
         </h2>
         {list && list.length ? (
@@ -286,7 +288,8 @@ export function ReviewsFeed({ lang }: { lang: Locale }) {
   }, []);
 
   return (
-    <section className="pt-20" aria-labelledby="feed-title">
+    <section className="relative isolate pt-20" aria-labelledby="feed-title">
+      <Swatch name="plum" className="-left-24 top-16 h-[24rem] w-auto max-w-none rotate-[24deg] opacity-70 sm:-left-16" />
       <div className="shell ">
         <h2 id="feed-title" className="font-display text-3xl font-medium sm:text-4xl">
           {t.title}

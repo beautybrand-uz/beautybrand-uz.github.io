@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import "../globals.css";
 import { CartProvider } from "@/components/cart";
 import { CartDrawer } from "@/components/cart-drawer";
+import { SwatchTrail } from "@/components/swatch-trail";
 import { Footer, Header } from "@/components/chrome";
 import { LOCALES, getDict, isLocale } from "@/lib/i18n";
 import { SITE_URL } from "@/lib/site";
@@ -42,10 +43,14 @@ export default async function LangLayout({ children, params }: LayoutProps<"/[la
     <html lang={lang} className={`${golos.variable} ${onest.variable} ${playfair.variable} ${script.variable} antialiased`}>
       <body className="flex min-h-dvh flex-col">
         <CartProvider>
-          <Header lang={lang} />
-          <main className="flex-1">{children}</main>
-          <Footer lang={lang} />
+          {/* обрезка по горизонтали здесь, а не на body: мазки за краем не расширяют страницу, липкая шапка работает */}
+          <div className="flex min-h-dvh flex-col [overflow-x:clip]">
+            <Header lang={lang} />
+            <main className="flex-1">{children}</main>
+            <Footer lang={lang} />
+          </div>
           <CartDrawer lang={lang} />
+          <SwatchTrail />
         </CartProvider>
       </body>
     </html>

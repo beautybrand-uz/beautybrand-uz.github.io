@@ -1,3 +1,4 @@
+import { Swatch } from "@/components/swatch";
 import fs from "node:fs";
 import path from "node:path";
 import Link from "next/link";
@@ -15,7 +16,10 @@ export function NewArrivalsReel({ lang }: { lang: Locale }) {
     <section className="bg-[#efe5da]">
       <div className="shell grid items-center gap-10 py-14 md:grid-cols-[1fr_auto] md:gap-20 md:py-20">
         <div className="order-2 md:order-1">
-          <h2 className="font-display text-3xl font-medium leading-tight sm:text-4xl lg:text-5xl">{t.home.newTitle}</h2>
+          <h2 className="relative isolate inline-block font-display text-3xl font-medium leading-tight sm:text-4xl lg:text-5xl">
+            <Swatch name="pink" className="-left-[0.35em] top-1/2 h-[1.9em] w-auto max-w-none -translate-y-1/2 opacity-90 -rotate-3" />
+            {t.home.newTitle}
+          </h2>
           <p className="mt-4 max-w-[46ch] leading-relaxed text-cocoa">{t.home.newText}</p>
           <a
             href={telegramLink(TELEGRAM.channel)}
@@ -77,7 +81,10 @@ export function BrandWall({ lang }: { lang: Locale }) {
   return (
     <section className="shell pt-20">
       <div className="flex items-end justify-between gap-4">
-        <h2 className="font-display text-3xl font-medium sm:text-4xl">{t.home.brandsTitle}</h2>
+        <h2 className="relative isolate inline-block font-display text-3xl font-medium sm:text-4xl">
+          <Swatch name="peach" className="-left-[0.35em] top-1/2 h-[1.9em] w-auto max-w-none -translate-y-1/2 opacity-90 rotate-2" />
+          {t.home.brandsTitle}
+        </h2>
         <Link href={`/${lang}/catalog`} className="shrink-0 text-sm text-cocoa underline underline-offset-4 hover:text-ink">
           {t.home.brandsAll}
         </Link>
@@ -108,7 +115,8 @@ export function BrandWall({ lang }: { lang: Locale }) {
 export function HowToOrder({ lang }: { lang: Locale }) {
   const t = getDict(lang);
   return (
-    <section className="shell pt-20">
+    <section className="shell relative isolate pt-20">
+      <Swatch name="bronze" className="-right-[4%] top-8 h-[26rem] w-auto max-w-none rotate-[18deg] opacity-80" />
       <h2 className="font-display text-2xl font-medium tracking-[-0.01em] sm:text-3xl">{t.home.howTitle}</h2>
       <ol className="mt-6 grid gap-3 md:grid-cols-3 md:gap-4">
         {t.home.how.map(([title, text], i) => (

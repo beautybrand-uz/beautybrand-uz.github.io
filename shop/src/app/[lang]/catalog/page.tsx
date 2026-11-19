@@ -1,3 +1,4 @@
+import { Swatch } from "@/components/swatch";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Catalog } from "@/components/catalog";
@@ -22,7 +23,8 @@ export default async function CatalogPage({ params }: PageProps<"/[lang]/catalog
   const t = getDict(lang);
   return (
     <div className="shell pt-8">
-      <h1 className="mb-4 font-display text-3xl font-medium tracking-[-0.02em] sm:text-4xl">{t.catalog.title}</h1>
+      <h1 className="relative isolate inline-block mb-4 font-display text-3xl font-medium tracking-[-0.02em] sm:text-4xl">
+        <Swatch name="peach" className="-left-[0.35em] top-1/2 h-[1.9em] w-auto max-w-none -translate-y-1/2 opacity-90 -rotate-2" />{t.catalog.title}</h1>
       <Catalog lang={lang} />
     </div>
   );

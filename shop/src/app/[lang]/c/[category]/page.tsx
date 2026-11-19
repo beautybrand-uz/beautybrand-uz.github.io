@@ -1,3 +1,4 @@
+import { Swatch } from "@/components/swatch";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -38,7 +39,8 @@ export default async function CategoryPage({ params }: PageProps<"/[lang]/c/[cat
         </svg>
         {t.promo.allSection}
       </Link>
-      <h1 className="mt-2 font-display text-3xl font-medium tracking-[-0.02em] sm:text-4xl">{t.categories[category]}</h1>
+      <h1 className="relative isolate inline-block mt-2 font-display text-3xl font-medium tracking-[-0.02em] sm:text-4xl">
+        <Swatch name="peach" className="-left-[0.35em] top-1/2 h-[1.9em] w-auto max-w-none -translate-y-1/2 opacity-90 -rotate-2" />{t.categories[category]}</h1>
       <p className="mt-2 max-w-[60ch] text-cocoa">{t.categoryLead[category]}</p>
 
       {/* Быстрый переход между разделами */}

@@ -1,3 +1,4 @@
+import { Swatch } from "@/components/swatch";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { CategoryPromos } from "@/components/category-promos";
@@ -76,15 +77,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         </div>
         {/* Героиня на фоне мазка мерцающих теней (brand/tools/swatch.py) */}
         <div className="rise-image relative isolate order-1 flex min-h-[min(110vw,32rem)] items-end justify-center lg:order-2 lg:min-h-0">
-          <Image
-            src={`${BASE}/brand/swatch.webp`}
-            alt=""
-            width={1300}
-            height={1600}
-            priority
-            sizes="(min-width: 1024px) 34vw, 80vw"
-            className="absolute left-1/2 top-[2%] -z-10 h-[84%] w-auto max-w-none -translate-x-[46%] -rotate-[4deg] opacity-95"
-          />
+          <Swatch name="rose" priority className="left-1/2 top-[2%] h-[84%] w-auto max-w-none -translate-x-[46%] -rotate-[4deg] opacity-95" />
           <Image
             src={`${BASE}/brand/girl-glam-cutout.webp`}
             alt="BeautyBrand"
@@ -110,10 +103,11 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
       <section
         id="stores"
-        className="shell grid items-center gap-8 pt-24 md:grid-cols-[0.8fr_1fr] md:gap-14"
+        className="shell relative isolate grid items-center gap-8 pt-24 md:grid-cols-[0.8fr_1fr] md:gap-14"
       >
         {/* 3D-логотип из brand/png: тень и кромка уже в картинке */}
         <div className="relative mx-auto aspect-square w-full max-w-sm md:max-w-none">
+          <Swatch name="plum" className="-left-[8%] top-[4%] h-[92%] w-auto max-w-none -rotate-[14deg] opacity-85" />
           <Image
             src={`${BASE}/brand/beautybrand-34-3d.webp`}
             alt=""

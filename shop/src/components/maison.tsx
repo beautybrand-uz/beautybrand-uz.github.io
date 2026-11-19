@@ -1,3 +1,4 @@
+import { Swatch } from "@/components/swatch";
 import Image from "next/image";
 import Link from "next/link";
 import { TelegramIcon } from "./cart-drawer";
@@ -67,7 +68,8 @@ export function MaisonHero({ lang }: { lang: Locale }) {
             </a>
           </div>
         </div>
-        <div className="rise-image">
+        <div className="rise-image relative isolate">
+          <Swatch name="gold" priority className="-left-[12%] -top-[9%] h-28 w-auto max-w-none -rotate-[8deg] opacity-90 sm:h-36" />
           <Mosaic big />
         </div>
       </div>
