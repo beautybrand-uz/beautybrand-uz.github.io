@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import Link from "next/link";
-import { BrandScroller } from "./brand-scroller";
 import { TelegramIcon } from "./cart-drawer";
 import { BRANDS } from "@/data/products";
 import { getDict, type Locale } from "@/lib/i18n";
@@ -83,9 +82,9 @@ export function BrandWall({ lang }: { lang: Locale }) {
           {t.home.brandsAll}
         </Link>
       </div>
-      <BrandScroller prevLabel={t.home.brandsPrev} nextLabel={t.home.brandsNext}>
+      <ul className="mt-6 grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-5">
         {logos.map((l) => (
-          <li key={l.brand} className="snap-start">
+          <li key={l.brand}>
             <Link
               href={`/${lang}/catalog?brand=${encodeURIComponent(l.brand)}`}
               className="group grid h-20 place-items-center rounded-xl border border-line bg-white/70 px-4 transition-colors hover:border-ink sm:h-24"
@@ -100,7 +99,7 @@ export function BrandWall({ lang }: { lang: Locale }) {
             </Link>
           </li>
         ))}
-      </BrandScroller>
+      </ul>
     </section>
   );
 }
