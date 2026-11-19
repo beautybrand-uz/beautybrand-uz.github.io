@@ -45,15 +45,16 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
   return (
     <>
-      <section className="mx-auto grid max-w-6xl items-center gap-7 px-4 pt-4 sm:px-6 md:grid-cols-[1fr_1.05fr] md:gap-10 md:pt-6">
-        <div className="order-2 pb-6 md:order-1 md:pb-0">
-          <h1 className="rise max-w-[13ch] font-display text-[2.5rem] font-medium leading-[1.02] sm:text-[3.3rem] lg:text-[4.1rem]">
+      {/* Первый экран во всю ширину: текст выровнен по контейнеру, панель с героиней уходит до правого края */}
+      <section className="grid md:min-h-[min(calc(100svh-4rem),58rem)] md:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)]">
+        <div className="bleed-start order-2 flex flex-col justify-center pb-12 pr-[var(--gutter)] pt-8 md:order-1 md:py-16 md:pr-12 lg:pr-20">
+          <h1 className="rise max-w-[12ch] font-display text-[2.6rem] font-medium leading-[1] text-balance sm:text-[3.6rem] lg:text-[clamp(4rem,5.4vw,6rem)]">
             {t.hero.title}
           </h1>
-          <p className="rise mt-5 max-w-[42ch] text-[1.05rem] leading-relaxed text-cocoa" style={{ animationDelay: "90ms" }}>
+          <p className="rise mt-6 max-w-[42ch] text-[1.05rem] leading-relaxed text-cocoa lg:text-lg" style={{ animationDelay: "90ms" }}>
             {t.hero.lead}
           </p>
-          <div className="rise mt-8 flex flex-col gap-2.5 sm:flex-row" style={{ animationDelay: "180ms" }}>
+          <div className="rise mt-9 flex flex-col gap-2.5 sm:flex-row" style={{ animationDelay: "180ms" }}>
             <a href="#promo-title" className="btn btn-primary">
               {t.hero.toCatalog}
             </a>
@@ -62,7 +63,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
               {t.hero.toChannel}
             </a>
           </div>
-          <ul className="rise mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm text-cocoa" style={{ animationDelay: "270ms" }}>
+          <ul className="rise mt-10 flex flex-wrap gap-x-6 gap-y-2 border-t border-line pt-6 text-sm text-cocoa" style={{ animationDelay: "270ms" }}>
             {t.hero.facts.map((f) => (
               <li key={f} className="flex items-center gap-2">
                 <span className="text-[0.6rem] text-gold" aria-hidden>
@@ -73,17 +74,28 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             ))}
           </ul>
         </div>
-        <div className="rise-image order-1 mx-auto w-full max-w-[26rem] md:order-2 md:max-w-none">
-          <div className="relative aspect-square overflow-hidden rounded-[2rem] shadow-[0_30px_60px_-30px_rgba(42,26,21,0.35)]">
-            <Image
-              src={`${BASE}/brand/girl-glam-1200.webp`}
-              alt="BeautyBrand"
-              fill
-              priority
-              sizes="(min-width: 768px) 50vw, 90vw"
-              className="object-cover"
-            />
-          </div>
+        <div className="rise-image relative order-1 isolate min-h-[min(118vw,34rem)] overflow-hidden bg-[#ece2d6] md:order-2 md:min-h-0">
+          {/* мягкий свет за фигурой */}
+          <span
+            aria-hidden
+            className="absolute left-1/2 top-[38%] -z-10 size-[min(90%,40rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#f8efe6,transparent)]"
+          />
+          {/* подпись бренда крупным рукописным шрифтом за героиней */}
+          <span
+            aria-hidden
+            className="absolute inset-x-0 top-[7%] -z-10 select-none text-center font-script text-[clamp(4rem,9.5vw,11rem)] leading-none text-[#f7efe6]"
+          >
+            Beautybrand
+          </span>
+          <Image
+            src={`${BASE}/brand/girl-glam-cutout.webp`}
+            alt="BeautyBrand"
+            width={986}
+            height={1161}
+            priority
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="absolute bottom-0 left-1/2 h-[92%] w-auto max-w-none -translate-x-1/2 object-contain object-bottom drop-shadow-[0_30px_40px_rgba(42,26,21,0.18)]"
+          />
         </div>
       </section>
 
@@ -100,7 +112,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
       <section
         id="stores"
-        className="mx-auto grid max-w-6xl items-center gap-8 px-4 pt-24 sm:px-6 md:grid-cols-[0.8fr_1fr] md:gap-14"
+        className="shell grid items-center gap-8 pt-24 md:grid-cols-[0.8fr_1fr] md:gap-14"
       >
         {/* 3D-логотип из brand/png: тень и кромка уже в картинке */}
         <div className="relative mx-auto aspect-square w-full max-w-sm md:max-w-none">

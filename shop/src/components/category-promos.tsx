@@ -37,11 +37,11 @@ export function CategoryPromos({ lang }: { lang: Locale }) {
   const sale = products.find((p) => p.oldPrice);
 
   return (
-    <section className="mx-auto max-w-6xl px-4 pt-14 sm:px-6" aria-labelledby="promo-title">
+    <section className="shell pt-14" aria-labelledby="promo-title">
       <h2 id="promo-title" className="mb-5 font-display text-2xl font-medium tracking-[-0.01em] sm:text-3xl">
         {t.promo.title}
       </h2>
-      <div className="grid auto-rows-[11rem] grid-cols-2 gap-3 sm:auto-rows-[13rem] md:grid-cols-4 md:gap-4">
+      <div className="grid auto-rows-[11rem] grid-cols-2 gap-3 sm:auto-rows-[13rem] md:grid-cols-4 md:gap-4 xl:auto-rows-[16rem]">
         {CATEGORIES.filter((c) => count(c) > 0).map((c) => {
           const cover = bannerFor(c) ?? products.find((p) => p.slug === COVER[c])?.images[0];
           const big = c === "makeup";

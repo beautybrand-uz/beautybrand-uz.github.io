@@ -17,7 +17,7 @@ export function Header({ lang }: { lang: Locale }) {
   const t = getDict(lang);
   return (
     <header className="sticky top-0 z-30 border-b border-line/70 bg-paper/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
+      <div className="shell flex h-16 items-center gap-4">
         <Wordmark lang={lang} />
         <nav className="ml-6 hidden gap-6 text-sm text-cocoa md:flex">
           <Link href={`/${lang}/catalog`} className="hover:text-ink">
@@ -46,7 +46,7 @@ export function Footer({ lang }: { lang: Locale }) {
   const t = getDict(lang);
   return (
     <footer className="mt-24 bg-ink text-paper">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.2fr_1fr_1fr]">
+      <div className="shell grid gap-10 py-14 md:grid-cols-[1.2fr_1fr_1fr]">
         <div>
           <p className="font-script text-4xl leading-none">Beautybrand</p>
           <p className="mt-3 max-w-xs text-sm text-paper/70">{t.footer.original}</p>
@@ -101,7 +101,7 @@ export function Footer({ lang }: { lang: Locale }) {
         </div>
       </div>
       <div className="border-t border-paper/10">
-        <p className="mx-auto max-w-6xl px-4 py-5 text-xs text-paper/50 sm:px-6">© BeautyBrand Uz · beautybrand.uz</p>
+        <p className="shell py-5 text-xs text-paper/50">© BeautyBrand Uz · beautybrand.uz</p>
       </div>
     </footer>
   );

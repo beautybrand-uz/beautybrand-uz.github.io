@@ -287,14 +287,14 @@ export function ReviewsFeed({ lang }: { lang: Locale }) {
 
   return (
     <section className="pt-20" aria-labelledby="feed-title">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="shell ">
         <h2 id="feed-title" className="font-display text-3xl font-medium sm:text-4xl">
           {t.title}
         </h2>
         <p className="mt-2 max-w-[60ch] text-cocoa">{t.lead}</p>
       </div>
       {/* горизонтальная лента с прокруткой пальцем, карточки «прилипают» */}
-      <ul className="mx-auto mt-6 flex max-w-6xl snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3 [scrollbar-width:thin] sm:px-6">
+      <ul className="shell mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 [scrollbar-width:thin]">
         {live.map((r) => {
           const p = getProduct(r.product);
           return (

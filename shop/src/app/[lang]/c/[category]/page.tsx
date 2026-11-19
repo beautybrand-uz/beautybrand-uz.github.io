@@ -31,7 +31,7 @@ export default async function CategoryPage({ params }: PageProps<"/[lang]/c/[cat
   const t = getDict(lang);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-5 sm:px-6">
+    <div className="shell pt-5">
       <Link href={`/${lang}#promo-title`} className="inline-flex items-center gap-1.5 py-2 text-sm text-cocoa hover:text-ink">
         <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
           <path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -42,7 +42,7 @@ export default async function CategoryPage({ params }: PageProps<"/[lang]/c/[cat
       <p className="mt-2 max-w-[60ch] text-cocoa">{t.categoryLead[category]}</p>
 
       {/* Быстрый переход между разделами */}
-      <nav className="-mx-4 mt-6 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0">
+      <nav className="-mx-[var(--gutter)] mt-6 flex gap-2 overflow-x-auto px-[var(--gutter)] pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0">
         {used.map((c) => (
           <Link
             key={c}

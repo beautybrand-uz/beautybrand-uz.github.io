@@ -55,7 +55,7 @@ export function BrandScroller({ children, prevLabel, nextLabel }: { children: Re
     <div className="relative mt-6">
       <ul
         ref={ref}
-        className="brand-rail -mx-4 grid snap-x snap-mandatory scroll-px-4 auto-cols-[calc((100%-1rem)/2.4)] grid-flow-col grid-rows-2 gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:auto-cols-[calc((100%-3rem)/4.4)] sm:scroll-px-0 sm:gap-3 sm:px-0"
+        className="brand-rail -mx-[var(--gutter)] grid snap-x snap-mandatory scroll-px-[var(--gutter)] auto-cols-[calc((100%-1rem)/2.4)] grid-flow-col grid-rows-2 gap-2 overflow-x-auto px-[var(--gutter)] pb-1 sm:mx-0 sm:auto-cols-[calc((100%-3rem)/4.4)] sm:scroll-px-0 sm:gap-3 sm:px-0"
       >
         {children}
       </ul>

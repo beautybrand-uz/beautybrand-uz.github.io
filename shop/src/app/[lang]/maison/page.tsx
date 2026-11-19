@@ -41,12 +41,12 @@ export default async function MaisonPage({ params }: PageProps<"/[lang]/maison">
   return (
     <>
       <MaisonHero lang={lang} />
-      <section id="aromas" className="mx-auto max-w-6xl scroll-mt-20 px-4 pt-16 sm:px-6">
+      <section id="aromas" className="shell scroll-mt-20 pt-16">
         <h2 className="font-display text-3xl font-medium sm:text-4xl">{t.decants}</h2>
         <p className="mt-2 max-w-[60ch] text-cocoa">{t.decantsLead}</p>
         <Grid items={decants} />
       </section>
-      <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
+      <section className="shell pt-20">
         <h2 className="font-display text-3xl font-medium sm:text-4xl">{t.bottles}</h2>
         <p className="mt-2 max-w-[60ch] text-cocoa">{t.bottlesLead}</p>
         <Grid items={bottles} />

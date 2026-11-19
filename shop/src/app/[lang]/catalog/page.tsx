@@ -21,7 +21,7 @@ export default async function CatalogPage({ params }: PageProps<"/[lang]/catalog
   if (!isLocale(lang)) notFound();
   const t = getDict(lang);
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6">
+    <div className="shell pt-8">
       <h1 className="mb-4 font-display text-3xl font-medium tracking-[-0.02em] sm:text-4xl">{t.catalog.title}</h1>
       <Catalog lang={lang} />
     </div>

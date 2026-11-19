@@ -43,9 +43,9 @@ export function Catalog({ lang, category }: { lang: Locale; category?: Category 
 
   return (
     <div>
-      <div className="sticky top-16 z-20 -mx-4 border-b border-line/70 bg-paper/95 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6">
+      <div className="sticky top-16 z-20 -mx-[var(--gutter)] border-b border-line/70 bg-paper/95 px-[var(--gutter)] py-3 backdrop-blur-md">
         <div
-          className={`-mx-4 mb-3 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 ${
+          className={`-mx-[var(--gutter)] mb-3 flex gap-2 overflow-x-auto px-[var(--gutter)] pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 ${
             category ? "hidden" : ""
           }`}
         >

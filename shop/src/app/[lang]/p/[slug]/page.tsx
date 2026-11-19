@@ -47,7 +47,7 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/p/[slug
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-5 sm:px-6">
+    <div className="shell pt-5">
       <Link
         href={p.boutique ? `/${lang}/maison` : `/${lang}/c/${p.category}`}
         className="inline-flex items-center gap-1.5 py-2 text-sm text-cocoa hover:text-ink"

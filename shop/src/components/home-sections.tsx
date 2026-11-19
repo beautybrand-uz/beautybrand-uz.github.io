@@ -13,22 +13,22 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 export function NewArrivalsReel({ lang }: { lang: Locale }) {
   const t = getDict(lang);
   return (
-    <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
-      <div className="grid items-center gap-8 overflow-hidden rounded-[2rem] bg-ink p-6 text-paper sm:p-10 md:grid-cols-[1fr_auto] md:gap-14 md:p-14">
+    <section className="bg-[#efe5da]">
+      <div className="shell grid items-center gap-10 py-14 md:grid-cols-[1fr_auto] md:gap-20 md:py-20">
         <div className="order-2 md:order-1">
-          <h2 className="font-display text-3xl font-medium leading-tight tracking-[-0.02em] sm:text-4xl">{t.home.newTitle}</h2>
-          <p className="mt-4 max-w-[46ch] leading-relaxed text-paper/75">{t.home.newText}</p>
+          <h2 className="font-display text-3xl font-medium leading-tight sm:text-4xl lg:text-5xl">{t.home.newTitle}</h2>
+          <p className="mt-4 max-w-[46ch] leading-relaxed text-cocoa">{t.home.newText}</p>
           <a
             href={telegramLink(TELEGRAM.channel)}
             target="_blank"
             rel="noopener"
-            className="btn mt-8 bg-paper text-ink hover:bg-rose hover:text-white"
+            className="btn btn-primary mt-8"
           >
             <TelegramIcon />
             {t.home.newCta}
           </a>
         </div>
-        <div className="order-1 mx-auto w-[min(17rem,70vw)] md:order-2">
+        <div className="order-1 mx-auto w-[min(17rem,70vw)] md:order-2 lg:w-[19rem]">
           <div className="rounded-[2.2rem] bg-[#3b2721] p-2 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.6)]">
             <video
               className="aspect-[9/16] w-full rounded-[1.8rem] bg-paper object-cover"
@@ -76,7 +76,7 @@ export function BrandWall({ lang }: { lang: Locale }) {
     has: fs.existsSync(path.join(process.cwd(), "public", "brand", "logos", l.file)),
   })).filter((l) => l.has); // только бренды с настоящим логотипом
   return (
-    <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
+    <section className="shell pt-20">
       <div className="flex items-end justify-between gap-4">
         <h2 className="font-display text-3xl font-medium sm:text-4xl">{t.home.brandsTitle}</h2>
         <Link href={`/${lang}/catalog`} className="shrink-0 text-sm text-cocoa underline underline-offset-4 hover:text-ink">
@@ -109,7 +109,7 @@ export function BrandWall({ lang }: { lang: Locale }) {
 export function HowToOrder({ lang }: { lang: Locale }) {
   const t = getDict(lang);
   return (
-    <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
+    <section className="shell pt-20">
       <h2 className="font-display text-2xl font-medium tracking-[-0.01em] sm:text-3xl">{t.home.howTitle}</h2>
       <ol className="mt-6 grid gap-3 md:grid-cols-3 md:gap-4">
         {t.home.how.map(([title, text], i) => (

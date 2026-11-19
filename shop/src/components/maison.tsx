@@ -16,7 +16,7 @@ const MOSAIC = ["louis-vuitton-moon-tale", "orto-parisi-boccanera", "guerlain-ne
 function Mosaic({ big }: { big?: boolean }) {
   const [a, b, c] = MOSAIC.map(pic);
   return (
-    <div className={`grid grid-cols-[1.25fr_1fr] gap-3 ${big ? "h-[22rem] sm:h-[28rem]" : "h-56 sm:h-64"}`}>
+    <div className={`grid grid-cols-[1.25fr_1fr] gap-3 ${big ? "h-[22rem] sm:h-[28rem] xl:h-[32rem]" : "h-56 sm:h-72 xl:h-80"}`}>
       <div className="relative row-span-2 overflow-hidden rounded-2xl">
         <Image src={a} alt="" fill sizes="(min-width: 768px) 30vw, 55vw" className="object-cover" />
       </div>
@@ -35,7 +35,7 @@ export function MaisonHero({ lang }: { lang: Locale }) {
   const t = getDict(lang).maison;
   return (
     <section className="bg-[#1b120f] text-paper">
-      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1fr_1.05fr] md:py-20">
+      <div className="shell grid items-center gap-10 py-14 md:grid-cols-[1fr_1.05fr] md:py-20">
         <div>
           <p className="rise text-sm font-semibold text-gold">{t.label}</p>
           <h1 className="rise mt-2 font-script text-[4.2rem] leading-[0.95] text-gold sm:text-[5.5rem]" style={{ animationDelay: "80ms" }}>
@@ -79,15 +79,15 @@ export function MaisonHero({ lang }: { lang: Locale }) {
 export function MaisonBanner({ lang }: { lang: Locale }) {
   const t = getDict(lang);
   return (
-    <section className="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
+    <section className="mt-20 bg-[#1b120f] text-paper">
       <Reveal>
         <Link
           href={`/${lang}/maison`}
-          className="group grid items-center gap-8 overflow-hidden rounded-[2rem] bg-[#1b120f] p-6 text-paper sm:p-10 md:grid-cols-[1fr_1.1fr] md:p-12"
+          className="shell group grid items-center gap-10 py-14 md:grid-cols-[1fr_1.2fr] md:py-20 lg:gap-20"
         >
           <div>
             <p className="text-sm font-semibold text-gold">{t.maison.label}</p>
-            <p className="mt-1 font-script text-[3.4rem] leading-none text-gold sm:whitespace-nowrap sm:text-6xl">Maison De Mari</p>
+            <p className="mt-1 font-script text-[3.4rem] leading-none text-gold sm:whitespace-nowrap sm:text-6xl lg:text-7xl">Maison De Mari</p>
             <p className="mt-5 max-w-[40ch] leading-relaxed text-paper/75">{t.maison.bannerText}</p>
             <span className="btn mt-7 bg-gold text-[#1b120f] transition-colors group-hover:bg-paper">
               {t.maison.cta}

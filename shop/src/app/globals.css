@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+/* Общий контейнер страницы */
+@utility shell {
+  width: 100%;
+  max-width: var(--shell-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+/* Левый отступ колонки, выровненный по контейнеру, когда сама секция — во всю ширину */
+@utility bleed-start {
+  padding-left: max(var(--gutter), calc((100vw - var(--shell-max)) / 2 + var(--gutter)));
+}
+
 /* Палитра взята из логотипа: бумага, эспрессо волос, нюд губ, розовое дерево */
 :root {
   --paper: #f9f7f0;
@@ -12,6 +24,9 @@
   --line: #e2d7cb;
   --gold: #cfae78;
   --gold-deep: #c08a3e;
+  /* ширина сайта: на больших экранах контент шире, поля растут вместе с экраном */
+  --shell-max: 1680px;
+  --gutter: clamp(16px, 4.2vw, 80px);
   color-scheme: light;
 }
 
