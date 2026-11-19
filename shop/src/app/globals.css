@@ -27,6 +27,9 @@
   /* ширина сайта: на больших экранах контент шире, поля растут вместе с экраном */
   --shell-max: 1680px;
   --gutter: clamp(16px, 4.2vw, 80px);
+  /* фактическая ширина контейнера и поле снаружи него */
+  --shell-w: min(100vw, var(--shell-max));
+  --outside: calc((100vw - var(--shell-w)) / 2);
   color-scheme: light;
 }
 
@@ -122,6 +125,7 @@ body {
   border-radius: 999px;
   font-weight: 600;
   font-size: 0.95rem;
+  white-space: nowrap;
   transition:
     background-color 160ms ease,
     color 160ms ease,
@@ -278,4 +282,26 @@ body {
 }
 .brand-rail::-webkit-scrollbar {
   display: none;
+}
+
+/* Первый экран: колонки считаются от контейнера, а не от окна.
+   Слева — внешнее поле + 48% контейнера под текст, справа — остальное до края экрана (там только фон панели). */
+@media (min-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, calc(var(--outside) + var(--shell-w) * 0.48)) minmax(0, 1fr);
+  }
+  /* героиня и надпись — по центру той части панели, что внутри контейнера */
+  .hero-figure {
+    left: calc(var(--shell-w) * 0.26);
+  }
+}
+
+/* Заголовок первого экрана растёт с контейнером, а не с окном — не вылезает из колонки */
+.hero-title {
+  font-size: clamp(2.6rem, 8.4vw, 4rem);
+}
+@media (min-width: 1024px) {
+  .hero-title {
+    font-size: clamp(3.4rem, calc(var(--shell-w) * 0.041), 5.4rem);
+  }
 }

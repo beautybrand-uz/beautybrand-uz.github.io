@@ -19,7 +19,7 @@ export function Header({ lang }: { lang: Locale }) {
     <header className="sticky top-0 z-30 border-b border-line/70 bg-paper/90 backdrop-blur-md">
       <div className="shell flex h-16 items-center gap-4">
         <Wordmark lang={lang} />
-        <nav className="ml-6 hidden gap-6 text-sm text-cocoa md:flex">
+        <nav className="ml-8 hidden gap-6 text-sm text-cocoa lg:flex">
           <Link href={`/${lang}/catalog`} className="hover:text-ink">
             {t.nav.catalog}
           </Link>
