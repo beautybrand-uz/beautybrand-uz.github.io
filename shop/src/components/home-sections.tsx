@@ -73,8 +73,10 @@ export function BrandWall({ lang }: { lang: Locale }) {
     ...l,
     // есть ли файл логотипа — проверяется при сборке; если нет, показываем название
     has: fs.existsSync(path.join(process.cwd(), "public", "brand", "logos", l.file)),
-  }));
+  })).filter((l) => l.has); // только бренды с настоящим логотипом
   const rest = BRANDS.length - logos.length;
+  const total = logos.length + (rest > 0 ? 1 : 0);
+  const cols = Math.ceil(total / Math.ceil(total / 6));
   return (
     <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
       <div className="flex items-end justify-between gap-4">
@@ -83,7 +85,11 @@ export function BrandWall({ lang }: { lang: Locale }) {
           {t.home.brandsAll}
         </Link>
       </div>
-      <ul className="mt-6 grid grid-cols-3 gap-2 sm:grid-cols-5 sm:gap-3">
+      <ul
+        className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 sm:[grid-template-columns:repeat(var(--cols),minmax(0,1fr))]"
+        // колонок на компьютере столько, чтобы ряды были полными (до 6 в ряд)
+        style={{ "--cols": cols } as React.CSSProperties}
+      >
         {logos.map((l) => (
           <li key={l.brand}>
             <Link
@@ -91,19 +97,12 @@ export function BrandWall({ lang }: { lang: Locale }) {
               className="group grid h-20 place-items-center rounded-xl border border-line bg-white/70 px-4 transition-colors hover:border-ink sm:h-24"
               aria-label={l.brand}
             >
-              {l.has ? (
-                // eslint-disable-next-line @next/next/no-img-element -- SVG-логотипы, оптимизация не нужна
                 <img
                   src={`${BASE}/brand/logos/${l.file}`}
                   alt={l.brand}
                   loading="lazy"
-                  className="max-h-8 w-auto max-w-[78%] object-contain opacity-75 brightness-0 transition-opacity group-hover:opacity-100 sm:max-h-9"
+                  className="max-h-9 w-auto max-w-[72%] object-contain opacity-80 brightness-0 transition-opacity group-hover:opacity-100 sm:max-h-11"
                 />
-              ) : (
-                <span className="text-center font-display text-[0.95rem] uppercase leading-tight tracking-[0.14em] text-ink/75 transition-colors group-hover:text-ink sm:text-lg">
-                  {l.brand}
-                </span>
-              )}
             </Link>
           </li>
         ))}
