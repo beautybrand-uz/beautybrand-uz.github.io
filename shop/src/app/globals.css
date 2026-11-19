@@ -254,3 +254,13 @@ body {
 .font-product {
   font-variant-numeric: lining-nums;
 }
+
+/* Лента брендов: без полосы прокрутки, листается пальцем */
+.brand-rail {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+.brand-rail::-webkit-scrollbar {
+  display: none;
+}

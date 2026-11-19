@@ -45,6 +45,8 @@ type Dict = {
     brandsTitle: string;
     brandsAll: string;
     moreBrands: (n: number) => string;
+    brandsPrev: string;
+    brandsNext: string;
     howTitle: string;
     how: [string, string][];
   };
@@ -200,6 +202,8 @@ const ru: Dict = {
     brandsTitle: "Бренды в наличии",
     brandsAll: "Весь каталог",
     moreBrands: (n) => `и ещё ${n} ${plural(n, "бренд", "бренда", "брендов")}`,
+    brandsPrev: "Предыдущие бренды",
+    brandsNext: "Следующие бренды",
     howTitle: "Как заказать",
     how: [
       ["Выберите", "Добавьте товары в корзину на сайте."],
@@ -371,6 +375,8 @@ const uz: Dict = {
     brandsTitle: "Mavjud brendlar",
     brandsAll: "Butun katalog",
     moreBrands: (n) => `yana ${n} ta brend`,
+    brandsPrev: "Oldingi brendlar",
+    brandsNext: "Keyingi brendlar",
     howTitle: "Qanday buyurtma berish",
     how: [
       ["Tanlang", "Mahsulotlarni saytdagi savatga qo‘shing."],

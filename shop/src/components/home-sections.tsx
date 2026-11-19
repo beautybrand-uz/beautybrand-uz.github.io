@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import Link from "next/link";
+import { BrandScroller } from "./brand-scroller";
 import { TelegramIcon } from "./cart-drawer";
 import { BRANDS } from "@/data/products";
 import { getDict, type Locale } from "@/lib/i18n";
@@ -75,8 +76,6 @@ export function BrandWall({ lang }: { lang: Locale }) {
     has: fs.existsSync(path.join(process.cwd(), "public", "brand", "logos", l.file)),
   })).filter((l) => l.has); // только бренды с настоящим логотипом
   const rest = BRANDS.length - logos.length;
-  const total = logos.length + (rest > 0 ? 1 : 0);
-  const cols = Math.ceil(total / Math.ceil(total / 6));
   return (
     <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
       <div className="flex items-end justify-between gap-4">
@@ -85,13 +84,9 @@ export function BrandWall({ lang }: { lang: Locale }) {
           {t.home.brandsAll}
         </Link>
       </div>
-      <ul
-        className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 sm:[grid-template-columns:repeat(var(--cols),minmax(0,1fr))]"
-        // колонок на компьютере столько, чтобы ряды были полными (до 6 в ряд)
-        style={{ "--cols": cols } as React.CSSProperties}
-      >
+      <BrandScroller prevLabel={t.home.brandsPrev} nextLabel={t.home.brandsNext}>
         {logos.map((l) => (
-          <li key={l.brand}>
+          <li key={l.brand} className="w-[8.75rem] shrink-0 snap-start sm:w-[11rem]">
             <Link
               href={`/${lang}/catalog?brand=${encodeURIComponent(l.brand)}`}
               className="group grid h-20 place-items-center rounded-xl border border-line bg-white/70 px-4 transition-colors hover:border-ink sm:h-24"
@@ -107,7 +102,7 @@ export function BrandWall({ lang }: { lang: Locale }) {
           </li>
         ))}
         {rest > 0 ? (
-          <li>
+          <li className="w-[8.75rem] shrink-0 snap-start sm:w-[11rem]">
             <Link
               href={`/${lang}/catalog`}
               className="grid h-20 place-items-center rounded-xl bg-ink px-3 text-center text-sm font-semibold text-paper transition-colors hover:bg-rose-deep sm:h-24"
@@ -116,7 +111,7 @@ export function BrandWall({ lang }: { lang: Locale }) {
             </Link>
           </li>
         ) : null}
-      </ul>
+      </BrandScroller>
     </section>
   );
 }

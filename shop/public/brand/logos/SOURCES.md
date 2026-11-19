@@ -11,3 +11,8 @@
 
 На главной показываются только бренды, у которых здесь есть файл (имена — в LOGOS,
 src/components/home-sections.tsx). Остальные доступны через «и ещё N брендов».
+- armani.svg — https://commons.wikimedia.org/wiki/File:Giorgio_Armani.svg
+- burberry.svg — https://commons.wikimedia.org/wiki/File:Logo_Burberry_01.svg
+- bvlgari.svg — https://commons.wikimedia.org/wiki/File:Bulgari_logo.svg
+- charlotte-tilbury.svg — https://commons.wikimedia.org/wiki/File:Charlotte_Tilbury_logo.svg
+- versace.svg — https://commons.wikimedia.org/wiki/File:Versace-3.svg
