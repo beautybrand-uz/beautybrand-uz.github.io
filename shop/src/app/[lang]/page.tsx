@@ -64,7 +64,8 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
               {t.hero.toChannel}
             </a>
           </div>
-          <ul className="rise mt-10 flex flex-wrap gap-x-6 gap-y-2 border-t border-line pt-6 text-sm text-cocoa" style={{ animationDelay: "270ms" }}>
+          <ul className="rise relative isolate mt-10 flex flex-wrap gap-x-6 gap-y-2 pt-7 text-sm text-cocoa" style={{ animationDelay: "270ms" }}>
+            <Swatch name="brow-brown" priority className="-left-1 top-0 h-[1.1rem] w-[min(100%,34rem)] max-w-none opacity-75" />
             {t.hero.facts.map((f) => (
               <li key={f} className="flex items-center gap-2">
                 <span className="text-[0.6rem] text-gold" aria-hidden>
@@ -78,6 +79,9 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         {/* Героиня на фоне мазка мерцающих теней (brand/tools/swatch.py) */}
         <div className="rise-image relative isolate order-1 flex min-h-[min(110vw,32rem)] items-end justify-center lg:order-2 lg:min-h-0">
           <Swatch name="rose" priority className="left-1/2 top-[2%] h-[84%] w-auto max-w-none -translate-x-[46%] -rotate-[4deg] opacity-95" />
+          <Swatch name="highlighter-gold" priority className="left-[4%] top-[30%] h-[38%] w-auto max-w-none opacity-80" />
+          <Swatch name="lipstick-red" priority className="bottom-[3%] left-[-10%] h-auto w-[46%] max-w-none -rotate-[10deg] opacity-95" />
+          <Swatch name="gloss-pink" priority className="right-[4%] top-[12%] h-auto w-[15%] max-w-none rotate-12 opacity-95" />
           <Image
             src={`${BASE}/brand/girl-glam-cutout.webp`}
             alt="BeautyBrand"
@@ -108,6 +112,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         {/* 3D-логотип из brand/png: тень и кромка уже в картинке */}
         <div className="relative mx-auto aspect-square w-full max-w-sm md:max-w-none">
           <Swatch name="plum" className="-left-[8%] top-[4%] h-[92%] w-auto max-w-none -rotate-[14deg] opacity-85" />
+          <Swatch name="polish-red" className="-bottom-[2%] right-[2%] h-auto w-[22%] max-w-none -rotate-12" />
           <Image
             src={`${BASE}/brand/beautybrand-34-3d.webp`}
             alt=""

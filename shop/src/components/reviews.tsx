@@ -289,7 +289,8 @@ export function ReviewsFeed({ lang }: { lang: Locale }) {
 
   return (
     <section className="relative isolate pt-20" aria-labelledby="feed-title">
-      <Swatch name="plum" className="-left-24 top-16 h-[24rem] w-auto max-w-none rotate-[24deg] opacity-70 sm:-left-16" />
+      <Swatch name="plum" className="-left-32 top-28 h-[22rem] w-auto max-w-none rotate-[24deg] opacity-60 sm:-left-36" />
+      <Swatch name="lipstick-berry" className="-right-16 top-10 h-auto w-[26rem] max-w-none rotate-[8deg] opacity-80" />
       <div className="shell ">
         <h2 id="feed-title" className="font-display text-3xl font-medium sm:text-4xl">
           {t.title}

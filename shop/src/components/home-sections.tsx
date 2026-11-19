@@ -15,7 +15,8 @@ export function NewArrivalsReel({ lang }: { lang: Locale }) {
   return (
     <section className="bg-[#efe5da]">
       <div className="shell grid items-center gap-10 py-14 md:grid-cols-[1fr_auto] md:gap-20 md:py-20">
-        <div className="order-2 md:order-1">
+        <div className="relative isolate order-2 md:order-1">
+          <Swatch name="mascara-black" className="-bottom-14 right-[8%] h-24 w-auto max-w-none -rotate-6 opacity-70 sm:h-28" />
           <h2 className="relative isolate inline-block font-display text-3xl font-medium leading-tight sm:text-4xl lg:text-5xl">
             <Swatch name="pink" className="-left-[0.35em] top-1/2 h-[1.9em] w-auto max-w-none -translate-y-1/2 opacity-90 -rotate-3" />
             {t.home.newTitle}
@@ -79,7 +80,8 @@ export function BrandWall({ lang }: { lang: Locale }) {
     has: fs.existsSync(path.join(process.cwd(), "public", "brand", "logos", l.file)),
   })).filter((l) => l.has); // только бренды с настоящим логотипом
   return (
-    <section className="shell pt-20">
+    <section className="shell relative isolate pt-20">
+      <Swatch name="gloss-pink" className="-bottom-10 -right-8 h-auto w-24 max-w-none rotate-[20deg] sm:w-32" />
       <div className="flex items-end justify-between gap-4">
         <h2 className="relative isolate inline-block font-display text-3xl font-medium sm:text-4xl">
           <Swatch name="peach" className="-left-[0.35em] top-1/2 h-[1.9em] w-auto max-w-none -translate-y-1/2 opacity-90 rotate-2" />
@@ -117,7 +119,10 @@ export function HowToOrder({ lang }: { lang: Locale }) {
   return (
     <section className="shell relative isolate pt-20">
       <Swatch name="bronze" className="-right-[4%] top-8 h-[26rem] w-auto max-w-none rotate-[18deg] opacity-80" />
-      <h2 className="font-display text-2xl font-medium tracking-[-0.01em] sm:text-3xl">{t.home.howTitle}</h2>
+      <h2 className="relative isolate inline-block font-display text-2xl font-medium tracking-[-0.01em] sm:text-3xl">
+        <Swatch name="lipliner-burgundy" className="-bottom-4 -left-1 h-[0.6rem] w-[115%] max-w-none opacity-80" />
+        {t.home.howTitle}
+      </h2>
       <ol className="mt-6 grid gap-3 md:grid-cols-3 md:gap-4">
         {t.home.how.map(([title, text], i) => (
           <li key={title} className="rounded-2xl border border-line bg-white/60 p-6">

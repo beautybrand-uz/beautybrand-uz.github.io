@@ -1,3 +1,4 @@
+import { Swatch } from "@/components/swatch";
 import Link from "next/link";
 import { CartButton, LangSwitch } from "./header-client";
 import { SocialLinks } from "./social";
@@ -45,7 +46,8 @@ export function Header({ lang }: { lang: Locale }) {
 export function Footer({ lang }: { lang: Locale }) {
   const t = getDict(lang);
   return (
-    <footer className="mt-24 bg-ink text-paper">
+    <footer className="relative isolate mt-24 overflow-hidden bg-ink text-paper">
+      <Swatch name="highlighter-gold" className="-right-16 -top-20 h-80 w-auto max-w-none opacity-40 mix-blend-screen" />
       <div className="shell grid gap-10 py-14 md:grid-cols-[1.2fr_1fr_1fr]">
         <div>
           <p className="font-script text-4xl leading-none">Beautybrand</p>

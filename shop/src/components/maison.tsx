@@ -88,7 +88,10 @@ export function MaisonBanner({ lang }: { lang: Locale }) {
           className="shell group grid items-center gap-10 py-14 md:grid-cols-[1fr_1.2fr] md:py-20 lg:gap-20"
         >
           <div>
-            <p className="text-sm font-semibold text-gold">{t.maison.label}</p>
+            <p className="relative isolate text-sm font-semibold text-gold">
+              <Swatch name="highlighter-gold" className="-left-20 -top-24 h-72 w-auto max-w-none opacity-50 mix-blend-screen" />
+              {t.maison.label}
+            </p>
             <p className="mt-1 font-script text-[3.4rem] leading-none text-gold sm:whitespace-nowrap sm:text-6xl lg:text-7xl">Maison De Mari</p>
             <p className="mt-5 max-w-[40ch] leading-relaxed text-paper/75">{t.maison.bannerText}</p>
             <span className="btn mt-7 bg-gold text-[#1b120f] transition-colors group-hover:bg-paper">

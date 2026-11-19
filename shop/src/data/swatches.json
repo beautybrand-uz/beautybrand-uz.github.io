@@ -1,0 +1,87 @@
+{
+ "rose": {
+  "color": "#a87268",
+  "w": 986,
+  "h": 1600
+ },
+ "gold": {
+  "color": "#c9a468",
+  "w": 1688,
+  "h": 691
+ },
+ "bronze": {
+  "color": "#8f5d41",
+  "w": 636,
+  "h": 1300
+ },
+ "pink": {
+  "color": "#c9828f",
+  "w": 1600,
+  "h": 503
+ },
+ "plum": {
+  "color": "#7a4560",
+  "w": 802,
+  "h": 1400
+ },
+ "peach": {
+  "color": "#d6a48a",
+  "w": 1500,
+  "h": 556
+ },
+ "lipstick-red": {
+  "color": "#b3263a",
+  "w": 1344,
+  "h": 278
+ },
+ "lipstick-berry": {
+  "color": "#7d2040",
+  "w": 1345,
+  "h": 287
+ },
+ "lipstick-nude": {
+  "color": "#c98a78",
+  "w": 1344,
+  "h": 288
+ },
+ "liner-black": {
+  "color": "#3a2e2a",
+  "w": 1398,
+  "h": 185
+ },
+ "brow-brown": {
+  "color": "#6b4a35",
+  "w": 1397,
+  "h": 190
+ },
+ "lipliner-burgundy": {
+  "color": "#7a2a36",
+  "w": 1398,
+  "h": 175
+ },
+ "highlighter-gold": {
+  "color": "#e6c68e",
+  "w": 785,
+  "h": 827
+ },
+ "blush-pink": {
+  "color": "#e59aa3",
+  "w": 800,
+  "h": 781
+ },
+ "gloss-pink": {
+  "color": "#e48aa0",
+  "w": 633,
+  "h": 442
+ },
+ "polish-red": {
+  "color": "#a4182c",
+  "w": 633,
+  "h": 442
+ },
+ "mascara-black": {
+  "color": "#3a2e2a",
+  "w": 1178,
+  "h": 440
+ }
+}

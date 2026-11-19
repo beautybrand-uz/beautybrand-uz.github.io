@@ -38,9 +38,10 @@ export function CategoryPromos({ lang }: { lang: Locale }) {
   const sale = products.find((p) => p.oldPrice);
 
   return (
-    <section className="shell pt-14" aria-labelledby="promo-title">
+    <section className="shell relative isolate pt-14" aria-labelledby="promo-title">
+      <Swatch name="blush-pink" className="-right-10 -top-6 h-56 w-auto max-w-none opacity-80" />
       <h2 id="promo-title" className="relative isolate mb-5 inline-block font-display text-2xl font-medium tracking-[-0.01em] sm:text-3xl">
-        <Swatch name="gold" className="-left-[0.35em] top-1/2 h-[1.9em] w-auto max-w-none -translate-y-1/2 opacity-90 -rotate-2" />
+        <Swatch name="lipstick-nude" className="-left-[0.6em] top-[60%] h-auto w-[140%] max-w-none -translate-y-1/2 opacity-80 -rotate-2" />
         {t.promo.title}
       </h2>
       <div className="grid auto-rows-[11rem] grid-cols-2 gap-3 sm:auto-rows-[13rem] md:grid-cols-4 md:gap-4 xl:auto-rows-[16rem]">
