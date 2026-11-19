@@ -16,7 +16,6 @@ export function NewArrivalsReel({ lang }: { lang: Locale }) {
     <section className="bg-[#efe5da]">
       <div className="shell grid items-center gap-10 py-14 md:grid-cols-[1fr_auto] md:gap-20 md:py-20">
         <div className="relative isolate order-2 md:order-1">
-          <Swatch name="mascara-black" className="-bottom-14 right-[8%] h-24 w-auto max-w-none -rotate-6 opacity-70 sm:h-28" />
           <h2 className="relative isolate inline-block font-display text-3xl font-medium leading-tight sm:text-4xl lg:text-5xl">
             <Swatch name="pink" className="-left-[0.35em] top-1/2 h-[1.9em] w-auto max-w-none -translate-y-1/2 opacity-90 -rotate-3" />
             {t.home.newTitle}
