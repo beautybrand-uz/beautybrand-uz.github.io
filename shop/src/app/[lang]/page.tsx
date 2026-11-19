@@ -45,9 +45,9 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
   return (
     <>
-      {/* Первый экран во всю ширину: текст выровнен по контейнеру, панель с героиней уходит до правого края */}
-      <section className="hero-grid grid lg:min-h-[min(calc(100svh-4rem),58rem)]">
-        <div className="bleed-start order-2 flex min-w-0 flex-col justify-center pb-12 pr-[var(--gutter)] pt-8 lg:order-1 lg:py-16 lg:pr-16">
+      {/* Первый экран внутри контейнера: текст слева, панель с героиней справа — с теми же полями, что и блоки ниже */}
+      <section className="shell grid gap-6 pt-4 lg:min-h-[min(calc(100svh-5rem),54rem)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-12 lg:pt-6">
+        <div className="order-2 flex min-w-0 flex-col justify-center pb-4 lg:order-1 lg:py-12">
           <h1 className="hero-title rise font-display font-medium leading-[1.02] text-balance">
             {t.hero.title}
           </h1>
@@ -74,16 +74,16 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             ))}
           </ul>
         </div>
-        <div className="rise-image relative order-1 isolate min-h-[min(118vw,36rem)] overflow-hidden bg-[#ece2d6] lg:order-2 lg:min-h-0">
+        <div className="rise-image relative order-1 isolate min-h-[min(112vw,36rem)] overflow-hidden rounded-[2rem] bg-[#ece2d6] lg:order-2 lg:min-h-0">
           {/* мягкий свет за фигурой */}
           <span
             aria-hidden
-            className="hero-figure absolute left-1/2 top-[38%] -z-10 size-[min(90%,40rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#f8efe6,transparent)]"
+            className="absolute left-1/2 top-[38%] -z-10 size-[min(90%,40rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#f8efe6,transparent)]"
           />
           {/* подпись бренда крупным рукописным шрифтом за героиней */}
           <span
             aria-hidden
-            className="hero-figure absolute left-1/2 top-[7%] -z-10 -translate-x-1/2 select-none whitespace-nowrap text-center font-script text-[clamp(4rem,9.5vw,11rem)] leading-none text-[#f7efe6]"
+            className="absolute left-1/2 top-[7%] -z-10 -translate-x-1/2 select-none whitespace-nowrap text-center font-script text-[clamp(4rem,9.5vw,11rem)] leading-none text-[#f7efe6]"
           >
             Beautybrand
           </span>
@@ -94,7 +94,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             height={1161}
             priority
             sizes="(min-width: 1024px) 50vw, 100vw"
-            className="hero-figure absolute bottom-0 left-1/2 h-[92%] w-auto max-w-none -translate-x-1/2 object-contain object-bottom drop-shadow-[0_30px_40px_rgba(42,26,21,0.18)]"
+            className="absolute bottom-0 left-1/2 h-[92%] w-auto max-w-none -translate-x-1/2 object-contain object-bottom drop-shadow-[0_30px_40px_rgba(42,26,21,0.18)]"
           />
         </div>
       </section>

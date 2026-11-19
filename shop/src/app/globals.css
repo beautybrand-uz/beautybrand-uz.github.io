@@ -7,10 +7,6 @@
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
-/* Левый отступ колонки, выровненный по контейнеру, когда сама секция — во всю ширину */
-@utility bleed-start {
-  padding-left: max(var(--gutter), calc((100vw - var(--shell-max)) / 2 + var(--gutter)));
-}
 
 /* Палитра взята из логотипа: бумага, эспрессо волос, нюд губ, розовое дерево */
 :root {
@@ -302,6 +298,6 @@ body {
 }
 @media (min-width: 1024px) {
   .hero-title {
-    font-size: clamp(3.4rem, calc(var(--shell-w) * 0.041), 5.4rem);
+    font-size: clamp(3.2rem, calc(var(--shell-w) * 0.039), 5.2rem);
   }
 }
