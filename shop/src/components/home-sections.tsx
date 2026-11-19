@@ -75,7 +75,6 @@ export function BrandWall({ lang }: { lang: Locale }) {
     // есть ли файл логотипа — проверяется при сборке; если нет, показываем название
     has: fs.existsSync(path.join(process.cwd(), "public", "brand", "logos", l.file)),
   })).filter((l) => l.has); // только бренды с настоящим логотипом
-  const rest = BRANDS.length - logos.length;
   return (
     <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
       <div className="flex items-end justify-between gap-4">
@@ -86,7 +85,7 @@ export function BrandWall({ lang }: { lang: Locale }) {
       </div>
       <BrandScroller prevLabel={t.home.brandsPrev} nextLabel={t.home.brandsNext}>
         {logos.map((l) => (
-          <li key={l.brand} className="w-[8.75rem] shrink-0 snap-start sm:w-[11rem]">
+          <li key={l.brand} className="snap-start">
             <Link
               href={`/${lang}/catalog?brand=${encodeURIComponent(l.brand)}`}
               className="group grid h-20 place-items-center rounded-xl border border-line bg-white/70 px-4 transition-colors hover:border-ink sm:h-24"
@@ -101,16 +100,6 @@ export function BrandWall({ lang }: { lang: Locale }) {
             </Link>
           </li>
         ))}
-        {rest > 0 ? (
-          <li className="w-[8.75rem] shrink-0 snap-start sm:w-[11rem]">
-            <Link
-              href={`/${lang}/catalog`}
-              className="grid h-20 place-items-center rounded-xl bg-ink px-3 text-center text-sm font-semibold text-paper transition-colors hover:bg-rose-deep sm:h-24"
-            >
-              {t.home.moreBrands(rest)}
-            </Link>
-          </li>
-        ) : null}
       </BrandScroller>
     </section>
   );
