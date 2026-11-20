@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getProduct } from "@/data/products";
 import { track } from "@/lib/track";
+import { loadExtraProducts } from "@/lib/extra-products";
 
 export type CartLine = { slug: string; variant?: string; qty: number };
 
@@ -33,16 +34,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as CartLine[];
-        setLines(parsed.filter((l) => getProduct(l.slug) && l.qty > 0));
+    let alive = true;
+    loadExtraProducts().finally(() => {
+      if (!alive) return;
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw) as CartLine[];
+          setLines(parsed.filter((l) => getProduct(l.slug) && l.qty > 0));
+        }
+      } catch {
+        /* хранилище недоступно — корзина просто пустая */
       }
-    } catch {
-      /* хранилище недоступно — корзина просто пустая */
-    }
-    setLoaded(true);
+      setLoaded(true);
+    });
+    return () => {
+      alive = false;
+    };
   }, []);
 
   useEffect(() => {

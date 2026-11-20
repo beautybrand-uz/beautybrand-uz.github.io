@@ -7,6 +7,7 @@ import { lineProduct, useCart } from "./cart";
 import { getDict, type Locale } from "@/lib/i18n";
 import { STORES, TELEGRAM, formatPrice, telegramLink } from "@/lib/site";
 import { rest, supabaseEnabled } from "@/lib/supabase";
+import { productHref } from "@/lib/extra-products";
 
 type Method = string; // id магазина или "delivery"
 
@@ -197,7 +198,7 @@ export function CartDrawer({ lang }: { lang: Locale }) {
                 return (
                   <li key={`${l.slug}|${l.variant ?? ""}`} className="flex gap-3.5 py-4">
                     <Link
-                      href={`/${lang}/p/${product.slug}`}
+                      href={productHref(lang, product)}
                       onClick={() => setOpen(false)}
                       className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-well"
                     >

@@ -419,16 +419,27 @@ const imageMap = images as Record<string, string[]>;
 // префикс для GitHub Pages; в видео-проекте process может отсутствовать
 const BASE = typeof process !== "undefined" ? (process.env.NEXT_PUBLIC_BASE_PATH ?? "") : "";
 
-export const products = data.map((p) => ({
+export type ProductWithImages = Product & {
+  images: string[];
+  video: string | undefined;
+  /** Добавлен через админку (база), своя страница /item/?p=… */
+  dynamic?: boolean;
+};
+
+export const products: ProductWithImages[] = data.map((p) => ({
   ...p,
   images: (imageMap[p.imageKey ?? p.slug] ?? []).map((src) => BASE + src),
   video: p.video ? BASE + p.video : undefined,
 }));
 
-export type ProductWithImages = (typeof products)[number];
+/** Товары из админки — подгружаются в браузере (lib/extra-products.ts) */
+const extra = new Map<string, ProductWithImages>();
+export function registerExtra(list: ProductWithImages[]) {
+  for (const p of list) if (!products.some((s) => s.slug === p.slug)) extra.set(p.slug, p);
+}
 
 export function getProduct(slug: string) {
-  return products.find((p) => p.slug === slug);
+  return products.find((p) => p.slug === slug) ?? extra.get(slug);
 }
 
 export const BRANDS = Array.from(new Set(products.map((p) => p.brand))).sort((a, b) =>

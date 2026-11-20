@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { CATEGORIES, products, type Category } from "@/data/products";
 import { STORES, formatPrice } from "@/lib/site";
 import { currentSession, isAdmin, rest, signIn, signOut, supabaseEnabled, type Session } from "@/lib/supabase";
+import { AddProduct } from "./add-product";
 import { Analytics, BarList, DailyColumns, buildDemo, dashboardData, type AEvent, type AOrder } from "./analytics";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -97,13 +98,14 @@ const DEMO_REVIEWS: AdminReview[] = [
   { id: "d3", created_at: hoursAgo(40), product: "kerastase-genesis-cure", name: "Namuna", rating: 5, text: "Namuna sharh: sochim kamroq to‘kilyapti.", lang: "uz", status: "approved" },
 ];
 
-type Tab = "overview" | "analytics" | "orders" | "reviews" | "products";
+type Tab = "overview" | "analytics" | "orders" | "reviews" | "products" | "add";
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: "overview", label: "Дашборд", icon: "M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z" },
   { id: "analytics", label: "Аналитика", icon: "M4 20V10m6 10V4m6 16v-7m4 7H3" },
   { id: "orders", label: "Заказы", icon: "M5 8h14l-1.2 11.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9L5 8Zm4 2V6.5a3 3 0 0 1 6 0V10" },
   { id: "reviews", label: "Отзывы", icon: "M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" },
   { id: "products", label: "Товары", icon: "M4 7l8-4 8 4-8 4-8-4Zm0 0v10l8 4m-8-14 8 4m0 10V11m0 10 8-4V7" },
+  { id: "add", label: "Добавить товар", icon: "M12 5v14M5 12h14" },
 ];
 
 function Icon({ d, size = 18 }: { d: string; size?: number }) {
@@ -376,8 +378,10 @@ function Dashboard({ session, demo, onExit }: { session: Session | null; demo: b
             <Orders orders={orders} loading={loading} onPatch={patchOrder} onReload={load} demo={demo} />
           ) : tab === "reviews" ? (
             <Reviews reviews={reviews} loading={loading} onModerate={moderate} />
+          ) : tab === "add" ? (
+            <AddProduct token={token} demo={demo} />
           ) : (
-            <Products />
+            <Products onAdd={() => go("add")} />
           )}
         </div>
       </main>
@@ -633,7 +637,7 @@ function Reviews({ reviews, loading, onModerate }: { reviews: AdminReview[]; loa
 
 /* ——————————————————— товары ——————————————————— */
 
-function Products() {
+function Products({ onAdd }: { onAdd: () => void }) {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<Category | "all" | "boutique">("all");
   const list = useMemo(() => {
@@ -648,9 +652,13 @@ function Products() {
     p.usd ? p.usd.map((u) => `${u.label}: ${u.usd} $`).join(" · ") : p.variants && p.variants.length > 1 ? `от ${sum(Math.min(...p.variants.map((v) => v.price)))}` : sum(p.price);
   return (
     <>
-      <Head title="Товары" />
+      <Head title="Товары">
+        <button type="button" className="a-btn a-btn-gold" onClick={onAdd}>
+          + Добавить товар
+        </button>
+      </Head>
       <p className="a-panel mb-5 px-4 py-3 text-sm text-[var(--a-muted)]">
-        Здесь все {products.length} товаров сайта. Сейчас товары и цены меняются в файлах проекта — редактирование прямо в админке сделаем следующим шагом.
+        Здесь все {products.length} товаров сайта. Новые товары добавляйте кнопкой «Добавить товар» — они появятся на сайте сразу. Товары из файлов проекта меняются в коде.
       </p>
       <div className="mb-4 flex flex-col gap-2 sm:flex-row">
         <input className="a-input sm:max-w-sm" type="search" placeholder="Поиск по названию или бренду" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Поиск товаров" />

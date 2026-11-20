@@ -7,6 +7,7 @@ import { useCart } from "./cart";
 import { BRANDS, CATEGORIES, products, type Category, type ProductWithImages } from "@/data/products";
 import { getDict, type Locale } from "@/lib/i18n";
 import { formatPrice } from "@/lib/site";
+import { productHref, useExtraProducts } from "@/lib/extra-products";
 
 /** `category` — страница раздела: категория зафиксирована, чипы категорий скрыты */
 export function Catalog({ lang, category }: { lang: Locale; category?: Category }) {
@@ -29,15 +30,16 @@ export function Catalog({ lang, category }: { lang: Locale; category?: Category 
     return m;
   }, []);
 
+  const extra = useExtraProducts();
   const list = useMemo(() => {
     const query = q.trim().toLowerCase();
-    return products.filter(
+    return [...extra, ...products].filter(
       (p) =>
         (cat === "all" || p.category === cat) &&
         (!brand || p.brand === brand) &&
         (!query || `${p.brand} ${p.name}`.toLowerCase().includes(query)),
     );
-  }, [cat, brand, q]);
+  }, [cat, brand, q, extra]);
 
   const filtered = (!category && cat !== "all") || brand || q;
 
@@ -156,7 +158,7 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
   const t = getDict(lang);
   const { add } = useCart();
   const [justAdded, setJustAdded] = useState(false);
-  const href = `/${lang}/p/${p.slug}`;
+  const href = productHref(lang, p);
 
   return (
     <article className="group flex h-full flex-col font-product">

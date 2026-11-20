@@ -4,6 +4,7 @@ import { ProductCard } from "@/components/catalog";
 import { MaisonHero } from "@/components/maison";
 import { Reveal } from "@/components/reveal";
 import { ReviewsFeed } from "@/components/reviews";
+import { ExtraBoutique } from "@/components/extra-grid";
 import { products } from "@/data/products";
 import { getDict, isLocale } from "@/lib/i18n";
 import { SITE_URL } from "@/lib/site";
@@ -45,11 +46,13 @@ export default async function MaisonPage({ params }: PageProps<"/[lang]/maison">
         <h2 className="font-display text-3xl font-medium sm:text-4xl">{t.decants}</h2>
         <p className="mt-2 max-w-[60ch] text-cocoa">{t.decantsLead}</p>
         <Grid items={decants} />
+        <ExtraBoutique lang={lang} usd={false} />
       </section>
       <section className="shell pt-20">
         <h2 className="font-display text-3xl font-medium sm:text-4xl">{t.bottles}</h2>
         <p className="mt-2 max-w-[60ch] text-cocoa">{t.bottlesLead}</p>
         <Grid items={bottles} />
+        <ExtraBoutique lang={lang} usd />
       </section>
       <ReviewsFeed lang={lang} />
     </>

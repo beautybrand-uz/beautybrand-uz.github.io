@@ -101,3 +101,5 @@ create policy "events: admin read" on public.events for select to authenticated 
 
 grant insert on public.events to anon, authenticated;
 grant select on public.events to authenticated;
+
+-- Дальше выполните supabase/products.sql — товары, добавленные через админку, и хранилище их фото.
