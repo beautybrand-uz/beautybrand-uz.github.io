@@ -312,3 +312,32 @@ body {
   .nav-swatch-paint { transition: none; }
   .group:hover .pan { animation: none; }
 }
+
+/* Меню на телефоне: панель выезжает сверху, мазки под пунктами прокрашиваются по очереди */
+.mobile-menu {
+  transition:
+    transform 420ms cubic-bezier(0.32, 0.72, 0, 1),
+    visibility 0s linear 420ms;
+}
+.mobile-menu[data-state="closed"] {
+  transform: translateY(calc(-100% - 3rem));
+  visibility: hidden;
+}
+.mobile-menu[data-state="open"] {
+  transform: none;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.mobile-menu-paint {
+  clip-path: inset(0 100% 0 0 round 999px);
+  transition: clip-path 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-open] .mobile-menu-paint {
+  clip-path: inset(0 0 0 0 round 999px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu,
+  .mobile-menu-paint {
+    transition: none;
+  }
+}

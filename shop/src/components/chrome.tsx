@@ -1,7 +1,9 @@
 import { Swatch } from "@/components/swatch";
 import Link from "next/link";
 import { CartButton, LangSwitch } from "./header-client";
+import { MobileMenu } from "./mobile-menu";
 import { NavLinks } from "./nav-links";
+import { CATEGORIES, products } from "@/data/products";
 import { SocialLinks } from "./social";
 import { getDict, type Locale } from "@/lib/i18n";
 import { HOURS, PHONE, STORES, TELEGRAM, telegramLink } from "@/lib/site";
@@ -24,6 +26,16 @@ const PALETTE = ["#a87268", "#c9a468", "#8f5d41", "#c9828f", "#7a4560", "#d6a48a
 
 export function Header({ lang }: { lang: Locale }) {
   const t = getDict(lang);
+  const navItems = [
+    { href: `/${lang}/catalog`, label: t.nav.catalog, swatch: "gold" as const, match: "/catalog" },
+    { href: `/${lang}/maison`, label: t.nav.boutique, swatch: "pink" as const, match: "/maison" },
+    { href: `/${lang}#stores`, label: t.nav.stores, swatch: "peach" as const },
+    { href: telegramLink(TELEGRAM.channel), label: t.nav.telegram, swatch: "lipstick-nude" as const, external: true },
+  ];
+  const sections = CATEGORIES.filter((c) => products.some((p) => p.category === c)).map((c) => ({
+    href: c === "fragrance" ? `/${lang}/maison` : `/${lang}/c/${c}`,
+    label: t.categories[c],
+  }));
   return (
     <>
       {/* лента сверху — уезжает при прокрутке, шапка остаётся */}
@@ -53,19 +65,23 @@ export function Header({ lang }: { lang: Locale }) {
       </div>
       <header className="sticky top-0 z-30 bg-paper/88 backdrop-blur-md">
         <div className="shell flex h-[4.25rem] items-center gap-2 sm:gap-4">
+          <MobileMenu
+            lang={lang}
+            items={navItems}
+            sections={sections}
+            labels={{ menu: t.nav.menu, close: t.nav.close, sections: t.nav.sections, admin: t.nav.admin, call: t.nav.call }}
+            phone={PHONE}
+          />
           <Wordmark lang={lang} />
           <div className="ml-6">
             <NavLinks
-              items={[
-                { href: `/${lang}/catalog`, label: t.nav.catalog, swatch: "gold", match: "/catalog" },
-                { href: `/${lang}/maison`, label: t.nav.boutique, swatch: "pink", match: "/maison" },
-                { href: `/${lang}#stores`, label: t.nav.stores, swatch: "peach" },
-                { href: telegramLink(TELEGRAM.channel), label: t.nav.telegram, swatch: "lipstick-nude", external: true },
-              ]}
+              items={navItems}
             />
           </div>
           <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
-            <LangSwitch lang={lang} />
+            <div className="hidden sm:block">
+              <LangSwitch lang={lang} />
+            </div>
             <a
               href={`${BASE}/admin/`}
               className="hidden h-10 items-center gap-2 rounded-full border border-line bg-white/60 px-3 text-sm font-semibold text-ink transition-colors hover:border-ink sm:flex"

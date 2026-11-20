@@ -9,7 +9,7 @@ type Dict = {
   langName: string;
   currency: string;
   meta: { title: string; description: string };
-  nav: { catalog: string; stores: string; telegram: string; cart: string; boutique: string; admin: string; ribbon: string[] };
+  nav: { catalog: string; stores: string; telegram: string; cart: string; boutique: string; admin: string; ribbon: string[]; menu: string; close: string; sections: string; call: string };
   maison: {
     label: string;
     lead: string;
@@ -149,7 +149,7 @@ const ru: Dict = {
     description:
       "Брендовая косметика со всего мира: Dior, Tom Ford, Charlotte Tilbury, Kérastase и другие. Только оригинал, всё в наличии. Заказ в Telegram.",
   },
-  nav: { catalog: "Каталог", stores: "Магазины", telegram: "Telegram-канал", cart: "Корзина", boutique: "Парфюм-бутик", admin: "Админка", ribbon: ["Только оригинал", "Всё в наличии", "Ц5 и Ц1, Ташкент"] },
+  nav: { catalog: "Каталог", stores: "Магазины", telegram: "Telegram-канал", cart: "Корзина", boutique: "Парфюм-бутик", admin: "Админка", menu: "Меню", close: "Закрыть меню", sections: "Разделы", call: "Позвонить", ribbon: ["Только оригинал", "Всё в наличии", "Ц5 и Ц1, Ташкент"] },
   maison: {
     label: "Парфюмерный бутик",
     lead: "Нишевая и люксовая парфюмерия. Попробуйте аромат на распив от 5 мл — и закажите полный флакон, когда влюбитесь.",
@@ -322,7 +322,7 @@ const uz: Dict = {
     description:
       "Butun dunyodan brend kosmetika: Dior, Tom Ford, Charlotte Tilbury, Kérastase va boshqalar. Faqat original, hammasi mavjud. Buyurtma Telegramda.",
   },
-  nav: { catalog: "Katalog", stores: "Do‘konlar", telegram: "Telegram-kanal", cart: "Savat", boutique: "Atir butigi", admin: "Admin", ribbon: ["Faqat original", "Hammasi mavjud", "Ts5 va Ts1, Toshkent"] },
+  nav: { catalog: "Katalog", stores: "Do‘konlar", telegram: "Telegram-kanal", cart: "Savat", boutique: "Atir butigi", admin: "Admin", menu: "Menyu", close: "Menyuni yopish", sections: "Bo‘limlar", call: "Qo‘ng‘iroq qilish", ribbon: ["Faqat original", "Hammasi mavjud", "Ts5 va Ts1, Toshkent"] },
   maison: {
     label: "Atir butigi",
     lead: "Nish va lyuks parfyumeriya. Atirni 5 ml dan quyma holda sinab ko‘ring — yoqib qolsa, to‘liq flakon buyurtma qiling.",
