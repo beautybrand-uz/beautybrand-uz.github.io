@@ -156,8 +156,11 @@ export function priceLabel(p: ProductWithImages, lang: Locale) {
 
 export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang: Locale; priority?: boolean }) {
   const t = getDict(lang);
-  const { add } = useCart();
-  const [justAdded, setJustAdded] = useState(false);
+  const { add, setQty, lines } = useCart();
+  // сколько штук этого товара уже в корзине (все варианты)
+  // «+» на карточке добавляет первый вариант (5 ml, первый оттенок); другой — на странице товара
+  const quick = p.variants?.[0]?.label;
+  const qty = lines.filter((l) => l.slug === p.slug && l.variant === quick).reduce((n, l) => n + l.qty, 0);
   const href = productHref(lang, p);
 
   return (
@@ -181,38 +184,58 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
         ) : null}
       </Link>
       <div className="absolute bottom-2.5 right-2.5">
-          {p.variants || p.usd ? (
+          {p.usd ? (
             <Link
               href={href}
-              className="grid size-10 shrink-0 place-items-center rounded-full bg-paper text-ink shadow-sm transition-colors hover:bg-ink hover:text-paper"
-              aria-label={`${t.catalog.choose}: ${p.name}`}
+              className="relative grid size-10 shrink-0 place-items-center rounded-full bg-paper text-ink shadow-sm transition-colors hover:bg-ink hover:text-paper"
+              aria-label={`${t.catalog.choose}: ${p.name}${qty ? ` (${qty})` : ""}`}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
                 <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
               </svg>
+              {qty ? (
+                <span key={qty} className="qty-pop absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-rose px-1 text-[0.7rem] font-bold leading-5 text-white">
+                  {qty}
+                </span>
+              ) : null}
             </Link>
+          ) : qty ? (
+            /* уже в корзине — переключатель количества */
+            <div className="stepper flex h-10 items-center rounded-full bg-ink text-paper shadow-sm" role="group" aria-label={`${p.name}: ${qty}`}>
+              <button
+                type="button"
+                onClick={() => setQty(p.slug, quick, qty - 1)}
+                className="grid size-10 place-items-center rounded-full transition-colors hover:bg-white/10"
+                aria-label={qty === 1 ? t.cart.remove : t.cart.less}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden>
+                  <path d="M5 12h14" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                </svg>
+              </button>
+              <span key={qty} className="qty-pop min-w-5 text-center text-sm font-bold tabular-nums" aria-live="polite">
+                {qty}
+              </span>
+              <button
+                type="button"
+                onClick={() => add(p.slug, quick)}
+                className="grid size-10 place-items-center rounded-full transition-colors hover:bg-white/10"
+                aria-label={t.cart.more}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden>
+                  <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
           ) : (
             <button
               type="button"
-              onClick={() => {
-                add(p.slug);
-                setJustAdded(true);
-                setTimeout(() => setJustAdded(false), 1400);
-              }}
-              className={`grid size-10 shrink-0 place-items-center rounded-full shadow-sm transition-colors ${
-                justAdded ? "bg-rose text-white" : "bg-ink text-paper hover:bg-rose-deep"
-              }`}
-              aria-label={`${t.product.add}: ${p.name}`}
+              onClick={() => add(p.slug, quick)}
+              className="grid size-10 shrink-0 place-items-center rounded-full bg-ink text-paper shadow-sm transition-colors hover:bg-rose-deep"
+              aria-label={`${t.product.add}: ${p.name}${quick ? `, ${quick}` : ""}`}
             >
-              {justAdded ? (
-                <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
-                  <path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
-                  <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              )}
+              <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
+                <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
             </button>
           )}
       </div>
@@ -226,6 +249,7 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
         </h3>
         <div className="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-3">
           <span className="tag">{priceLabel(p, lang)}</span>
+          {quick && qty ? <span className="text-xs text-cocoa">{quick} × {qty}</span> : null}
           {p.oldPrice ? <s className="text-xs text-cocoa">{formatPrice(p.oldPrice, t.currency)}</s> : null}
         </div>
       </div>

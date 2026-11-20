@@ -22,6 +22,12 @@ type Dict = {
     bottlesLead: string;
     bannerText: string;
     cta: string;
+    housesTitle: string;
+    housesLead: string;
+    count: (n: number) => string;
+    from: (price: string) => string;
+    newIn: string;
+    heroStats: (aromas: number, minPrice: string, houses: number) => [string, string][];
   };
   hero: { title: string; lead: string; toCatalog: string; toChannel: string; facts: string[]; stats: (brands: number) => [string, string][] };
   catalog: {
@@ -170,6 +176,16 @@ const ru: Dict = {
     bottlesLead: "Полные флаконы, цена в долларах. Нажмите на аромат — заказ уйдёт менеджеру в Telegram.",
     bannerText: "Нишевая парфюмерия на распив от 5 мл и полные флаконы под заказ.",
     cta: "Перейти в бутик",
+    housesTitle: "Парфюмерные дома",
+    housesLead: "Выберите дом — внутри все его ароматы на распив и флаконы под заказ.",
+    count: (n) => `${n} ${plural(n, "аромат", "аромата", "ароматов")}`,
+    from: (p) => `от ${p}`,
+    newIn: "Новые поступления",
+    heroStats: (n, price, houses) => [
+      [`${n}`, "оригинальных ароматов на распив и под заказ"],
+      [price, "распив 5 мл — попробуйте до покупки флакона"],
+      [`${houses}`, "парфюмерных домов — от Creed до Amouage"],
+    ],
   },
   hero: {
     title: "Оригинальная косметика со всего мира",
@@ -352,6 +368,16 @@ const uz: Dict = {
     bottlesLead: "To‘liq flakonlar, narxi dollarda. Atirni bosing — buyurtma Telegramda menejerga yuboriladi.",
     bannerText: "5 ml dan nish parfyumeriya quymasi va buyurtma asosida to‘liq flakonlar.",
     cta: "Butikka o‘tish",
+    housesTitle: "Atir uylari",
+    housesLead: "Uyni tanlang — ichida uning barcha quyma atirlari va buyurtma asosidagi flakonlari.",
+    count: (n) => `${n} ta atir`,
+    from: (p) => `${p} dan`,
+    newIn: "Yangi kelganlar",
+    heroStats: (n, price, houses) => [
+      [`${n}`, "quyma va buyurtma asosidagi original atirlar"],
+      [price, "5 ml quyma — flakon olishdan oldin sinab ko‘ring"],
+      [`${houses}`, "atir uyi — Creed dan Amouage gacha"],
+    ],
   },
   hero: {
     title: "Butun dunyodan original kosmetika",

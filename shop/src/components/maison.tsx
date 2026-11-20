@@ -5,7 +5,8 @@ import { TelegramIcon } from "./cart-drawer";
 import { Reveal } from "./reveal";
 import { products } from "@/data/products";
 import { getDict, type Locale } from "@/lib/i18n";
-import { telegramLink } from "@/lib/site";
+import { formatPrice, telegramLink } from "@/lib/site";
+import { houses } from "@/data/houses";
 
 export const MAISON_CHANNEL = "Maisondemari";
 
@@ -34,6 +35,10 @@ function Mosaic({ big }: { big?: boolean }) {
 /** Шапка страницы бутика — тёмная, с золотым акцентом */
 export function MaisonHero({ lang }: { lang: Locale }) {
   const t = getDict(lang).maison;
+  const boutique = products.filter((p) => p.boutique);
+  const aromas = boutique.length;
+  const min = Math.min(...boutique.filter((p) => !p.usd).map((p) => (p.variants ? Math.min(...p.variants.map((v) => v.price)) : p.price)));
+  const minPrice = t.from(formatPrice(min, getDict(lang).currency));
   return (
     <section className="bg-[#1b120f] text-paper">
       <div className="shell grid items-center gap-10 py-14 md:grid-cols-[1fr_1.05fr] md:py-20">
@@ -45,28 +50,16 @@ export function MaisonHero({ lang }: { lang: Locale }) {
           <p className="rise mt-6 max-w-[44ch] text-lg leading-relaxed text-paper/75" style={{ animationDelay: "160ms" }}>
             {t.lead}
           </p>
-          <dl className="rise mt-8 grid max-w-md grid-cols-3 gap-4 border-t border-paper/15 pt-6" style={{ animationDelay: "240ms" }}>
-            {t.stats.map(([k, v]) => (
-              <div key={k}>
-                <dt className="font-display text-lg text-paper">{k}</dt>
-                <dd className="mt-1 text-xs leading-snug text-paper/60">{v}</dd>
+          {/* о бутике — три факта вместо кнопок, как на главной */}
+          <dl className="rise mt-9 grid max-w-[38rem] grid-cols-3 gap-4 border-t border-paper/15 pt-7 sm:gap-6" style={{ animationDelay: "240ms" }}>
+            {t.heroStats(aromas, minPrice, houses.length).map(([value, label], i) => (
+              <div key={label} className={`min-w-0 ${i ? "border-l border-paper/15 pl-4 sm:pl-6" : ""}`}>
+                <dt className="sr-only">{label}</dt>
+                <dd className="text-[1.6rem] font-medium leading-none tracking-[-0.02em] text-gold sm:text-[2.2rem]">{value}</dd>
+                <dd className="mt-2 text-[0.8rem] leading-snug text-paper/65 sm:text-sm">{label}</dd>
               </div>
             ))}
           </dl>
-          <div className="rise mt-8 flex flex-col gap-2.5 sm:flex-row" style={{ animationDelay: "320ms" }}>
-            <a href="#aromas" className="btn bg-gold text-[#1b120f] hover:bg-paper">
-              {t.toAromas}
-            </a>
-            <a
-              href={telegramLink(MAISON_CHANNEL)}
-              target="_blank"
-              rel="noopener"
-              className="btn border border-paper/30 text-paper hover:bg-paper hover:text-ink"
-            >
-              <TelegramIcon />
-              {t.channel}
-            </a>
-          </div>
         </div>
         <div className="rise-image relative isolate">
           <Swatch name="gold" priority className="-left-[12%] -top-[9%] h-28 w-auto max-w-none -rotate-[8deg] opacity-90 sm:h-36" />
