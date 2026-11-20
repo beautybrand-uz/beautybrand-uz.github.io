@@ -36,7 +36,7 @@ function boutiqueStats(lang: Locale) {
   const t = getDict(lang).maison;
   const boutique = products.filter((p) => p.boutique);
   const min = Math.min(...boutique.filter((p) => !p.usd).map((p) => (p.variants ? Math.min(...p.variants.map((v) => v.price)) : p.price)));
-  return t.heroStats(boutique.length, t.from(formatPrice(min, getDict(lang).currency)), houses.length);
+  return t.heroStats(boutique.length, formatPrice(min, getDict(lang).currency), houses.length);
 }
 
 /** Шапка страницы бутика — тёмная, с золотым акцентом */
@@ -45,7 +45,7 @@ export function MaisonHero({ lang }: { lang: Locale }) {
   const boutique = products.filter((p) => p.boutique);
   const aromas = boutique.length;
   const min = Math.min(...boutique.filter((p) => !p.usd).map((p) => (p.variants ? Math.min(...p.variants.map((v) => v.price)) : p.price)));
-  const minPrice = t.from(formatPrice(min, getDict(lang).currency));
+  const minPrice = formatPrice(min, getDict(lang).currency);
   return (
     <section className="bg-[#1b120f] text-paper">
       <div className="shell grid items-center gap-10 py-14 md:grid-cols-[1fr_1.05fr] md:py-20">
@@ -62,7 +62,7 @@ export function MaisonHero({ lang }: { lang: Locale }) {
             {t.heroStats(aromas, minPrice, houses.length).map(([value, label], i) => (
               <div key={label} className={`min-w-0 ${i ? "border-l border-paper/15 pl-4 sm:pl-6" : ""}`}>
                 <dt className="sr-only">{label}</dt>
-                <dd className="text-[1.6rem] font-medium leading-none tracking-[-0.02em] text-gold sm:text-[2.2rem]">{value}</dd>
+                <dd className="whitespace-nowrap text-[1.15rem] font-medium leading-none tracking-[-0.02em] text-gold sm:text-[1.6rem] xl:text-[1.85rem]">{value}</dd>
                 <dd className="mt-2 text-[0.8rem] leading-snug text-paper/65 sm:text-sm">{label}</dd>
               </div>
             ))}
@@ -95,7 +95,7 @@ export function MaisonBanner({ lang }: { lang: Locale }) {
               {boutiqueStats(lang).map(([value, label], i) => (
                 <div key={label} className={`min-w-0 ${i ? "border-l border-paper/15 pl-4 sm:pl-6" : ""}`}>
                   <dt className="sr-only">{label}</dt>
-                  <dd className="text-[1.4rem] font-medium leading-none tracking-[-0.02em] text-gold sm:text-[1.9rem]">{value}</dd>
+                  <dd className="whitespace-nowrap text-[1.15rem] font-medium leading-none tracking-[-0.02em] text-gold sm:text-[1.6rem] xl:text-[1.85rem]">{value}</dd>
                   <dd className="mt-2 text-[0.78rem] leading-snug text-paper/65 sm:text-sm">{label}</dd>
                 </div>
               ))}

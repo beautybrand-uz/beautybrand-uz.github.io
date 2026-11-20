@@ -183,7 +183,7 @@ const ru: Dict = {
     newIn: "Новые поступления",
     heroStats: (n, price, houses) => [
       [`${n}`, "оригинальных ароматов на распив и под заказ"],
-      [price, "распив 5 мл — попробуйте до покупки флакона"],
+      [price, "цена распива 5 мл — попробуйте до покупки флакона"],
       [`${houses}`, "парфюмерных домов — от Creed до Amouage"],
     ],
   },
@@ -375,7 +375,7 @@ const uz: Dict = {
     newIn: "Yangi kelganlar",
     heroStats: (n, price, houses) => [
       [`${n}`, "quyma va buyurtma asosidagi original atirlar"],
-      [price, "5 ml quyma — flakon olishdan oldin sinab ko‘ring"],
+      [price, "5 ml quyma narxi — flakon olishdan oldin sinab ko‘ring"],
       [`${houses}`, "atir uyi — Creed dan Amouage gacha"],
     ],
   },
