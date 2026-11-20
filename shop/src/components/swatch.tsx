@@ -10,6 +10,9 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 export const SWATCHES = meta as Record<string, { color: string; w: number; h: number }>;
 export type SwatchName = keyof typeof meta;
 
+// Глянцевые капли: след от мышки на них смотрится плохо — отключаем
+const NO_TRAIL = new Set<string>(["gloss-pink", "polish-red"]);
+
 export function Swatch({ name, className = "", priority }: { name: SwatchName; className?: string; priority?: boolean }) {
   const s = SWATCHES[name];
   return (
@@ -22,7 +25,7 @@ export function Swatch({ name, className = "", priority }: { name: SwatchName; c
       height={s.h}
       loading={priority ? "eager" : "lazy"}
       decoding="async"
-      data-swatch={s.color}
+      data-swatch={NO_TRAIL.has(name) ? undefined : s.color}
       className={`swatch-deco pointer-events-none absolute -z-10 select-none ${className}`}
     />
   );

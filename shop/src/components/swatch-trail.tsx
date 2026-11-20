@@ -61,7 +61,7 @@ function toLocal(img: HTMLElement, x: number, y: number) {
 
 /** Мазок под курсором: точка внутри эллипса, вписанного в картинку */
 function swatchAt(x: number, y: number) {
-  for (const el of document.querySelectorAll<HTMLElement>(".swatch-deco")) {
+  for (const el of document.querySelectorAll<HTMLElement>(".swatch-deco[data-swatch]")) {
     const r = el.getBoundingClientRect();
     if (r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue;
     const nx = (x - (r.left + r.width / 2)) / (r.width * 0.48);
@@ -74,24 +74,27 @@ function swatchAt(x: number, y: number) {
 function smear(layer: Layer, color: string, a: { x: number; y: number }, b: { x: number; y: number }, width: number) {
   const { ctx } = layer;
   // валик продукта по краям следа — темнее
-  ctx.globalAlpha = 0.5;
-  ctx.strokeStyle = shade(color, -0.32);
+  ctx.globalAlpha = 0.35;
+  ctx.strokeStyle = shade(color, -0.25);
   ctx.lineWidth = width * 1.25;
   ctx.beginPath();
   ctx.moveTo(a.x, a.y);
   ctx.lineTo(b.x, b.y);
   ctx.stroke();
   // сам след — продукт размазан тонким слоем, светлее
-  ctx.globalAlpha = 0.85;
-  ctx.strokeStyle = shade(color, 0.22);
+  ctx.globalAlpha = 0.6;
+  ctx.strokeStyle = shade(color, 0.18);
   ctx.lineWidth = width;
   ctx.stroke();
-  // перламутровый блик посередине
-  ctx.globalAlpha = 0.45;
-  ctx.strokeStyle = "#fff6ef";
-  ctx.lineWidth = Math.max(1.5, width * 0.18);
-  ctx.stroke();
   ctx.globalAlpha = 1;
+}
+
+/** След остаётся только внутри формы мазка (по прозрачности самой картинки) */
+function clipToShape(layer: Layer, img: HTMLElement) {
+  const { ctx } = layer;
+  ctx.globalCompositeOperation = "destination-in";
+  ctx.drawImage(img as HTMLImageElement, 0, 0, img.offsetWidth, img.offsetHeight);
+  ctx.globalCompositeOperation = "source-over";
 }
 
 function fingerprint(layer: Layer, color: string, p: { x: number; y: number }, r: number) {
@@ -193,6 +196,7 @@ export function SwatchTrail() {
         // ширина следа — как подушечка пальца, но не больше трети мазка
         const width = Math.min(26, Math.max(8, Math.min(el.offsetWidth, el.offsetHeight) * 0.3));
         smear(layer, color, last.local, local, width);
+        clipToShape(layer, el);
         if (Math.random() < 0.25) sparkle(e.clientX, e.clientY, color, 2, 0.8);
       }
       last = { el, local };
@@ -206,6 +210,7 @@ export function SwatchTrail() {
       if (layer) {
         const r = Math.min(18, Math.max(7, Math.min(el.offsetWidth, el.offsetHeight) * 0.22));
         fingerprint(layer, color, toLocal(el, e.clientX, e.clientY), r);
+        clipToShape(layer, el);
       }
       sparkle(e.clientX, e.clientY, color, 34, 3.2);
     };
