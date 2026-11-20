@@ -341,3 +341,15 @@ body {
     transition: none;
   }
 }
+
+/* Карточки магазинов и часов — как пудреница: тёплая поверхность, мягкий внутренний свет */
+.compact {
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(255, 255, 255, 0.85), transparent 55%),
+    linear-gradient(160deg, #fbf6f1, #f1e6dc);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 2px rgba(42, 26, 21, 0.06),
+    0 18px 36px -24px rgba(42, 26, 21, 0.35);
+  border: 1px solid rgba(201, 164, 104, 0.28);
+}

@@ -112,6 +112,10 @@ type Dict = {
     call: string;
     days: string[];
     daily: (from: string, to: string) => string;
+    map: string;
+    route: string;
+    today: string;
+    week: string;
   };
   footer: { original: string; order: string };
   notFound: { title: string; action: string };
@@ -286,6 +290,10 @@ const ru: Dict = {
     call: "Позвонить",
     days: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
     daily: (a, b) => `${a}–${b}`,
+    map: "На карте",
+    route: "Маршрут",
+    today: "сегодня",
+    week: "Неделя",
   },
   notFound: { title: "Такой страницы нет", action: "Вернуться в каталог" },
   reviews: {
@@ -459,6 +467,10 @@ const uz: Dict = {
     call: "Qo‘ng‘iroq qilish",
     days: ["Ya", "Du", "Se", "Ch", "Pa", "Ju", "Sh"],
     daily: (a, b) => `${a}–${b}`,
+    map: "Xaritada",
+    route: "Yo‘nalish",
+    today: "bugun",
+    week: "Hafta",
   },
   notFound: { title: "Bunday sahifa yo‘q", action: "Katalogga qaytish" },
   reviews: {

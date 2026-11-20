@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { CategoryPromos } from "@/components/category-promos";
 import { BrandWall, HowToOrder, NewArrivalsReel } from "@/components/home-sections";
 import { TelegramIcon } from "@/components/cart-drawer";
-import { HoursCard } from "@/components/contact";
+import { StoreCompacts, WeekPalette } from "@/components/stores";
+import { SocialLinks } from "@/components/social";
 import { MaisonBanner } from "@/components/maison";
 import { Reveal } from "@/components/reveal";
 import { ReviewsFeed } from "@/components/reviews";
@@ -124,33 +125,23 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <div>
         <h2 className="font-display text-2xl font-medium tracking-[-0.01em] sm:text-3xl">{t.stores.title}</h2>
         <p className="mt-2 text-cocoa">{t.stores.lead}</p>
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          {STORES.map((s) => (
-            <a
-              key={s.id}
-              href={s.map}
-              target="_blank"
-              rel="noopener"
-              className="group flex items-center justify-between gap-4 rounded-2xl border border-line bg-white/70 p-5 transition-colors hover:border-ink"
-            >
-              <span>
-                <span className="block font-display text-3xl font-medium text-rose">{s.name[lang]}</span>
-                <span className="mt-1 block text-[0.95rem]">{s.address[lang]}</span>
-              </span>
-              <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden className="shrink-0 text-cocoa group-hover:text-ink">
+        <div className="mt-6 space-y-3">
+          <StoreCompacts lang={lang} stores={STORES} />
+          <WeekPalette lang={lang} />
+          <div className="flex flex-wrap items-center gap-3 pt-1">
+            <a href={`tel:${PHONE.tel}`} className="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
                 <path
-                  d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"
-                  fill="none"
+                  d="M6.6 3.5h2.6l1.4 4-2 1.3a11 11 0 0 0 6.6 6.6l1.3-2 4 1.4v2.6a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2Z"
                   stroke="currentColor"
                   strokeWidth="1.7"
+                  strokeLinejoin="round"
                 />
-                <circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" strokeWidth="1.7" />
               </svg>
+              {t.contact.call}: {PHONE.display}
             </a>
-          ))}
-        </div>
-        <div className="mt-3">
-          <HoursCard lang={lang} />
+            <SocialLinks />
+          </div>
         </div>
         </div>
       </section>

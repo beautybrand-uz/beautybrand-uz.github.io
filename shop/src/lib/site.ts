@@ -21,18 +21,20 @@ export function hoursFor(day: number) {
   return HOURS.find((h) => h.days.includes(day))!;
 }
 
-export const STORES: { id: string; name: Record<Locale, string>; address: Record<Locale, string>; map: string }[] = [
+export const STORES: { id: string; name: Record<Locale, string>; address: Record<Locale, string>; map: string; route: string }[] = [
   {
     id: "c5",
     name: { ru: "Ц5", uz: "Ts5" },
     address: { ru: "Ц5, проспект Шарафа Рашидова, 60", uz: "Ts5, Sharof Rashidov shoh ko‘chasi, 60" },
     map: "https://yandex.uz/maps/?text=" + encodeURIComponent("Sharaf Rashidov Avenue 60, 100017, Tashkent"),
+    route: "https://yandex.uz/maps/?rtext=~" + encodeURIComponent("Sharaf Rashidov Avenue 60, Tashkent"),
   },
   {
     id: "c1",
     name: { ru: "Ц1", uz: "Ts1" },
     address: { ru: "Ц1, улица Буюк Ипак Йули, 26", uz: "Ts1, Buyuk Ipak Yo‘li ko‘chasi, 26" },
     map: "https://yandex.uz/maps/?text=" + encodeURIComponent("Ташкент, Ц-1, улица Буюк Ипак Йули, 26"),
+    route: "https://yandex.uz/maps/?rtext=~" + encodeURIComponent("Ташкент, улица Буюк Ипак Йули, 26"),
   },
 ];
 
