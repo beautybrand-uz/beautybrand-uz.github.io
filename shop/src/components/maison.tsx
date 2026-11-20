@@ -61,8 +61,8 @@ export function MaisonHero({ lang }: { lang: Locale }) {
             {t.heroStats(aromas, minPrice, houses.length).map(([value, label], i) => (
               <div key={label} className={`min-w-0 ${i ? "border-l border-paper/15 pl-4 sm:pl-6" : ""}`}>
                 <dt className="sr-only">{label}</dt>
-                <dd className="whitespace-nowrap text-[1.15rem] font-medium leading-none tracking-[-0.02em] text-gold sm:text-[1.6rem] xl:text-[1.85rem]">{value}</dd>
-                <dd className="mt-2 text-[0.8rem] leading-snug text-paper/65 sm:text-sm">{label}</dd>
+                <dd className="whitespace-nowrap text-[1rem] font-medium leading-none tracking-[-0.01em] text-gold sm:text-[1.2rem] xl:text-[1.35rem]">{value}</dd>
+                <dd className="mt-2 text-[0.75rem] leading-snug text-paper/65 sm:text-[0.82rem]">{label}</dd>
               </div>
             ))}
           </dl>
@@ -88,14 +88,14 @@ export function MaisonBanner({ lang }: { lang: Locale }) {
         >
           <div>
             <p className="text-sm font-semibold text-gold">{t.maison.label}</p>
-            <p className="mt-1 font-script text-[3.4rem] leading-none text-gold sm:whitespace-nowrap sm:text-6xl lg:text-7xl">Maison De Mari</p>
+            <p className="mt-1 font-script text-[3rem] leading-none text-gold sm:whitespace-nowrap sm:text-[3.6rem] lg:text-[4.2rem]">Maison De Mari</p>
             <p className="mt-5 max-w-[40ch] leading-relaxed text-paper/75">{t.maison.bannerText}</p>
             <dl className="mt-8 grid max-w-[34rem] grid-cols-3 gap-4 border-t border-paper/15 pt-6 sm:gap-6">
               {boutiqueStats(lang).map(([value, label], i) => (
                 <div key={label} className={`min-w-0 ${i ? "border-l border-paper/15 pl-4 sm:pl-6" : ""}`}>
                   <dt className="sr-only">{label}</dt>
-                  <dd className="whitespace-nowrap text-[1.15rem] font-medium leading-none tracking-[-0.02em] text-gold sm:text-[1.6rem] xl:text-[1.85rem]">{value}</dd>
-                  <dd className="mt-2 text-[0.78rem] leading-snug text-paper/65 sm:text-sm">{label}</dd>
+                  <dd className="whitespace-nowrap text-[1rem] font-medium leading-none tracking-[-0.01em] text-gold sm:text-[1.2rem] xl:text-[1.35rem]">{value}</dd>
+                  <dd className="mt-2 text-[0.75rem] leading-snug text-paper/65 sm:text-[0.82rem]">{label}</dd>
                 </div>
               ))}
             </dl>
