@@ -74,7 +74,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <div className="rise-image relative isolate order-1 flex min-h-[min(110vw,32rem)] items-end justify-center lg:order-2 lg:min-h-0">
           <Swatch name="rose" priority className="left-1/2 top-[2%] h-[84%] w-auto max-w-none -translate-x-[46%] -rotate-[4deg] opacity-95" />
           <Swatch name="highlighter-gold" priority className="left-[4%] top-[30%] h-[38%] w-auto max-w-none opacity-80" />
-          <Swatch name="lipstick-red" priority className="bottom-[3%] left-[-10%] h-auto w-[46%] max-w-none -rotate-[10deg] opacity-95" />
           <Swatch name="gloss-pink" priority className="right-[4%] top-[12%] h-auto w-[15%] max-w-none rotate-12 opacity-95" />
           <Image
             src={`${BASE}/brand/girl-glam-cutout.webp`}
