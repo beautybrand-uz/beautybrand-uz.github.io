@@ -28,6 +28,11 @@ type Dict = {
     from: (price: string) => string;
     newIn: string;
     heroStats: (aromas: number, minPrice: string, houses: number) => [string, string][];
+    moodTitle: string;
+    moodLead: string;
+    moods: Record<"floral" | "gourmand" | "woody" | "fresh", [string, string]>;
+    quote: string;
+    quoteBy: string;
   };
   hero: { title: string; lead: string; toCatalog: string; toChannel: string; facts: string[]; stats: (brands: number) => [string, string][] };
   catalog: {
@@ -181,6 +186,16 @@ const ru: Dict = {
     count: (n) => `${n} ${plural(n, "аромат", "аромата", "ароматов")}`,
     from: (p) => `от ${p}`,
     newIn: "Новые поступления",
+    moodTitle: "Найдите свой аромат",
+    moodLead: "Не знаете, с чего начать? Выберите настроение — покажем ароматы, которые ему подходят.",
+    moods: {
+      floral: ["Цветочные", "пион, роза, жасмин — нежно и романтично"],
+      gourmand: ["Гурманские", "ваниль, карамель, какао — тепло и чувственно"],
+      woody: ["Древесные", "уд, кедр, кожа, ладан — глубоко и загадочно"],
+      fresh: ["Свежие", "цитрус, чай, ветивер — легко и чисто"],
+    },
+    quote: "Аромат — невидимая часть вашего образа. Его не видят, но запоминают.",
+    quoteBy: "Maison De Mari",
     heroStats: (n, price, houses) => [
       [`${n}`, "оригинальных ароматов на распив и под заказ"],
       [price, "цена распива 5 мл — попробуйте до покупки флакона"],
@@ -373,6 +388,16 @@ const uz: Dict = {
     count: (n) => `${n} ta atir`,
     from: (p) => `${p} dan`,
     newIn: "Yangi kelganlar",
+    moodTitle: "O‘z atiringizni toping",
+    moodLead: "Nimadan boshlashni bilmaysizmi? Kayfiyatni tanlang — unga mos atirlarni ko‘rsatamiz.",
+    moods: {
+      floral: ["Gulli", "pion, atirgul, yasmin — nozik va romantik"],
+      gourmand: ["Gurman", "vanil, karamel, kakao — iliq va hissiyotli"],
+      woody: ["Yog‘ochli", "ud, kedr, teri, ladan — chuqur va sirli"],
+      fresh: ["Tetik", "sitrus, choy, vetiver — yengil va toza"],
+    },
+    quote: "Atir — qiyofangizning ko‘rinmas qismi. Uni ko‘rishmaydi, lekin eslab qolishadi.",
+    quoteBy: "Maison De Mari",
     heroStats: (n, price, houses) => [
       [`${n}`, "quyma va buyurtma asosidagi original atirlar"],
       [price, "5 ml quyma narxi — flakon olishdan oldin sinab ko‘ring"],

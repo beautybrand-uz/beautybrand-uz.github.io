@@ -393,3 +393,19 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .scent-wisps .wisp { animation: none; stroke-dasharray: none; }
 }
+
+/* «Найдите свой аромат»: выбранное настроение приподнимается в золотой рамке */
+.mood-card {
+  box-shadow: 0 24px 40px -30px rgba(42, 26, 21, 0.6);
+}
+.mood-card.mood-active {
+  transform: translateY(-6px);
+  box-shadow:
+    0 0 0 2px #f9f7f0,
+    0 0 0 4px #c9a468,
+    0 30px 50px -28px rgba(42, 26, 21, 0.7);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mood-card, .mood-results { transition: none; }
+  .mood-card.mood-active { transform: none; }
+}
