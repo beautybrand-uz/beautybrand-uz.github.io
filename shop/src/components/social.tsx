@@ -8,7 +8,7 @@ export const SOCIAL = {
   telegram: `https://t.me/${TELEGRAM.channel}`,
   whatsapp: `https://wa.me/${PHONE.tel.replace(/\D/g, "")}`,
   instagram: "", // например https://instagram.com/beautybrand.uz
-  tiktok: "", // например https://www.tiktok.com/@beautybrand.uz
+  tiktok: "https://www.tiktok.com/@beautybranduz",
 };
 
 const PATHS: Record<keyof typeof SOCIAL, string> = {
