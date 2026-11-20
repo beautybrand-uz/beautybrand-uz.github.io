@@ -10,13 +10,12 @@ import { houses } from "@/data/houses";
 
 export const MAISON_CHANNEL = "Maisondemari";
 
-const pic = (slug: string) => products.find((p) => p.slug === slug)?.images[0] ?? "";
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-// Три самых атмосферных фото бутика для мозаики
-const MOSAIC = ["louis-vuitton-moon-tale", "orto-parisi-boccanera", "guerlain-nerolia-vetiver-set"];
 
 function Mosaic({ big }: { big?: boolean }) {
-  const [a, b, c] = MOSAIC.map(pic);
+  // картинки бутика (Higgsfield): распивы, полка бутика, шлейф аромата
+  const [a, b, c] = ["decants", "shelf", "mist"].map((n) => `${BASE_PATH}/brand/boutique/${n}.webp`);
   return (
     <div className={`grid grid-cols-[1.25fr_1fr] gap-3 ${big ? "h-[22rem] sm:h-[28rem] xl:h-[32rem]" : "h-56 sm:h-72 xl:h-80"}`}>
       <div className="relative row-span-2 overflow-hidden rounded-2xl">
