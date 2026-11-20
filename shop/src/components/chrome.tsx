@@ -1,45 +1,95 @@
 import { Swatch } from "@/components/swatch";
 import Link from "next/link";
 import { CartButton, LangSwitch } from "./header-client";
+import { NavLinks } from "./nav-links";
 import { SocialLinks } from "./social";
 import { getDict, type Locale } from "@/lib/i18n";
 import { HOURS, PHONE, STORES, TELEGRAM, telegramLink } from "@/lib/site";
 
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 export function Wordmark({ lang }: { lang: Locale }) {
   return (
-    <Link href={`/${lang}`} className="flex items-baseline gap-1 text-ink" aria-label="BeautyBrand Uz">
-      <span className="font-script text-[2rem] leading-none sm:text-[2.3rem]">Beautybrand</span>
-      <span className="font-sans text-[0.7rem] font-bold tracking-wide text-rose">uz</span>
+    <Link href={`/${lang}`} className="group flex shrink-0 items-center gap-1.5 text-ink sm:gap-2" aria-label="BeautyBrand Uz">
+      <span className="font-script text-[1.6rem] leading-none transition-colors group-hover:text-rose-deep sm:text-[2.4rem]">Beautybrand</span>
+      {/* «uz» — в золотой таблетке спрессованных теней */}
+      <span className="pan grid size-5 shrink-0 place-items-center text-[0.55rem] sm:size-7 sm:text-[0.62rem] rounded-full font-sans text-[0.62rem] font-bold uppercase tracking-wider text-[#4a3214]">
+        uz
+      </span>
     </Link>
   );
 }
 
+const PALETTE = ["#a87268", "#c9a468", "#8f5d41", "#c9828f", "#7a4560", "#d6a48a"];
+
 export function Header({ lang }: { lang: Locale }) {
   const t = getDict(lang);
   return (
-    <header className="sticky top-0 z-30 border-b border-line/70 bg-paper/90 backdrop-blur-md">
-      <div className="shell flex h-16 items-center gap-4">
-        <Wordmark lang={lang} />
-        <nav className="ml-8 hidden gap-6 text-sm text-cocoa lg:flex">
-          <Link href={`/${lang}/catalog`} className="hover:text-ink">
-            {t.nav.catalog}
-          </Link>
-          <Link href={`/${lang}/maison`} className="hover:text-ink">
-            {t.nav.boutique}
-          </Link>
-          <Link href={`/${lang}#stores`} className="hover:text-ink">
-            {t.nav.stores}
-          </Link>
-          <a href={telegramLink(TELEGRAM.channel)} target="_blank" rel="noopener" className="hover:text-ink">
-            {t.nav.telegram}
-          </a>
-        </nav>
-        <div className="ml-auto flex items-center gap-2.5">
-          <LangSwitch lang={lang} />
-          <CartButton label={t.nav.cart} />
+    <>
+      {/* лента сверху — уезжает при прокрутке, шапка остаётся */}
+      <div className="bg-ink text-[0.78rem] text-paper/80">
+        <div className="shell flex h-9 items-center justify-between gap-4">
+          <ul className="flex min-w-0 items-center gap-x-4 overflow-hidden whitespace-nowrap">
+            {t.nav.ribbon.map((r, i) => (
+              <li key={r} className={`items-center gap-4 ${i === 0 ? "flex" : "hidden sm:flex"}`}>
+                {i > 0 ? <span className="text-[0.55rem] text-gold" aria-hidden>✦</span> : null}
+                {r}
+              </li>
+            ))}
+          </ul>
+          <div className="flex shrink-0 items-center gap-3">
+            <a href={`tel:${PHONE.tel}`} className="font-semibold tracking-wide text-gold hover:text-paper">
+              {PHONE.display}
+            </a>
+            {/* на телефоне вход в админку — здесь, в шапке ему не хватает места */}
+            <a href={`${BASE}/admin/`} className="grid size-7 place-items-center rounded-full text-paper/70 hover:text-gold sm:hidden" aria-label={t.nav.admin}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <rect x="4.5" y="10.5" width="15" height="10" rx="2.5" stroke="currentColor" strokeWidth="1.7" />
+                <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
-    </header>
+      <header className="sticky top-0 z-30 bg-paper/88 backdrop-blur-md">
+        <div className="shell flex h-[4.25rem] items-center gap-2 sm:gap-4">
+          <Wordmark lang={lang} />
+          <div className="ml-6">
+            <NavLinks
+              items={[
+                { href: `/${lang}/catalog`, label: t.nav.catalog, swatch: "gold", match: "/catalog" },
+                { href: `/${lang}/maison`, label: t.nav.boutique, swatch: "pink", match: "/maison" },
+                { href: `/${lang}#stores`, label: t.nav.stores, swatch: "peach" },
+                { href: telegramLink(TELEGRAM.channel), label: t.nav.telegram, swatch: "lipstick-nude", external: true },
+              ]}
+            />
+          </div>
+          <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
+            <LangSwitch lang={lang} />
+            <a
+              href={`${BASE}/admin/`}
+              className="hidden h-10 items-center gap-2 rounded-full border border-line bg-white/60 px-3 text-sm font-semibold text-ink transition-colors hover:border-ink sm:flex"
+              title={t.nav.admin}
+            >
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <rect x="4.5" y="10.5" width="15" height="10" rx="2.5" stroke="currentColor" strokeWidth="1.7" />
+                <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                <circle cx="12" cy="15.5" r="1.4" fill="currentColor" />
+              </svg>
+              <span className="hidden xl:inline">{t.nav.admin}</span>
+              <span className="sr-only xl:hidden">{t.nav.admin}</span>
+            </a>
+            <CartButton label={t.nav.cart} />
+          </div>
+        </div>
+        {/* нижний край — полоса из цветов палетки */}
+        <div className="flex h-[3px]" aria-hidden>
+          {PALETTE.map((c) => (
+            <span key={c} className="flex-1" style={{ background: c }} />
+          ))}
+        </div>
+      </header>
+    </>
   );
 }
 

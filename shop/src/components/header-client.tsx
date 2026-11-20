@@ -19,7 +19,7 @@ export function LangSwitch({ lang }: { lang: Locale }) {
             href={href}
             hrefLang={l}
             aria-current={active ? "true" : undefined}
-            className={`rounded-full px-2.5 py-1.5 transition-colors ${
+            className={`rounded-full px-2 py-1.5 transition-colors sm:px-2.5 ${
               active ? "bg-ink text-paper" : "text-cocoa hover:text-ink"
             }`}
           >
@@ -50,7 +50,7 @@ export function CartButton({ label }: { label: string }) {
     <button
       type="button"
       onClick={() => setOpen(true)}
-      className="relative flex h-10 items-center gap-2 rounded-full bg-ink pl-3.5 pr-4 text-sm font-semibold text-paper transition-colors hover:bg-rose-deep"
+      className="relative flex h-10 items-center gap-2 rounded-full bg-ink pl-3 pr-3 sm:pl-3.5 sm:pr-4 text-sm font-semibold text-paper transition-colors hover:bg-rose-deep"
       aria-label={`${label}: ${count}`}
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
