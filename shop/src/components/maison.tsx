@@ -32,6 +32,13 @@ function Mosaic({ big }: { big?: boolean }) {
   );
 }
 
+function boutiqueStats(lang: Locale) {
+  const t = getDict(lang).maison;
+  const boutique = products.filter((p) => p.boutique);
+  const min = Math.min(...boutique.filter((p) => !p.usd).map((p) => (p.variants ? Math.min(...p.variants.map((v) => v.price)) : p.price)));
+  return t.heroStats(boutique.length, t.from(formatPrice(min, getDict(lang).currency)), houses.length);
+}
+
 /** Шапка страницы бутика — тёмная, с золотым акцентом */
 export function MaisonHero({ lang }: { lang: Locale }) {
   const t = getDict(lang).maison;
@@ -81,13 +88,19 @@ export function MaisonBanner({ lang }: { lang: Locale }) {
           className="shell group grid items-center gap-10 py-14 md:grid-cols-[1fr_1.2fr] md:py-20 lg:gap-20"
         >
           <div>
-            <p className="relative isolate text-sm font-semibold text-gold">
-              <Swatch name="highlighter-gold" className="-left-20 -top-24 h-72 w-auto max-w-none opacity-50 mix-blend-screen" />
-              {t.maison.label}
-            </p>
+            <p className="text-sm font-semibold text-gold">{t.maison.label}</p>
             <p className="mt-1 font-script text-[3.4rem] leading-none text-gold sm:whitespace-nowrap sm:text-6xl lg:text-7xl">Maison De Mari</p>
             <p className="mt-5 max-w-[40ch] leading-relaxed text-paper/75">{t.maison.bannerText}</p>
-            <span className="btn mt-7 bg-gold text-[#1b120f] transition-colors group-hover:bg-paper">
+            <dl className="mt-8 grid max-w-[34rem] grid-cols-3 gap-4 border-t border-paper/15 pt-6 sm:gap-6">
+              {boutiqueStats(lang).map(([value, label], i) => (
+                <div key={label} className={`min-w-0 ${i ? "border-l border-paper/15 pl-4 sm:pl-6" : ""}`}>
+                  <dt className="sr-only">{label}</dt>
+                  <dd className="text-[1.4rem] font-medium leading-none tracking-[-0.02em] text-gold sm:text-[1.9rem]">{value}</dd>
+                  <dd className="mt-2 text-[0.78rem] leading-snug text-paper/65 sm:text-sm">{label}</dd>
+                </div>
+              ))}
+            </dl>
+            <span className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-gold underline-offset-4 group-hover:underline">
               {t.maison.cta}
               <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden className="transition-transform group-hover:translate-x-1">
                 <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
