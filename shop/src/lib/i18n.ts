@@ -23,7 +23,7 @@ type Dict = {
     bannerText: string;
     cta: string;
   };
-  hero: { title: string; lead: string; toCatalog: string; toChannel: string; facts: string[] };
+  hero: { title: string; lead: string; toCatalog: string; toChannel: string; facts: string[]; stats: (brands: number) => [string, string][] };
   catalog: {
     title: string;
     all: string;
@@ -177,6 +177,11 @@ const ru: Dict = {
     toCatalog: "Смотреть каталог",
     toChannel: "Наш Telegram-канал",
     facts: ["Только оригинал", "Всё в наличии", "2 магазина в Ташкенте"],
+    stats: (brands) => [
+      ["с 2016", "года радуем Ташкент оригинальной косметикой"],
+      ["6 300+", "подписчиков следят за новинками в Telegram"],
+      [`${brands}`, "мировых брендов — от Dior до Maison Francis Kurkdjian"],
+    ],
   },
   catalog: {
     title: "Каталог",
@@ -354,6 +359,11 @@ const uz: Dict = {
     toCatalog: "Katalogni ko‘rish",
     toChannel: "Telegram-kanalimiz",
     facts: ["Faqat original", "Hammasi mavjud", "Toshkentda 2 ta do‘kon"],
+    stats: (brands) => [
+      ["2016 dan", "beri Toshkentni original kosmetika bilan quvontirmoqdamiz"],
+      ["6 300+", "obunachi Telegramda yangiliklarni kuzatadi"],
+      [`${brands}`, "jahon brendi — Dior dan Maison Francis Kurkdjian gacha"],
+    ],
   },
   catalog: {
     title: "Katalog",

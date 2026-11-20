@@ -47,7 +47,7 @@ export const T = {
 
 export const LOGO = "brand/girl-glam-1200.webp";
 export const MANAGER = "@beautybrandcosmetics";
-export const PHONE = "+998 90 901 28 88";
+export const PHONE = "+998 90 049 88 80";
 
 export { getProduct, products };
 

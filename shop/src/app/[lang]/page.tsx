@@ -3,12 +3,12 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { CategoryPromos } from "@/components/category-promos";
 import { BrandWall, HowToOrder, NewArrivalsReel } from "@/components/home-sections";
-import { TelegramIcon } from "@/components/cart-drawer";
 import { StoreCompacts, WeekPalette } from "@/components/stores";
 import { SocialLinks } from "@/components/social";
 import { MaisonBanner } from "@/components/maison";
 import { Reveal } from "@/components/reveal";
 import { ReviewsFeed } from "@/components/reviews";
+import { BRANDS } from "@/data/products";
 import { getDict, isLocale } from "@/lib/i18n";
 import { HOURS, PHONE, SITE_URL, STORES, TELEGRAM, telegramLink } from "@/lib/site";
 
@@ -56,26 +56,19 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           <p className="rise mt-6 max-w-[42ch] text-[1.05rem] leading-relaxed text-cocoa lg:text-lg" style={{ animationDelay: "90ms" }}>
             {t.hero.lead}
           </p>
-          <div className="rise mt-9 flex flex-col flex-wrap gap-2.5 sm:flex-row" style={{ animationDelay: "180ms" }}>
-            <a href="#promo-title" className="btn btn-primary">
-              {t.hero.toCatalog}
-            </a>
-            <a href={telegramLink(TELEGRAM.channel)} target="_blank" rel="noopener" className="btn btn-ghost">
-              <TelegramIcon />
-              {t.hero.toChannel}
-            </a>
-          </div>
-          <ul className="rise relative isolate mt-10 flex flex-wrap gap-x-6 gap-y-2 pt-7 text-sm text-cocoa" style={{ animationDelay: "270ms" }}>
+          {/* о компании — три факта вместо кнопок */}
+          <dl className="rise relative isolate mt-9 grid max-w-[40rem] grid-cols-3 gap-4 pt-8 sm:gap-6" style={{ animationDelay: "180ms" }}>
             <Swatch name="brow-brown" priority className="-left-1 top-0 h-[1.1rem] w-[min(100%,34rem)] max-w-none opacity-75" />
-            {t.hero.facts.map((f) => (
-              <li key={f} className="flex items-center gap-2">
-                <span className="text-[0.6rem] text-gold" aria-hidden>
-                  ✦
-                </span>
-                {f}
-              </li>
+            {t.hero.stats(BRANDS.length).map(([value, label], i) => (
+              <div key={label} className={`min-w-0 ${i ? "border-l border-line pl-4 sm:pl-6" : ""}`}>
+                <dt className="sr-only">{label}</dt>
+                <dd className="font-display text-[1.7rem] font-medium leading-none tracking-[-0.02em] text-rose-deep sm:text-[2.3rem]">
+                  {value}
+                </dd>
+                <dd className="mt-2 text-[0.8rem] leading-snug text-cocoa sm:text-sm">{label}</dd>
+              </div>
             ))}
-          </ul>
+          </dl>
         </div>
         {/* Героиня на фоне мазка мерцающих теней (brand/tools/swatch.py) */}
         <div className="rise-image relative isolate order-1 flex min-h-[min(110vw,32rem)] items-end justify-center lg:order-2 lg:min-h-0">

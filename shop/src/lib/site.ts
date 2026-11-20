@@ -9,7 +9,7 @@ export const TELEGRAM = {
   managers: ["beautybrandcosmetics", "beautybranduzz"],
 };
 
-export const PHONE = { display: "+998 90 901 28 88", tel: "+998909012888" };
+export const PHONE = { display: "+998 90 049 88 80", tel: "+998900498880" };
 
 /** Часы работы по времени Ташкента (UTC+5). day: 0 — воскресенье … 6 — суббота */
 export const HOURS: { days: number[]; open: string; close: string }[] = [

@@ -38,9 +38,9 @@
   --color-rose: var(--rose);
   --color-rose-deep: var(--rose-deep);
   --color-line: var(--line);
-  --font-sans: var(--font-golos);
-  --font-display: var(--font-playfair);
-  --font-product: var(--font-onest);
+  --font-sans: var(--font-jost);
+  --font-display: var(--font-jost);
+  --font-product: var(--font-jost);
   --color-gold: var(--gold);
   --font-script: var(--font-script);
 }
@@ -54,7 +54,7 @@ body {
   overflow-x: clip; /* ничего не должно расширять страницу по горизонтали */
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-golos), system-ui, sans-serif;
+  font-family: var(--font-jost), system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -79,7 +79,7 @@ body {
   padding: 0 0.75rem 0 1.35rem;
   background: var(--rose);
   color: #fff;
-  font-family: var(--font-golos), sans-serif;
+  font-family: var(--font-jost), sans-serif;
   font-weight: 600;
   font-size: 0.8rem;
   letter-spacing: -0.01em;
@@ -244,7 +244,8 @@ body {
 
 /* Заголовки антиквой — чуть плотнее */
 .font-display {
-  letter-spacing: -0.015em;
+  letter-spacing: -0.025em;
+  font-weight: 400;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -260,9 +261,9 @@ body {
   }
 }
 
-/* Карточки товаров на Onest: ценник тоже на нём, жирнее и плотнее */
+/* Карточки товаров: ценник жирнее и плотнее */
 .font-product .tag {
-  font-family: var(--font-onest), sans-serif;
+  font-family: var(--font-jost), sans-serif;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
