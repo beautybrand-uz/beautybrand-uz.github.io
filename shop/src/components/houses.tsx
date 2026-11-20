@@ -24,25 +24,25 @@ export function houseMeta(h: House, lang: Locale) {
 /** Плитки парфюмерных домов: атмосферная картинка, название, сколько ароматов и цена «от» */
 export function HouseGrid({ houses, lang }: { houses: House[]; lang: Locale }) {
   return (
-    <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
+    <ul className="mt-8 grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-7">
       {houses.map((h, i) => (
-        <Reveal as="li" key={h.slug} delay={(i % 3) * 60} className={i === 0 && houses.length % 2 ? "col-span-2 md:col-span-1" : ""}>
-          <Link href={`/${lang}/maison/${h.slug}`} className={`group relative block overflow-hidden rounded-2xl bg-[#1b120f] ${i === 0 && houses.length % 2 ? "aspect-[8/5] md:aspect-[4/5]" : "aspect-[4/5]"}`}>
+        <Reveal as="li" key={h.slug} delay={(i % 7) * 40}>
+          <Link href={`/${lang}/maison/${h.slug}`} className="group relative block aspect-[3/4] overflow-hidden rounded-xl bg-[#1b120f]">
             <Image
               src={houseImage(h)}
               alt=""
               fill
-              sizes="(min-width: 768px) 33vw, 50vw"
+              sizes="(min-width: 1024px) 14vw, (min-width: 640px) 25vw, 33vw"
               className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
             />
             <span className="absolute inset-0 bg-[linear-gradient(180deg,rgba(27,18,15,0)_40%,rgba(27,18,15,0.55)_70%,rgba(27,18,15,0.92)_100%)]" />
-            <span className="absolute inset-x-0 bottom-0 p-4 text-paper sm:p-5">
-              <span className="block text-lg font-medium leading-tight tracking-[-0.01em] sm:text-xl">{h.brand}</span>
-              <span className="mt-1 block text-xs text-paper/75 sm:text-sm">{houseMeta(h, lang)}</span>
+            <span className="absolute inset-x-0 bottom-0 p-2.5 text-paper sm:p-3.5">
+              <span className="block text-[0.8rem] font-medium leading-tight sm:text-base">{h.brand}</span>
+              <span className="mt-0.5 hidden text-xs text-paper/70 sm:block">{houseMeta(h, lang)}</span>
             </span>
             <span
               aria-hidden
-              className="absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-paper/90 text-ink opacity-0 transition-opacity group-hover:opacity-100"
+              className="absolute right-2 top-2 grid size-7 place-items-center rounded-full bg-paper/90 text-ink opacity-0 transition-opacity group-hover:opacity-100"
             >
               <svg width="16" height="16" viewBox="0 0 24 24">
                 <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
