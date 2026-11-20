@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "./cart";
 import { TelegramIcon } from "./cart-drawer";
 import { getProduct } from "@/data/products";
+import { track } from "@/lib/track";
 import { getDict, type Locale } from "@/lib/i18n";
 import { TELEGRAM, formatPrice, telegramLink } from "@/lib/site";
 
@@ -68,6 +69,7 @@ export function BuyBox({ slug, lang }: { slug: string; lang: Locale }) {
   const t = getDict(lang);
   const p = getProduct(slug)!;
   const { add, setOpen } = useCart();
+  useEffect(() => track("view", slug), [slug]);
   // флаконы под заказ (цена в $) заказываются через Telegram, а не через корзину
   const isUsd = !!p.usd;
   const options = p.variants ?? p.usd?.map((u) => ({ label: u.label, price: u.usd }));

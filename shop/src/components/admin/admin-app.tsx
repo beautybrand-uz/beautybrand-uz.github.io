@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { CATEGORIES, products, type Category } from "@/data/products";
 import { STORES, formatPrice } from "@/lib/site";
 import { currentSession, isAdmin, rest, signIn, signOut, supabaseEnabled, type Session } from "@/lib/supabase";
+import { Analytics, BarList, DailyColumns, buildDemo, dashboardData, type AEvent, type AOrder } from "./analytics";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -96,9 +97,10 @@ const DEMO_REVIEWS: AdminReview[] = [
   { id: "d3", created_at: hoursAgo(40), product: "kerastase-genesis-cure", name: "Namuna", rating: 5, text: "Namuna sharh: sochim kamroq to‘kilyapti.", lang: "uz", status: "approved" },
 ];
 
-type Tab = "overview" | "orders" | "reviews" | "products";
+type Tab = "overview" | "analytics" | "orders" | "reviews" | "products";
 const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: "overview", label: "Обзор", icon: "M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z" },
+  { id: "overview", label: "Дашборд", icon: "M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z" },
+  { id: "analytics", label: "Аналитика", icon: "M4 20V10m6 10V4m6 16v-7m4 7H3" },
   { id: "orders", label: "Заказы", icon: "M5 8h14l-1.2 11.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9L5 8Zm4 2V6.5a3 3 0 0 1 6 0V10" },
   { id: "reviews", label: "Отзывы", icon: "M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" },
   { id: "products", label: "Товары", icon: "M4 7l8-4 8 4-8 4-8-4Zm0 0v10l8 4m-8-14 8 4m0 10V11m0 10 8-4V7" },
@@ -229,6 +231,11 @@ export function AdminApp() {
 function Dashboard({ session, demo, onExit }: { session: Session | null; demo: boolean; onExit: () => void }) {
   const [tab, setTab] = useState<Tab>("overview");
   const [orders, setOrders] = useState<Order[]>(demo ? DEMO_ORDERS : []);
+  const [events, setEvents] = useState<AEvent[]>([]);
+  // в демо графики строятся по 90 дням примерных заказов и просмотров
+  const demoData = useMemo(() => (demo ? buildDemo() : null), [demo]);
+  const statOrders: AOrder[] = demoData ? demoData.orders : orders;
+  const statEvents = demoData ? demoData.events : events;
   const [reviews, setReviews] = useState<AdminReview[]>(demo ? DEMO_REVIEWS : []);
   const [loading, setLoading] = useState(!demo);
   const [error, setError] = useState("");
@@ -255,12 +262,16 @@ function Dashboard({ session, demo, onExit }: { session: Session | null; demo: b
     setLoading(true);
     setError("");
     try {
-      const [o, r] = await Promise.all([
-        rest<Order[]>("orders?select=*&order=created_at.desc&limit=300", { token }),
-        rest<AdminReview[]>("reviews?select=*&order=created_at.desc&limit=300", { token }),
+      const since = new Date(Date.now() - 91 * 86400_000).toISOString();
+      const [o, r, e] = await Promise.all([
+        rest<Order[]>(`orders?select=*&created_at=gte.${since}&order=created_at.desc&limit=1000`, { token }),
+        rest<AdminReview[]>("reviews?select=*&order=created_at.desc&limit=500", { token }),
+        // таблица events может быть ещё не создана — тогда аналитика строится по заказам
+        rest<AEvent[]>(`events?select=created_at,type,product,lang&created_at=gte.${since}&order=created_at.desc&limit=1000`, { token }).catch(() => []),
       ]);
       setOrders(o);
       setReviews(r);
+      setEvents(e);
     } catch {
       setError("Не удалось загрузить данные. Проверьте интернет и нажмите «Обновить».");
     } finally {
@@ -358,7 +369,9 @@ function Dashboard({ session, demo, onExit }: { session: Session | null; demo: b
 
         <div key={tab} className="a-in">
           {tab === "overview" ? (
-            <Overview orders={orders} reviews={reviews} loading={loading} go={go} onReload={load} demo={demo} />
+            <Overview orders={orders} statOrders={statOrders} reviews={reviews} loading={loading} go={go} onReload={load} demo={demo} />
+          ) : tab === "analytics" ? (
+            <Analytics orders={statOrders} events={statEvents} reviews={reviews} demo={demo} />
           ) : tab === "orders" ? (
             <Orders orders={orders} loading={loading} onPatch={patchOrder} onReload={load} demo={demo} />
           ) : tab === "reviews" ? (
@@ -387,21 +400,23 @@ function Empty({ children }: { children: React.ReactNode }) {
 
 /* ——————————————————— обзор ——————————————————— */
 
-function Overview({ orders, reviews, loading, go, onReload, demo }: { orders: Order[]; reviews: AdminReview[]; loading: boolean; go: (t: Tab) => void; onReload: () => void; demo: boolean }) {
-  const week = Date.now() - 7 * 86400_000;
-  const weekOrders = orders.filter((o) => +new Date(o.created_at) > week && o.status !== "cancelled");
-  const revenue = weekOrders.reduce((s, o) => s + o.total, 0);
-  const approved = reviews.filter((r) => r.status === "approved");
-  const avg = approved.length ? approved.reduce((s, r) => s + r.rating, 0) / approved.length : 0;
+function Overview({ orders, statOrders, reviews, loading, go, onReload, demo }: { orders: Order[]; statOrders: AOrder[]; reviews: AdminReview[]; loading: boolean; go: (t: Tab) => void; onReload: () => void; demo: boolean }) {
+  const d = useMemo(() => dashboardData(statOrders), [statOrders]);
+  const pending = reviews.filter((r) => r.status === "pending");
+  const change =
+    d.weekChange === null ? undefined : `${d.weekChange >= 0 ? "+" : "−"}${Math.abs(Math.round(d.weekChange * 100))}% к прошлой неделе`;
   const stats = [
-    { label: "Новые заказы", value: String(orders.filter((o) => o.status === "new").length), tab: "orders" as Tab },
-    { label: "Отзывы на проверке", value: String(reviews.filter((r) => r.status === "pending").length), tab: "reviews" as Tab },
-    { label: "Сумма заказов за 7 дней", value: sum(revenue), tab: "orders" as Tab },
-    { label: "Средняя оценка", value: avg ? avg.toFixed(1) : "—", tab: "reviews" as Tab },
+    { label: "Сегодня", value: sum(d.todayRevenue), note: `${d.todayCount} заказ(ов)`, tab: "orders" as Tab },
+    { label: "За 7 дней", value: sum(d.weekRevenue), note: change, tab: "analytics" as Tab },
+    { label: "Новые заказы", value: String(orders.filter((o) => o.status === "new").length), note: "ждут подтверждения", tab: "orders" as Tab },
+    { label: "Отзывы на проверке", value: String(pending.length), note: "нужно опубликовать или отклонить", tab: "reviews" as Tab },
   ];
   return (
     <>
-      <Head title="Обзор">
+      <Head title="Дашборд">
+        <button type="button" className="a-btn a-btn-line" onClick={() => go("analytics")}>
+          Подробная аналитика
+        </button>
         {!demo ? (
           <button type="button" className="a-btn a-btn-line" onClick={onReload} disabled={loading}>
             {loading ? "Загружаем…" : "Обновить"}
@@ -412,9 +427,24 @@ function Overview({ orders, reviews, loading, go, onReload, demo }: { orders: Or
         {stats.map((s) => (
           <button key={s.label} type="button" onClick={() => go(s.tab)} className="a-panel group p-5 text-left transition-colors hover:border-[var(--a-line-strong)]">
             <p className="text-xs text-[var(--a-muted)]">{s.label}</p>
-            <p className="a-num mt-2 font-display text-2xl text-[var(--a-text)] sm:text-3xl">{s.value}</p>
+            <p className="a-num mt-2 font-display text-2xl text-[var(--a-text)] sm:text-[1.7rem]">{s.value}</p>
+            {s.note ? <p className="mt-1 text-xs text-[var(--a-muted)]">{s.note}</p> : null}
           </button>
         ))}
+      </div>
+      <div className="mt-3 grid gap-3 xl:grid-cols-[1.5fr_1fr]">
+        <section className="a-panel min-w-0 p-5">
+          <h2 className="font-display text-lg">Выручка за 14 дней</h2>
+          <div className="mt-4">
+            <DailyColumns data={d.daily} height={190} />
+          </div>
+        </section>
+        <section className="a-panel min-w-0 p-5">
+          <h2 className="font-display text-lg">Топ товаров недели</h2>
+          <div className="mt-4">
+            {d.top.length ? <BarList data={d.top} /> : <p className="text-sm text-[var(--a-muted)]">Заказов за неделю пока нет.</p>}
+          </div>
+        </section>
       </div>
       <h2 className="mb-3 mt-10 font-display text-xl">Последние заказы</h2>
       {orders.length ? (

@@ -80,3 +80,24 @@ create policy "orders: admin update" on public.orders
 
 grant insert on public.orders to anon, authenticated;
 grant select, update on public.orders to authenticated;
+
+-- ——— события для аналитики спроса: просмотр товара и добавление в корзину ———
+-- Анонимно: только товар, тип события, язык и время. Без имён, телефонов и адресов.
+create table if not exists public.events (
+  id          bigint generated always as identity primary key,
+  created_at  timestamptz not null default now(),
+  type        text not null check (type in ('view', 'add')),
+  product     text not null check (char_length(product) between 1 and 120),
+  lang        text not null default 'ru' check (lang in ('ru', 'uz'))
+);
+create index if not exists events_created on public.events (created_at desc);
+alter table public.events enable row level security;
+
+drop policy if exists "events: submit" on public.events;
+create policy "events: submit" on public.events for insert to anon, authenticated with check (true);
+
+drop policy if exists "events: admin read" on public.events;
+create policy "events: admin read" on public.events for select to authenticated using (public.is_admin());
+
+grant insert on public.events to anon, authenticated;
+grant select on public.events to authenticated;

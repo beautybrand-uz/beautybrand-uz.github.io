@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getProduct } from "@/data/products";
+import { track } from "@/lib/track";
 
 export type CartLine = { slug: string; variant?: string; qty: number };
 
@@ -54,6 +55,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [lines, loaded]);
 
   const add = useCallback((slug: string, variant?: string) => {
+    track("add", slug);
     setLines((prev) => {
       const i = prev.findIndex((l) => l.slug === slug && l.variant === variant);
       if (i === -1) return [...prev, { slug, variant, qty: 1 }];
