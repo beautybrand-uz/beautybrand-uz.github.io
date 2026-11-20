@@ -115,7 +115,7 @@ export function Catalog({ lang, category }: { lang: Locale; category?: Category 
           </button>
         </div>
       ) : (
-        <ul className="mt-4 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 md:grid-cols-3 lg:grid-cols-4">
+        <ul className="mt-4 grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 sm:gap-x-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {list.map((p, i) => (
             <li key={p.slug}>
               <ProductCard p={p} lang={lang} priority={!filtered && i < 4} />
@@ -173,7 +173,7 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
             alt={`${p.brand} ${p.name}`}
             fill
             priority={priority}
-            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+            sizes="(min-width: 1280px) 16vw, (min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw"
             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         ) : null}

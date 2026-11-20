@@ -78,7 +78,7 @@ export function MoodFinder({ lang, images }: { lang: Locale; images: Partial<Rec
               <p className="text-sm text-cocoa">
                 {t.moods[mood][0]} · {t.count(list.length)}
               </p>
-              <ul className="mt-5 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 md:grid-cols-3 lg:grid-cols-4">
+              <ul className="mt-5 grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 sm:gap-x-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                 {list.map((p, i) => (
                   <li key={p.slug} className="rise" style={{ animationDelay: `${i * 60}ms` }}>
                     <ProductCard p={p} lang={lang} />

@@ -11,7 +11,7 @@ export function ExtraBoutique({ lang, usd, title }: { lang: Locale; usd: boolean
   return (
     <>
     {title ? <h3 className="mt-14 text-2xl font-medium">{title}</h3> : null}
-    <ul className="mt-6 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 md:grid-cols-3 lg:grid-cols-4">
+    <ul className="mt-6 grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 sm:gap-x-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
       {list.map((p) => (
         <li key={p.slug}>
           <ProductCard p={p} lang={lang} />
