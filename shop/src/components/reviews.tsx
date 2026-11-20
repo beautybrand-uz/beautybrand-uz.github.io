@@ -280,7 +280,7 @@ export function ProductReviews({ slug, productName, lang }: { slug: string; prod
 }
 
 /** Лента отзывов для главной и бутика */
-export function ReviewsFeed({ lang }: { lang: Locale }) {
+export function ReviewsFeed({ lang, plain }: { lang: Locale; plain?: boolean }) {
   const t = getDict(lang).reviews;
   const [live, setLive] = useState<Review[]>([]);
   useEffect(() => {
@@ -289,8 +289,12 @@ export function ReviewsFeed({ lang }: { lang: Locale }) {
 
   return (
     <section className="relative isolate pt-20" aria-labelledby="feed-title">
-      <Swatch name="plum" className="-left-32 top-28 h-[22rem] w-auto max-w-none rotate-[24deg] opacity-60 sm:-left-36" />
-      <Swatch name="lipstick-berry" className="-right-16 top-10 h-auto w-[26rem] max-w-none rotate-[8deg] opacity-80" />
+      {plain ? null : (
+        <>
+          <Swatch name="plum" className="-left-32 top-28 h-[22rem] w-auto max-w-none rotate-[24deg] opacity-60 sm:-left-36" />
+          <Swatch name="lipstick-berry" className="-right-16 top-10 h-auto w-[26rem] max-w-none rotate-[8deg] opacity-80" />
+        </>
+      )}
       <div className="shell ">
         <h2 id="feed-title" className="font-display text-3xl font-medium sm:text-4xl">
           {t.title}

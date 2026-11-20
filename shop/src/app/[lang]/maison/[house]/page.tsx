@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/catalog";
 import { houseImage, houseMeta } from "@/components/houses";
 import { Reveal } from "@/components/reveal";
+import { Scent } from "@/components/scent";
 import { getHouse, houses } from "@/data/houses";
 import { LOCALES, getDict, isLocale } from "@/lib/i18n";
 import { SITE_URL } from "@/lib/site";
@@ -46,7 +47,8 @@ export default async function HousePage({ params }: PageProps<"/[lang]/maison/[h
 
   return (
     <>
-      <section className="bg-[#1b120f] text-paper">
+      <section className="relative isolate overflow-hidden bg-[#1b120f] text-paper">
+        <Scent />
         <div className="shell grid items-center gap-8 py-10 md:grid-cols-[1fr_minmax(0,22rem)] md:py-14">
           <div>
             <Link href={`/${lang}/maison`} className="inline-flex items-center gap-1.5 text-sm text-paper/65 hover:text-paper">

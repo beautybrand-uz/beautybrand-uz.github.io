@@ -36,7 +36,7 @@ export default async function MaisonPage({ params }: PageProps<"/[lang]/maison">
         <ExtraBoutique lang={lang} usd={false} title={t.newIn} />
         <ExtraBoutique lang={lang} usd />
       </section>
-      <ReviewsFeed lang={lang} />
+      <ReviewsFeed lang={lang} plain />
     </>
   );
 }

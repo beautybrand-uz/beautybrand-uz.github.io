@@ -1,4 +1,4 @@
-import { Swatch } from "@/components/swatch";
+import { Scent } from "./scent";
 import Image from "next/image";
 import Link from "next/link";
 import { TelegramIcon } from "./cart-drawer";
@@ -46,7 +46,8 @@ export function MaisonHero({ lang }: { lang: Locale }) {
   const min = Math.min(...boutique.filter((p) => !p.usd).map((p) => (p.variants ? Math.min(...p.variants.map((v) => v.price)) : p.price)));
   const minPrice = formatPrice(min, getDict(lang).currency);
   return (
-    <section className="bg-[#1b120f] text-paper">
+    <section className="relative isolate overflow-hidden bg-[#1b120f] text-paper">
+      <Scent />
       <div className="shell grid items-center gap-10 py-14 md:grid-cols-[1fr_1.05fr] md:py-20">
         <div>
           <p className="rise text-sm font-semibold text-gold">{t.label}</p>
@@ -68,7 +69,6 @@ export function MaisonHero({ lang }: { lang: Locale }) {
           </dl>
         </div>
         <div className="rise-image relative isolate">
-          <Swatch name="gold" priority className="-left-[12%] -top-[9%] h-28 w-auto max-w-none -rotate-[8deg] opacity-90 sm:h-36" />
           <Mosaic big />
         </div>
       </div>
@@ -80,7 +80,8 @@ export function MaisonHero({ lang }: { lang: Locale }) {
 export function MaisonBanner({ lang }: { lang: Locale }) {
   const t = getDict(lang);
   return (
-    <section className="mt-20 bg-[#1b120f] text-paper">
+    <section className="relative isolate mt-20 overflow-hidden bg-[#1b120f] text-paper">
+      <Scent />
       <Reveal>
         <Link
           href={`/${lang}/maison`}
