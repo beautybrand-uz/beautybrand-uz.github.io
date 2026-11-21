@@ -2,6 +2,7 @@ import { Swatch } from "@/components/swatch";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { CategoryPromos } from "@/components/category-promos";
+import { CategorySwatches, HeroShowcase, WeekPick } from "@/components/home-hero";
 import { BrandWall, HowToOrder, NewArrivalsReel } from "@/components/home-sections";
 import { StoreCompacts, WeekPalette } from "@/components/stores";
 import { SocialLinks } from "@/components/social";
@@ -23,7 +24,7 @@ const localBusiness = {
   name: "BeautyBrand Uz",
   url: SITE_URL,
   telephone: PHONE.tel,
-  image: `${SITE_URL}/brand/girl-glam-1200.webp`,
+  image: `${SITE_URL}/brand/hero/stilllife.webp`,
   address: {
     "@type": "PostalAddress",
     streetAddress: "Sharaf Rashidov Avenue 60",
@@ -70,20 +71,15 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             ))}
           </dl>
         </div>
-        {/* Палитра: мазки теней, помады, хайлайтера и румян (brand/tools/swatch.py, cosmetics.py) */}
-        <div aria-hidden className="rise-image relative isolate order-1 min-h-[min(95vw,26rem)] lg:order-2 lg:min-h-0">
-          <Swatch name="rose" priority className="left-[30%] top-[4%] h-[78%] w-auto max-w-none -rotate-[6deg] opacity-95" />
-          <Swatch name="plum" priority className="left-[8%] top-[18%] h-[56%] w-auto max-w-none rotate-[8deg] opacity-80" />
-          <Swatch name="gold" priority className="left-[2%] top-[58%] h-auto w-[62%] max-w-none -rotate-[4deg] opacity-90" />
-          <Swatch name="highlighter-gold" priority className="right-[4%] top-[6%] h-[30%] w-auto max-w-none opacity-85" />
-          <Swatch name="blush-pink" priority className="right-[2%] top-[44%] h-[30%] w-auto max-w-none opacity-90" />
-          <Swatch name="lipstick-red" priority className="bottom-[12%] left-[22%] h-auto w-[58%] max-w-none -rotate-[10deg] opacity-95" />
-          <Swatch name="lipstick-nude" priority className="bottom-[21%] left-[34%] h-auto w-[50%] max-w-none -rotate-[3deg] opacity-90" />
-          <Swatch name="gloss-pink" priority className="left-[6%] top-[4%] h-auto w-[16%] max-w-none rotate-12 opacity-95" />
-        </div>
+        {/* Натюрморт (Higgsfield) и плавающие карточки хитов */}
+        <HeroShowcase lang={lang} image={`${BASE}/brand/hero/stilllife.webp`} />
       </section>
 
+      <CategorySwatches lang={lang} labels={t.categories} />
       <CategoryPromos lang={lang} />
+      <Reveal>
+        <WeekPick lang={lang} />
+      </Reveal>
       <MaisonBanner lang={lang} />
       <Reveal>
         <NewArrivalsReel lang={lang} />

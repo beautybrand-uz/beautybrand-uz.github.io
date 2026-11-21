@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { priceLabel } from "@/lib/price";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useCart } from "./cart";
@@ -143,16 +144,6 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
 }
 
 /** Цена на карточке: «от …» при разных вариантах, «$» для флаконов под заказ */
-export function priceLabel(p: ProductWithImages, lang: Locale) {
-  const t = getDict(lang);
-  if (p.usd) {
-    const min = Math.min(...p.usd.map((u) => u.usd));
-    return p.usd.length > 1 ? (lang === "ru" ? `от ${min} $` : `${min} $ dan`) : `${min} $`;
-  }
-  const many = p.variants && new Set(p.variants.map((v) => v.price)).size > 1;
-  const base = formatPrice(p.price, t.currency);
-  return many ? (lang === "ru" ? `от ${base}` : `${base} dan`) : base;
-}
 
 export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang: Locale; priority?: boolean }) {
   const t = getDict(lang);

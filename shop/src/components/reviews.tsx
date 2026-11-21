@@ -301,31 +301,37 @@ export function ReviewsFeed({ lang, plain }: { lang: Locale; plain?: boolean }) 
         </h2>
         <p className="mt-2 max-w-[60ch] text-cocoa">{t.lead}</p>
       </div>
-      {/* горизонтальная лента с прокруткой пальцем, карточки «прилипают» */}
-      <ul className="shell mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 [scrollbar-width:thin]">
-        {live.map((r) => {
-          const p = getProduct(r.product);
-          return (
-            <li key={r.id} className="w-[min(20rem,82vw)] shrink-0 snap-start rounded-2xl border border-line bg-white/70 p-5">
-              <Stars value={r.rating} />
-              <p className="mt-3 line-clamp-5 leading-relaxed">{r.text}</p>
-              <p className="mt-4 text-sm font-semibold">{r.name}</p>
-              {p ? (
-                <Link href={`/${lang}/p/${p.slug}`} className="text-xs text-cocoa hover:text-ink">
-                  {p.brand} {p.name}
-                </Link>
-              ) : null}
-            </li>
-          );
-        })}
-        {channelReviews.map((c) => (
-          <li key={c.id} className="w-[min(20rem,82vw)] shrink-0 snap-start list-none">
-            <ul className="h-full">
-              <ChannelCard c={c} lang={lang} />
+      {/* бегущая лента: список продублирован, пауза при наведении и касании */}
+      <div className="marquee reviews-marquee mt-6 [mask-image:linear-gradient(90deg,transparent,#000_6%,#000_94%,transparent)]">
+        <div className="marquee-track reviews-track flex w-max gap-3 pb-3">
+          {[0, 1].map((copy) => (
+            <ul key={copy} aria-hidden={copy === 1 || undefined} className="flex gap-3">
+              {live.map((r) => {
+                const p = getProduct(r.product);
+                return (
+                  <li key={r.id} className="w-[min(20rem,82vw)] shrink-0 rounded-2xl border border-line bg-white/70 p-5">
+                    <Stars value={r.rating} />
+                    <p className="mt-3 line-clamp-5 leading-relaxed">{r.text}</p>
+                    <p className="mt-4 text-sm font-semibold">{r.name}</p>
+                    {p ? (
+                      <Link href={`/${lang}/p/${p.slug}`} tabIndex={copy ? -1 : undefined} className="text-xs text-cocoa hover:text-ink">
+                        {p.brand} {p.name}
+                      </Link>
+                    ) : null}
+                  </li>
+                );
+              })}
+              {channelReviews.map((c) => (
+                <li key={c.id} className="w-[min(20rem,82vw)] shrink-0 list-none">
+                  <ul className="h-full">
+                    <ChannelCard c={c} lang={lang} />
+                  </ul>
+                </li>
+              ))}
             </ul>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
