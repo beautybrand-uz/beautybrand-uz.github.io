@@ -70,20 +70,16 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             ))}
           </dl>
         </div>
-        {/* Героиня на фоне мазка мерцающих теней (brand/tools/swatch.py) */}
-        <div className="rise-image relative isolate order-1 flex min-h-[min(110vw,32rem)] items-end justify-center lg:order-2 lg:min-h-0">
-          <Swatch name="rose" priority className="left-1/2 top-[2%] h-[84%] w-auto max-w-none -translate-x-[46%] -rotate-[4deg] opacity-95" />
-          <Swatch name="highlighter-gold" priority className="left-[4%] top-[30%] h-[38%] w-auto max-w-none opacity-80" />
-          <Swatch name="gloss-pink" priority className="right-[4%] top-[12%] h-auto w-[15%] max-w-none rotate-12 opacity-95" />
-          <Image
-            src={`${BASE}/brand/girl-glam-cutout.webp`}
-            alt="BeautyBrand"
-            width={986}
-            height={1161}
-            priority
-            sizes="(min-width: 1024px) 40vw, 90vw"
-            className="relative h-auto max-h-[min(calc(100svh-10rem),44rem)] w-auto max-w-[88%] object-contain [filter:drop-shadow(0_2px_3px_rgba(42,26,21,0.2))_drop-shadow(0_16px_18px_rgba(42,26,21,0.2))]"
-          />
+        {/* Палитра: мазки теней, помады, хайлайтера и румян (brand/tools/swatch.py, cosmetics.py) */}
+        <div aria-hidden className="rise-image relative isolate order-1 min-h-[min(95vw,26rem)] lg:order-2 lg:min-h-0">
+          <Swatch name="rose" priority className="left-[30%] top-[4%] h-[78%] w-auto max-w-none -rotate-[6deg] opacity-95" />
+          <Swatch name="plum" priority className="left-[8%] top-[18%] h-[56%] w-auto max-w-none rotate-[8deg] opacity-80" />
+          <Swatch name="gold" priority className="left-[2%] top-[58%] h-auto w-[62%] max-w-none -rotate-[4deg] opacity-90" />
+          <Swatch name="highlighter-gold" priority className="right-[4%] top-[6%] h-[30%] w-auto max-w-none opacity-85" />
+          <Swatch name="blush-pink" priority className="right-[2%] top-[44%] h-[30%] w-auto max-w-none opacity-90" />
+          <Swatch name="lipstick-red" priority className="bottom-[12%] left-[22%] h-auto w-[58%] max-w-none -rotate-[10deg] opacity-95" />
+          <Swatch name="lipstick-nude" priority className="bottom-[21%] left-[34%] h-auto w-[50%] max-w-none -rotate-[3deg] opacity-90" />
+          <Swatch name="gloss-pink" priority className="left-[6%] top-[4%] h-auto w-[16%] max-w-none rotate-12 opacity-95" />
         </div>
       </section>
 
