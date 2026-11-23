@@ -81,6 +81,9 @@ create policy "orders: admin update" on public.orders
 grant insert on public.orders to anon, authenticated;
 grant select, update on public.orders to authenticated;
 
+-- номер чека (BB-251123-4821) — по нему менеджер находит заказ при обмене или возврате
+alter table public.orders add column if not exists code text check (char_length(code) <= 40);
+
 -- ——— события для аналитики спроса: просмотр товара и добавление в корзину ———
 -- Анонимно: только товар, тип события, язык и время. Без имён, телефонов и адресов.
 create table if not exists public.events (

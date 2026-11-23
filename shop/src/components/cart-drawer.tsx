@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { OrderReceipt } from "./order-receipt";
+import { newReceiptCode, saveReceipt, type ReceiptData } from "@/lib/receipt";
 import { lineProduct, useCart } from "./cart";
 import { getDict, type Locale } from "@/lib/i18n";
 import { STORES, TELEGRAM, formatPrice, telegramLink } from "@/lib/site";
@@ -24,6 +26,8 @@ export function CartDrawer({ lang }: { lang: Locale }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
   const [copied, setCopied] = useState(false);
+  // чек последнего заказа: печатается принтером, QR — для обмена и возврата
+  const [receipt, setReceipt] = useState<ReceiptData | null>(null);
 
   // Escape закрывает, фокус уходит в панель, прокрутка страницы блокируется
   useEffect(() => {
@@ -43,7 +47,7 @@ export function CartDrawer({ lang }: { lang: Locale }) {
     if (!open) setSent(false);
   }, [open]);
 
-  function buildMessage() {
+  function buildMessage(code?: string) {
     const rows = lines
       .map((l, i) => {
         const info = lineProduct(l);
@@ -59,6 +63,7 @@ export function CartDrawer({ lang }: { lang: Locale }) {
       : `${t.cart.msgDelivery}: ${address.trim()}`;
     return [
       t.cart.msgHello,
+      code ? `${lang === "ru" ? "Номер чека" : "Chek raqami"}: ${code}` : null,
       "",
       ...rows,
       "",
@@ -83,7 +88,7 @@ export function CartDrawer({ lang }: { lang: Locale }) {
   }
 
   /** Копия заказа в базу для админки. Telegram остаётся основным каналом, поэтому ошибка здесь не мешает заказу. */
-  function saveOrder() {
+  function saveOrder(code: string) {
     if (!supabaseEnabled) return;
     const items = lines
       .map((l) => {
@@ -105,15 +110,30 @@ export function CartDrawer({ lang }: { lang: Locale }) {
         items,
         total,
         lang,
+        code,
       }),
     }).catch(() => {});
   }
 
   function send() {
     if (!validate()) return;
-    window.open(telegramLink(TELEGRAM.manager, buildMessage()), "_blank", "noopener");
-    saveOrder();
+    const code = newReceiptCode();
+    window.open(telegramLink(TELEGRAM.manager, buildMessage(code)), "_blank", "noopener");
+    saveOrder(code);
+    const r: ReceiptData = {
+      c: code,
+      d: new Date().toISOString(),
+      m: method,
+      i: lines.flatMap((l) => {
+        const info = lineProduct(l);
+        return info ? [[l.slug, l.variant ?? null, l.qty, info.price] as [string, string | null, number, number]] : [];
+      }),
+      t: total,
+      l: lang,
+    };
+    saveReceipt(r);
     setSent(true);
+    setReceipt(r);
   }
 
   async function copy() {
@@ -128,6 +148,8 @@ export function CartDrawer({ lang }: { lang: Locale }) {
   }
 
   return (
+    <>
+    {receipt ? <OrderReceipt receipt={receipt} lang={lang} onClose={() => setReceipt(null)} /> : null}
     <div className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`} aria-hidden={!open}>
       <div
         className={`drawer-backdrop absolute inset-0 bg-ink/40 ${open ? "opacity-100" : "opacity-0"}`}
@@ -340,6 +362,7 @@ export function CartDrawer({ lang }: { lang: Locale }) {
         )}
       </div>
     </div>
+    </>
   );
 }
 
