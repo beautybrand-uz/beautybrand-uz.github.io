@@ -27,6 +27,7 @@ export function Header({ lang }: { lang: Locale }) {
   const t = getDict(lang);
   const navItems = [
     { href: `/${lang}/catalog`, label: t.nav.catalog, swatch: "gold" as const, match: "/catalog" },
+    { href: `/${lang}/vitrina`, label: t.nav.shelf, swatch: "blush-pink" as const, match: "/vitrina" },
     { href: `/${lang}/maison`, label: t.nav.boutique, swatch: "pink" as const, match: "/maison" },
     { href: `/${lang}#stores`, label: t.nav.stores, swatch: "peach" as const },
     { href: telegramLink(TELEGRAM.channel), label: t.nav.telegram, swatch: "lipstick-nude" as const, external: true },
