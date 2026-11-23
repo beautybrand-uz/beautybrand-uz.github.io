@@ -9,6 +9,7 @@ import { BRANDS, CATEGORIES, products, type Category, type ProductWithImages } f
 import { getDict, type Locale } from "@/lib/i18n";
 import { formatPrice } from "@/lib/site";
 import { productHref, useExtraProducts } from "@/lib/extra-products";
+import { MIN_ORDERS, hitLabel, orderedText, useSales } from "@/lib/sales";
 
 /** `category` — страница раздела: категория зафиксирована, чипы категорий скрыты */
 export function Catalog({ lang, category }: { lang: Locale; category?: Category }) {
@@ -153,6 +154,9 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
   const quick = p.variants?.[0]?.label;
   const qty = lines.filter((l) => l.slug === p.slug && l.variant === quick).reduce((n, l) => n + l.qty, 0);
   const href = productHref(lang, p);
+  const sales = useSales();
+  const ordered = sales.orders.get(p.slug) ?? 0;
+  const hit = sales.hits.has(p.slug);
 
   return (
     <article className="group flex h-full flex-col font-product">
@@ -168,9 +172,19 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         ) : null}
-        {p.oldPrice ? (
-          <span className="absolute left-2.5 top-2.5 rounded-full bg-paper px-2 py-0.5 text-xs font-semibold text-rose">
-            −{Math.round((1 - p.price / p.oldPrice) * 100)}%
+        {p.oldPrice || hit ? (
+          <span className="absolute left-2.5 top-2.5 flex flex-col items-start gap-1">
+            {hit ? (
+              <span className="hit-badge flex items-center gap-1 rounded-full bg-ink px-2 py-0.5 text-[0.7rem] font-semibold text-paper">
+                <FlameIcon />
+                {hitLabel(lang)}
+              </span>
+            ) : null}
+            {p.oldPrice ? (
+              <span className="rounded-full bg-paper px-2 py-0.5 text-xs font-semibold text-rose">
+                −{Math.round((1 - p.price / p.oldPrice) * 100)}%
+              </span>
+            ) : null}
           </span>
         ) : null}
       </Link>
@@ -238,6 +252,12 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
             {p.name}
           </Link>
         </h3>
+        {ordered >= MIN_ORDERS ? (
+          <p className="mt-1 flex items-center gap-1 text-[0.78rem] text-cocoa">
+            <BagIcon />
+            {orderedText(ordered, lang)}
+          </p>
+        ) : null}
         <div className="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-3">
           <span className="tag">{priceLabel(p, lang)}</span>
           {quick && qty ? <span className="text-xs text-cocoa">{quick} × {qty}</span> : null}
@@ -245,5 +265,22 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
         </div>
       </div>
     </article>
+  );
+}
+
+function FlameIcon() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 24 24" aria-hidden fill="currentColor">
+      <path d="M12 2c.6 3.2-1.2 5-2.6 6.6C8 10.2 7 11.7 7 14a5 5 0 0 0 10 0c0-1.9-.8-3.4-1.8-4.6-.2 1.4-.9 2.4-2 2.9.4-3.6-.2-7.1-1.2-10.3Z" />
+    </svg>
+  );
+}
+
+export function BagIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round">
+      <path d="M5.5 8h13l-1 12.5h-11L5.5 8Z" />
+      <path d="M9 10V6.5a3 3 0 0 1 6 0V10" strokeLinecap="round" />
+    </svg>
   );
 }

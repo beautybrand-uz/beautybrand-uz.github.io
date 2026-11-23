@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BuyBox, Gallery } from "@/components/product-client";
 import { ProductDetails } from "@/components/product-details";
+import { SalesNote } from "@/components/sales-note";
 import { ProductReviews } from "@/components/reviews";
 import { getProduct, products } from "@/data/products";
 import { LOCALES, getDict, isLocale } from "@/lib/i18n";
@@ -66,6 +67,7 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/p/[slug
           <h1 className="mt-2 text-[2rem] font-semibold leading-[1.04] tracking-[-0.035em] text-balance sm:text-[2.5rem]">
             {p.name}
           </h1>
+          <SalesNote slug={p.slug} lang={lang} />
           <p className="mt-5 max-w-[60ch] leading-relaxed">{p.description[lang]}</p>
           <BuyBox slug={p.slug} lang={lang} />
           <ul className="mt-8 space-y-2 border-t border-line pt-6 text-sm text-cocoa">

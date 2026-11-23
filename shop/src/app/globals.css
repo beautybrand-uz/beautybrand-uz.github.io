@@ -473,3 +473,18 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .hero-kenburns, .hit-card, .pick-dot, .cat-swatch img, .reviews-track { animation: none !important; }
 }
+
+/* «Хит продаж»: золотой блик пробегает по значку раз в несколько секунд */
+.hit-badge {
+  background-image: linear-gradient(110deg, transparent 35%, rgba(243, 223, 178, 0.45) 50%, transparent 65%);
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
+  animation: hit-shine 4.5s ease-in-out infinite;
+}
+@keyframes hit-shine {
+  0%, 60% { background-position: 130% 0; }
+  100% { background-position: -30% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hit-badge { animation: none; }
+}
