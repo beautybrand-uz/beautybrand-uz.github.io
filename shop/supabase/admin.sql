@@ -39,6 +39,7 @@ set search_path = public
 as $$
   select name from public.admins where user_id = auth.uid();
 $$;
+revoke execute on function public.my_name() from public, anon;
 grant execute on function public.my_name() to authenticated;
 
 drop policy if exists "admins: self read" on public.admins;
@@ -159,3 +160,6 @@ grant select on public.events to authenticated;
 
 -- Дальше выполните supabase/products.sql — товары, добавленные через админку, и хранилище их фото,
 -- и supabase/sales.sql — счётчик «Заказали N раз» на сайте.
+
+-- триггерные функции не должны вызываться через API (/rest/v1/rpc)
+revoke execute on function public.orders_staff(), public.reviews_staff() from public, anon, authenticated;

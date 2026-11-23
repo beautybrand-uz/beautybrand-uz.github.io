@@ -61,3 +61,6 @@ create policy "product-images: admin write" on storage.objects
   for all to authenticated
   using (bucket_id = 'product-images' and public.is_admin())
   with check (bucket_id = 'product-images' and public.is_admin());
+
+-- триггерная функция не должна вызываться через API (/rest/v1/rpc)
+revoke execute on function public.shop_products_staff() from public, anon, authenticated;
