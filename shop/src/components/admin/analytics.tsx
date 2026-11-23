@@ -41,7 +41,7 @@ export function buildDemo(): { orders: AOrder[]; events: AEvent[] } {
   const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
   const pool = products.filter((p) => !p.usd);
   // «популярность» товара — чтобы спрос был неравномерным, как в жизни
-  const weight = pool.map((p, i) => 0.3 + ((i * 37) % 11) / 4 + (p.oldPrice ? 2 : 0) + (p.boutique ? 0.8 : 0));
+  const weight = pool.map((p, i) => 0.3 + ((i * 37) % 11) / 4 + (p.oldPrice ? 2 : 0));
   const total = weight.reduce((a, b) => a + b, 0);
   const pick = () => {
     let r = rnd() * total;

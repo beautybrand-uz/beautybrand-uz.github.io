@@ -3,7 +3,6 @@
 import { Swatch } from "@/components/swatch";
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
-import { channelReviews, type ChannelReview } from "@/data/channel-reviews";
 import { getProduct } from "@/data/products";
 import { getDict, type Locale } from "@/lib/i18n";
 import { fetchReviews, reviewsEnabled, submitReview, type Review } from "@/lib/reviews";
@@ -192,40 +191,11 @@ function ReviewCard({ r, lang }: { r: Review; lang: Locale }) {
   );
 }
 
-function ChannelCard({ c, lang }: { c: ChannelReview; lang: Locale }) {
-  const t = getDict(lang).reviews;
-  const product = c.slug ? getProduct(c.slug) : undefined;
-  return (
-    <li className="flex flex-col rounded-2xl border border-line bg-white/70 p-5">
-      {c.rating ? <Stars value={c.rating} /> : null}
-      <p className={`${c.rating ? "mt-3" : ""} flex-1 leading-relaxed`}>«{c.text}»</p>
-      <p className="mt-4 text-sm font-semibold">
-        {product ? (
-          <Link href={`/${lang}/p/${product.slug}`} className="hover:text-rose-deep">
-            {c.fragrance}
-          </Link>
-        ) : (
-          c.fragrance
-        )}
-      </p>
-      <a
-        href={telegramLink(`Maisondemari/${c.post}`)}
-        target="_blank"
-        rel="noopener"
-        className="mt-0.5 text-xs text-cocoa underline-offset-4 hover:underline"
-      >
-        {t.fromChannel}
-      </a>
-    </li>
-  );
-}
-
 /** Отзывы на странице товара: средняя оценка, список и форма */
 export function ProductReviews({ slug, productName, lang }: { slug: string; productName: string; lang: Locale }) {
   const t = getDict(lang).reviews;
   const [list, setList] = useState<Review[] | null>(reviewsEnabled ? null : []);
   const [failed, setFailed] = useState(false);
-  const quotes = channelReviews.filter((c) => c.slug === slug);
 
   useEffect(() => {
     if (!reviewsEnabled) return;
@@ -260,13 +230,10 @@ export function ProductReviews({ slug, productName, lang }: { slug: string; prod
         <div>
           {list === null ? (
             <div className="h-28 animate-pulse rounded-2xl bg-well" aria-hidden />
-          ) : list.length || quotes.length ? (
+          ) : list.length ? (
             <ul className="space-y-3">
               {list.map((r) => (
                 <ReviewCard key={r.id} r={r} lang={lang} />
-              ))}
-              {quotes.map((c) => (
-                <ChannelCard key={c.id} c={c} lang={lang} />
               ))}
             </ul>
           ) : (
@@ -279,22 +246,19 @@ export function ProductReviews({ slug, productName, lang }: { slug: string; prod
   );
 }
 
-/** Лента отзывов для главной и бутика */
-export function ReviewsFeed({ lang, plain }: { lang: Locale; plain?: boolean }) {
+/** Лента отзывов покупателей на главной (пока отзывов нет — блок скрыт) */
+export function ReviewsFeed({ lang }: { lang: Locale }) {
   const t = getDict(lang).reviews;
   const [live, setLive] = useState<Review[]>([]);
   useEffect(() => {
     fetchReviews(undefined, 12).then(setLive).catch(() => setLive([]));
   }, []);
 
+  if (!live.length) return null;
   return (
     <section className="relative isolate pt-20" aria-labelledby="feed-title">
-      {plain ? null : (
-        <>
-          <Swatch name="plum" className="-left-32 top-28 h-[22rem] w-auto max-w-none rotate-[24deg] opacity-60 sm:-left-36" />
-          <Swatch name="lipstick-berry" className="-right-16 top-10 h-auto w-[26rem] max-w-none rotate-[8deg] opacity-80" />
-        </>
-      )}
+      <Swatch name="plum" className="-left-32 top-28 h-[22rem] w-auto max-w-none rotate-[24deg] opacity-60 sm:-left-36" />
+      <Swatch name="lipstick-berry" className="-right-16 top-10 h-auto w-[26rem] max-w-none rotate-[8deg] opacity-80" />
       <div className="shell ">
         <h2 id="feed-title" className="font-display text-3xl font-medium sm:text-4xl">
           {t.title}
@@ -321,13 +285,6 @@ export function ReviewsFeed({ lang, plain }: { lang: Locale; plain?: boolean }) 
                   </li>
                 );
               })}
-              {channelReviews.map((c) => (
-                <li key={c.id} className="w-[min(20rem,82vw)] shrink-0 list-none">
-                  <ul className="h-full">
-                    <ChannelCard c={c} lang={lang} />
-                  </ul>
-                </li>
-              ))}
             </ul>
           ))}
         </div>

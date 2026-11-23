@@ -27,8 +27,6 @@ const LOOK: { slug: string; kind: ShelfProduct["kind"]; short: string; sub?: str
   // полка 3 — тело и ароматы
   { slug: "keune-derma-activate-thickening-spray", kind: "bottle", short: "Derma Activate", sub: "Thickening Spray", color: "#f5f5f3", cap: "#e8e8e4", label: "#ffffff", ink: "#2b2b2b" },
   { slug: "bath-body-works-shimmer-body-butter", kind: "jar", short: "Shimmer", sub: "Body Butter", color: "#f1e5d8", cap: "#d9b98f", ink: "#6a4b33" },
-  { slug: "mfk-724", kind: "perfume", short: "724", sub: "Eau de Parfum", color: "#eef0f0", cap: "#d9d6cf", ink: "#2a2a2a", glass: true, liquid: "#f3ecdc" },
-  { slug: "bleu-de-chanel-parfum", kind: "perfume", short: "Bleu de Chanel", sub: "Parfum", color: "#1f2a44", cap: "#121826", ink: "#e8e4da", glass: true, liquid: "#2c3c63" },
 ];
 
 const T = {

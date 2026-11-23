@@ -753,7 +753,7 @@ type ListItem = (typeof products)[number] & { origin: "catalog" | "edited" | "ad
 
 function Products({ onAdd, token, demo }: { onAdd: () => void; token?: string; demo: boolean }) {
   const [q, setQ] = useState("");
-  const [cat, setCat] = useState<Category | "all" | "boutique">("all");
+  const [cat, setCat] = useState<Category | "all">("all");
   const [rows, setRows] = useState<ShopProductRow[]>([]);
   const [editing, setEditing] = useState<EditTarget | null>(null);
 
@@ -774,7 +774,7 @@ function Products({ onAdd, token, demo }: { onAdd: () => void; token?: string; d
     const ex = (slug: string, by: string): ShopProductRow | null => {
       const p = products.find((x) => x.slug === slug);
       return p
-        ? { slug, created_at: new Date().toISOString(), brand: p.brand, name: p.name, category: p.category, price: p.price, old_price: p.oldPrice ?? null, variants: p.variants ?? null, usd: p.usd ?? null, bottle: p.bottle ?? null, description_ru: p.description.ru, description_uz: p.description.uz, images: p.images, boutique: !!p.boutique, published: true, updated_by: by }
+        ? { slug, created_at: new Date().toISOString(), brand: p.brand, name: p.name, category: p.category, price: p.price, old_price: p.oldPrice ?? null, variants: p.variants ?? null, usd: p.usd ?? null, bottle: p.bottle ?? null, description_ru: p.description.ru, description_uz: p.description.uz, images: p.images, boutique: false, published: true, updated_by: by }
         : null;
     };
     setRows([ex("armani-blush-balm-05", "Севара"), ex("louis-vuitton-moon-tale", "Малика")].filter((r): r is ShopProductRow => r !== null));
@@ -799,7 +799,7 @@ function Products({ onAdd, token, demo }: { onAdd: () => void; token?: string; d
     const query = q.trim().toLowerCase();
     return all.filter(
       (p) =>
-        (cat === "all" || (cat === "boutique" ? p.boutique : p.category === cat)) &&
+        (cat === "all" || p.category === cat) &&
         (!query || `${p.brand} ${p.name}`.toLowerCase().includes(query)),
     );
   }, [q, cat, all]);
@@ -837,7 +837,6 @@ function Products({ onAdd, token, demo }: { onAdd: () => void; token?: string; d
         <input className="a-input sm:max-w-sm" type="search" placeholder="Поиск по названию или бренду" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Поиск товаров" />
         <select className="a-input sm:max-w-56" value={cat} onChange={(e) => setCat(e.target.value as typeof cat)} aria-label="Раздел">
           <option value="all">Все разделы</option>
-          <option value="boutique">Maison De Mari</option>
           {CATEGORIES.map((c) => (
             <option key={c} value={c}>{CATEGORY_RU[c]}</option>
           ))}
@@ -874,7 +873,7 @@ function Products({ onAdd, token, demo }: { onAdd: () => void; token?: string; d
                     {p.by && p.by !== p.createdBy ? <StaffBadge name={p.by} action={p.origin === "edited" ? "изменила" : "правила"} /> : null}
                   </div>
                 </td>
-                <td className="whitespace-nowrap px-4 py-2.5 text-[var(--a-muted)]">{p.boutique ? "Maison De Mari" : CATEGORY_RU[p.category]}</td>
+                <td className="whitespace-nowrap px-4 py-2.5 text-[var(--a-muted)]">{CATEGORY_RU[p.category]}</td>
                 <td className="a-num whitespace-nowrap px-4 py-2.5">{price(p)}</td>
                 <td className="px-4 py-2.5">
                   <div className="flex justify-end gap-1.5">

@@ -53,7 +53,6 @@ export type EditTarget = {
     brand: string;
     name: string;
     category: Category;
-    boutique?: boolean;
     price: number;
     oldPrice?: number;
     variants?: { label: string; price: number }[];
@@ -103,7 +102,6 @@ export function AddProduct({ token, demo, edit }: { token?: string; demo: boolea
   const [brand, setBrand] = useState(e0?.brand ?? "");
   const [name, setName] = useState(e0?.name ?? "");
   const [category, setCategory] = useState<Category>(e0?.category ?? "makeup");
-  const [boutique, setBoutique] = useState(!!e0?.boutique);
   const [mode, setMode] = useState<"sum" | "usd">(e0?.usd?.length ? "usd" : "sum");
   const [price, setPrice] = useState(e0 && !e0.usd?.length && e0.price ? String(e0.price) : "");
   const [oldPrice, setOldPrice] = useState(e0?.oldPrice ? String(e0.oldPrice) : "");
@@ -215,7 +213,7 @@ export function AddProduct({ token, demo, edit }: { token?: string; demo: boolea
         brand: brand.trim(),
         name: name.trim(),
         category,
-        boutique,
+        boutique: false,
         price: mode === "usd" ? 0 : vs.length ? Math.min(...vs.map((v) => v.price)) : num(price),
         old_price: mode === "sum" && num(oldPrice) ? num(oldPrice) : null,
         variants: mode === "sum" && vs.length ? vs : null,
@@ -333,13 +331,6 @@ export function AddProduct({ token, demo, edit }: { token?: string; demo: boolea
                   {CATEGORIES.map((c) => <option key={c} value={c}>{CATEGORY_RU[c]}</option>)}
                 </select>
               </Field>
-              <label className="flex items-start gap-3 rounded-xl border border-[var(--a-line)] p-3.5 text-sm">
-                <input type="checkbox" className="mt-0.5 size-4 accent-[var(--a-gold)]" checked={boutique} onChange={(e) => { setBoutique(e.target.checked); if (e.target.checked) setCategory("fragrance"); }} />
-                <span>
-                  <span className="font-medium">Парфюм-бутик Maison De Mari</span>
-                  <span className="block text-xs text-[var(--a-muted)]">Отметьте для ароматов бутика — товар попадёт в раздел «Парфюм».</span>
-                </span>
-              </label>
             </div>
           </Step>
 
@@ -457,7 +448,6 @@ export function AddProduct({ token, demo, edit }: { token?: string; demo: boolea
               {mode === "sum" && num(oldPrice) ? <s className="text-xs text-[#6e5045]">{formatPrice(num(oldPrice), "сум")}</s> : null}
             </p>
             <p className="mt-3 text-xs text-[#6e5045]">
-              {boutique ? "Maison De Mari · " : ""}
               {CATEGORY_RU[category]}
               {variantRows.length ? ` · вариантов: ${variantRows.length}` : ""}
             </p>

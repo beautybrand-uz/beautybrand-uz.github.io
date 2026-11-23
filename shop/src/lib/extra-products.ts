@@ -40,7 +40,6 @@ export function rowToProduct(r: ShopProductRow): ProductWithImages {
     bottle: r.bottle ?? undefined,
     description: { ru: r.description_ru, uz: r.description_uz || r.description_ru },
     post: 0,
-    boutique: r.boutique,
     images: r.images,
     video: undefined,
     dynamic: true,
@@ -55,7 +54,7 @@ export function loadExtraProducts(): Promise<ProductWithImages[]> {
   if (!loading) {
     loading = rest<ShopProductRow[]>("shop_products?select=*&published=eq.true&order=created_at.desc")
       .then((rows) => {
-        const list = rows.map(rowToProduct);
+        const list = rows.filter((r) => !r.boutique).map(rowToProduct);
         registerExtra(list);
         // правки товаров каталога уже применены к ним; новыми товарами считаем только остальные
         return list.filter((p) => !isCatalogSlug(p.slug));

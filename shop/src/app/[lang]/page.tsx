@@ -5,10 +5,9 @@ import { CategoryPromos } from "@/components/category-promos";
 import { CategorySwatches } from "@/components/home-hero";
 import { HeroDeck } from "@/components/hero-deck";
 import { NewArrivals } from "@/components/new-arrivals";
-import { BrandWall, HowToOrder, NewArrivalsReel } from "@/components/home-sections";
+import { BrandWall, HowToOrder } from "@/components/home-sections";
 import { StoreCompacts, WeekPalette } from "@/components/stores";
 import { SocialLinks } from "@/components/social";
-import { MaisonBanner } from "@/components/maison";
 import { Reveal } from "@/components/reveal";
 import { ReviewsFeed } from "@/components/reviews";
 import { BRANDS } from "@/data/products";
@@ -81,10 +80,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       <CategoryPromos lang={lang} />
       <Reveal>
         <NewArrivals lang={lang} />
-      </Reveal>
-      <MaisonBanner lang={lang} />
-      <Reveal>
-        <NewArrivalsReel lang={lang} />
       </Reveal>
       <BrandWall lang={lang} />
       <ReviewsFeed lang={lang} />

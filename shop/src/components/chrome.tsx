@@ -28,11 +28,10 @@ export function Header({ lang }: { lang: Locale }) {
   const navItems = [
     { href: `/${lang}/catalog`, label: t.nav.catalog, swatch: "gold" as const, match: "/catalog" },
     { href: `/${lang}/vitrina`, label: t.nav.shelf, swatch: "blush-pink" as const, match: "/vitrina" },
-    { href: `/${lang}/maison`, label: t.nav.boutique, swatch: "pink" as const, match: "/maison" },
     { href: `/${lang}#stores`, label: t.nav.stores, swatch: "peach" as const },
   ];
   const sections = CATEGORIES.filter((c) => products.some((p) => p.category === c)).map((c) => ({
-    href: c === "fragrance" ? `/${lang}/maison` : `/${lang}/c/${c}`,
+    href: `/${lang}/c/${c}`,
     label: t.categories[c],
   }));
   return (
@@ -161,11 +160,6 @@ export function Footer({ lang }: { lang: Locale }) {
             <li>
               <a href={telegramLink(TELEGRAM.channel)} target="_blank" rel="noopener" className="hover:text-paper">
                 t.me/{TELEGRAM.channel}
-              </a>
-            </li>
-            <li>
-              <a href={telegramLink(TELEGRAM.maison)} target="_blank" rel="noopener" className="hover:text-paper">
-                t.me/{TELEGRAM.maison} · Maison De Mari
               </a>
             </li>
           </ul>

@@ -10,7 +10,7 @@ const CATS: { c: Category; swatch: SwatchName; href?: string }[] = [
   { c: "makeup", swatch: "pink" },
   { c: "hair", swatch: "gold" },
   { c: "skin", swatch: "peach" },
-  { c: "fragrance", swatch: "lipstick-berry", href: "maison" },
+  { c: "body", swatch: "lipstick-berry" },
 ];
 
 export function CategorySwatches({ lang, labels }: { lang: Locale; labels: Record<Category, string> }) {

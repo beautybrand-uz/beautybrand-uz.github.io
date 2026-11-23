@@ -21,7 +21,7 @@ const COVER: Record<Category, string> = {
   makeup: "dior-backstage-glow-maximizer-007",
   skin: "dior-hydra-life-fresh-sorbet-creme",
   hair: "kerastase-genesis-cure",
-  fragrance: "mfk-724",
+  fragrance: "",
   body: "bath-body-works-shimmer-body-butter",
   tools: "makeup-by-mario-brush-set",
   sets: "charlotte-tilbury-hollywood-beauty-wonderland",
@@ -58,7 +58,7 @@ export function CategoryPromos({ lang }: { lang: Locale }) {
           return (
             <Tilt key={c} className={SPAN[c] ?? ""} max={big ? 4 : 7} radius="1rem">
             <Link
-              href={c === "fragrance" ? `/${lang}/maison` : `/${lang}/c/${c}`}
+              href={`/${lang}/c/${c}`}
               className="card-3d group relative flex h-full overflow-hidden rounded-2xl bg-well"
             >
               {cover ? (
@@ -99,10 +99,10 @@ export function CategoryPromos({ lang }: { lang: Locale }) {
         })}
 
         {sale?.oldPrice ? (
-          <Tilt className="col-span-2 md:col-span-1" max={7} radius="1rem">
+          <Tilt className="md:col-span-2" max={7} radius="1rem">
           <Link
             href={`/${lang}/p/${sale.slug}`}
-            className="card-3d group relative flex h-full items-center gap-4 overflow-hidden rounded-2xl bg-rose p-4 text-white md:flex-col md:items-start md:justify-between sm:p-5"
+            className="card-3d group relative flex h-full flex-col items-start justify-between gap-2 overflow-hidden rounded-2xl bg-rose p-4 text-white sm:p-5"
           >
             <span>
               <span className="block text-sm font-semibold text-white/80">{t.promo.sale}</span>

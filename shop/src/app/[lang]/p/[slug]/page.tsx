@@ -51,13 +51,13 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/p/[slug
   return (
     <div className="shell pt-5">
       <Link
-        href={p.boutique ? `/${lang}/maison` : `/${lang}/c/${p.category}`}
+        href={`/${lang}/c/${p.category}`}
         className="inline-flex items-center gap-1.5 py-2 text-sm text-cocoa hover:text-ink"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
           <path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
         </svg>
-        {p.boutique ? "Maison De Mari" : `${t.product.back}: ${t.categories[p.category]}`}
+        {`${t.product.back}: ${t.categories[p.category]}`}
       </Link>
 
       <div className="mt-3 grid gap-6 font-product md:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] md:gap-8 xl:grid-cols-[minmax(0,21rem)_minmax(0,1fr)_minmax(0,24rem)] xl:gap-10">

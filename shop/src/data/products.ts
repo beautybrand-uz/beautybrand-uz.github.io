@@ -1,5 +1,4 @@
 import images from "./images.json";
-import { maison } from "./maison";
 
 export type Category = "makeup" | "skin" | "hair" | "fragrance" | "body" | "tools" | "sets";
 
@@ -21,8 +20,6 @@ export type Product = {
   imageKey?: string;
   /** Ролик из video/ (композиция ProductPromo), путь в public */
   video?: string;
-  /** Товар парфюмерного бутика Maison De Mari */
-  boutique?: boolean;
   /** Канал, откуда пост (по умолчанию beauty_branduz) */
   channel?: string;
   /** Флаконы под заказ — цена в долларах, заказ через Telegram (не через корзину) */
@@ -341,42 +338,6 @@ const data: Product[] = [
     post: 16044,
   },
   {
-    slug: "mfk-724",
-    brand: "Maison Francis Kurkdjian",
-    name: "724",
-    category: "fragrance",
-    price: 235_000,
-    variants: [
-      { label: "5 ml", price: 235_000 },
-      { label: "10 ml", price: 470_000 },
-    ],
-    description: {
-      ru: "Аромат чистоты и свежести: воздушные цветочные ноты и мягкий мускус. На разлив 5 и 10 мл. Цену флакона 70 мл уточните в Telegram.",
-      uz: "Tozalik va tetiklik ifori: yengil gulli notalar va mayin mushk. 5 va 10 ml quyma. 70 ml flakon narxini Telegramda aniqlang.",
-    },
-    post: 16027,
-    boutique: true,
-    bottle: "70 ml — 290 $",
-  },
-  {
-    slug: "bleu-de-chanel-parfum",
-    brand: "Chanel",
-    name: "Bleu de Chanel Parfum",
-    category: "fragrance",
-    price: 150_000,
-    variants: [
-      { label: "5 ml", price: 150_000 },
-      { label: "10 ml", price: 300_000 },
-    ],
-    description: {
-      ru: "Глубокий, благородный мужской аромат. На разлив 5 и 10 мл. Цену флаконов 100 мл уточните в Telegram.",
-      uz: "Chuqur va nafis erkaklar ifori. 5 va 10 ml quyma. 100 ml flakonlar narxini Telegramda aniqlang.",
-    },
-    post: 16018,
-    boutique: true,
-    bottle: "100 ml — 200 $ (EDP), 320 $ (L’Exclusif)",
-  },
-  {
     slug: "makeup-by-mario-ethereal-eyes-nature",
     brand: "Makeup by Mario",
     name: "Ethereal Eyes Nature Eyeshadow Palette",
@@ -412,7 +373,6 @@ const data: Product[] = [
     },
     post: 15999,
   },
-  ...maison,
 ];
 
 const imageMap = images as Record<string, string[]>;
@@ -452,7 +412,6 @@ export function registerExtra(list: ProductWithImages[]) {
       usd: p.usd,
       bottle: p.bottle,
       description: p.description,
-      boutique: p.boutique,
       images: p.images.length ? p.images : s.images,
     });
   }

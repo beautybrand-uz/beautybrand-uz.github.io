@@ -9,31 +9,7 @@ type Dict = {
   langName: string;
   currency: string;
   meta: { title: string; description: string };
-  nav: { catalog: string; shelf: string; stores: string; telegram: string; cart: string; boutique: string; admin: string; ribbon: string[]; menu: string; close: string; sections: string; call: string };
-  maison: {
-    label: string;
-    lead: string;
-    stats: [string, string][];
-    toAromas: string;
-    channel: string;
-    decants: string;
-    decantsLead: string;
-    bottles: string;
-    bottlesLead: string;
-    bannerText: string;
-    cta: string;
-    housesTitle: string;
-    housesLead: string;
-    count: (n: number) => string;
-    from: (price: string) => string;
-    newIn: string;
-    heroStats: (aromas: number, minPrice: string, houses: number) => [string, string][];
-    moodTitle: string;
-    moodLead: string;
-    moods: Record<"floral" | "gourmand" | "woody" | "fresh", [string, string]>;
-    quote: string;
-    quoteBy: string;
-  };
+  nav: { catalog: string; shelf: string; stores: string; telegram: string; cart: string; admin: string; ribbon: string[]; menu: string; close: string; sections: string; call: string };
   hero: { title: string; lead: string; toCatalog: string; toChannel: string; facts: string[]; stats: (brands: number) => [string, string][] };
   catalog: {
     title: string;
@@ -74,7 +50,6 @@ type Dict = {
     order: string;
     orderText: (name: string, price: string) => string;
     bottle: string;
-    boutique: string;
   };
   cart: {
     title: string;
@@ -151,7 +126,6 @@ type Dict = {
     errName: string;
     errText: string;
     errSend: string;
-    fromChannel: string;
     loadError: string;
   };
 };
@@ -164,44 +138,7 @@ const ru: Dict = {
     description:
       "Брендовая косметика со всего мира: Dior, Tom Ford, Charlotte Tilbury, Kérastase и другие. Только оригинал, всё в наличии. Заказ в Telegram.",
   },
-  nav: { catalog: "Каталог", shelf: "Витрина", stores: "Магазины", telegram: "Telegram-канал", cart: "Корзина", boutique: "Парфюм-бутик", admin: "Админка", menu: "Меню", close: "Закрыть меню", sections: "Разделы", call: "Позвонить", ribbon: ["Только оригинал", "Всё в наличии", "Ц5 и Ц1, Ташкент"] },
-  maison: {
-    label: "Парфюмерный бутик",
-    lead: "Нишевая и люксовая парфюмерия. Попробуйте аромат на распив от 5 мл — и закажите полный флакон, когда влюбитесь.",
-    stats: [
-      ["5 и 10 мл", "распив оригиналов"],
-      ["Флаконы", "полные, под заказ"],
-      ["Отзывы", "каждую неделю в канале"],
-    ],
-    toAromas: "Смотреть ароматы",
-    channel: "Канал бутика",
-    decants: "На распив",
-    decantsLead: "Оригинальные ароматы в объёме 5 и 10 мл — можно оформить через корзину.",
-    bottles: "Флаконы под заказ",
-    bottlesLead: "Полные флаконы, цена в долларах. Нажмите на аромат — заказ уйдёт менеджеру в Telegram.",
-    bannerText: "Нишевая парфюмерия на распив от 5 мл и полные флаконы под заказ.",
-    cta: "Перейти в бутик",
-    housesTitle: "Парфюмерные дома",
-    housesLead: "Выберите дом — внутри все его ароматы на распив и флаконы под заказ.",
-    count: (n) => `${n} ${plural(n, "аромат", "аромата", "ароматов")}`,
-    from: (p) => `от ${p}`,
-    newIn: "Новые поступления",
-    moodTitle: "Найдите свой аромат",
-    moodLead: "Не знаете, с чего начать? Выберите настроение — покажем ароматы, которые ему подходят.",
-    moods: {
-      floral: ["Цветочные", "пион, роза, жасмин — нежно и романтично"],
-      gourmand: ["Гурманские", "ваниль, карамель, какао — тепло и чувственно"],
-      woody: ["Древесные", "уд, кедр, кожа, ладан — глубоко и загадочно"],
-      fresh: ["Свежие", "цитрус, чай, ветивер — легко и чисто"],
-    },
-    quote: "Аромат — невидимая часть вашего образа. Его не видят, но запоминают.",
-    quoteBy: "Maison De Mari",
-    heroStats: (n, price, houses) => [
-      [`${n}`, "оригинальных ароматов на распив и под заказ"],
-      [price, "цена распива 5 мл — попробуйте до покупки флакона"],
-      [`${houses}`, "парфюмерных домов — от Creed до Amouage"],
-    ],
-  },
+  nav: { catalog: "Каталог", shelf: "Витрина", stores: "Магазины", telegram: "Telegram-канал", cart: "Корзина", admin: "Админка", menu: "Меню", close: "Закрыть меню", sections: "Разделы", call: "Позвонить", ribbon: ["Только оригинал", "Всё в наличии", "Ц5 и Ц1, Ташкент"] },
   hero: {
     title: "Оригинальная косметика со всего мира",
     lead: "Всё в наличии в двух магазинах в Ташкенте. Соберите корзину — заказ уйдёт менеджеру в Telegram.",
@@ -211,7 +148,7 @@ const ru: Dict = {
     stats: (brands) => [
       ["с 2016", "года радуем Ташкент оригинальной косметикой"],
       ["6 300+", "подписчиков следят за новинками в Telegram"],
-      [`${brands}`, "мировых брендов — от Dior до Maison Francis Kurkdjian"],
+      [`${brands}`, "мировых брендов — от Dior до Charlotte Tilbury"],
     ],
   },
   catalog: {
@@ -273,7 +210,7 @@ const ru: Dict = {
     order: "Заказать в Telegram",
     orderText: (name, price) => `Здравствуйте! Хочу заказать ${name} — ${price}.`,
     bottle: "Полный флакон под заказ",
-    boutique: "Парфюмерный бутик",
+   
   },
   cart: {
     title: "Корзина",
@@ -353,7 +290,6 @@ const ru: Dict = {
     errName: "Введите имя",
     errText: "Напишите хотя бы пару слов",
     errSend: "Не получилось отправить отзыв. Проверьте интернет и попробуйте ещё раз.",
-    fromChannel: "Из канала Maison De Mari",
     loadError: "Не удалось загрузить отзывы.",
   },
 };
@@ -366,44 +302,7 @@ const uz: Dict = {
     description:
       "Butun dunyodan brend kosmetika: Dior, Tom Ford, Charlotte Tilbury, Kérastase va boshqalar. Faqat original, hammasi mavjud. Buyurtma Telegramda.",
   },
-  nav: { catalog: "Katalog", shelf: "Vitrina", stores: "Do‘konlar", telegram: "Telegram-kanal", cart: "Savat", boutique: "Atir butigi", admin: "Admin", menu: "Menyu", close: "Menyuni yopish", sections: "Bo‘limlar", call: "Qo‘ng‘iroq qilish", ribbon: ["Faqat original", "Hammasi mavjud", "Ts5 va Ts1, Toshkent"] },
-  maison: {
-    label: "Atir butigi",
-    lead: "Nish va lyuks parfyumeriya. Atirni 5 ml dan quyma holda sinab ko‘ring — yoqib qolsa, to‘liq flakon buyurtma qiling.",
-    stats: [
-      ["5 va 10 ml", "originallar quymasi"],
-      ["Flakonlar", "to‘liq, buyurtma asosida"],
-      ["Sharhlar", "har hafta kanalda"],
-    ],
-    toAromas: "Atirlarni ko‘rish",
-    channel: "Butik kanali",
-    decants: "Quyma",
-    decantsLead: "5 va 10 ml hajmdagi original atirlar — savat orqali buyurtma berish mumkin.",
-    bottles: "Buyurtma asosida flakonlar",
-    bottlesLead: "To‘liq flakonlar, narxi dollarda. Atirni bosing — buyurtma Telegramda menejerga yuboriladi.",
-    bannerText: "5 ml dan nish parfyumeriya quymasi va buyurtma asosida to‘liq flakonlar.",
-    cta: "Butikka o‘tish",
-    housesTitle: "Atir uylari",
-    housesLead: "Uyni tanlang — ichida uning barcha quyma atirlari va buyurtma asosidagi flakonlari.",
-    count: (n) => `${n} ta atir`,
-    from: (p) => `${p} dan`,
-    newIn: "Yangi kelganlar",
-    moodTitle: "O‘z atiringizni toping",
-    moodLead: "Nimadan boshlashni bilmaysizmi? Kayfiyatni tanlang — unga mos atirlarni ko‘rsatamiz.",
-    moods: {
-      floral: ["Gulli", "pion, atirgul, yasmin — nozik va romantik"],
-      gourmand: ["Gurman", "vanil, karamel, kakao — iliq va hissiyotli"],
-      woody: ["Yog‘ochli", "ud, kedr, teri, ladan — chuqur va sirli"],
-      fresh: ["Tetik", "sitrus, choy, vetiver — yengil va toza"],
-    },
-    quote: "Atir — qiyofangizning ko‘rinmas qismi. Uni ko‘rishmaydi, lekin eslab qolishadi.",
-    quoteBy: "Maison De Mari",
-    heroStats: (n, price, houses) => [
-      [`${n}`, "quyma va buyurtma asosidagi original atirlar"],
-      [price, "5 ml quyma narxi — flakon olishdan oldin sinab ko‘ring"],
-      [`${houses}`, "atir uyi — Creed dan Amouage gacha"],
-    ],
-  },
+  nav: { catalog: "Katalog", shelf: "Vitrina", stores: "Do‘konlar", telegram: "Telegram-kanal", cart: "Savat", admin: "Admin", menu: "Menyu", close: "Menyuni yopish", sections: "Bo‘limlar", call: "Qo‘ng‘iroq qilish", ribbon: ["Faqat original", "Hammasi mavjud", "Ts5 va Ts1, Toshkent"] },
   hero: {
     title: "Butun dunyodan original kosmetika",
     lead: "Hammasi Toshkentdagi ikki do‘konimizda mavjud. Savatni to‘ldiring — buyurtma Telegramda menejerga yuboriladi.",
@@ -413,7 +312,7 @@ const uz: Dict = {
     stats: (brands) => [
       ["2016 dan", "beri Toshkentni original kosmetika bilan quvontirmoqdamiz"],
       ["6 300+", "obunachi Telegramda yangiliklarni kuzatadi"],
-      [`${brands}`, "jahon brendi — Dior dan Maison Francis Kurkdjian gacha"],
+      [`${brands}`, "jahon brendi — Dior dan Charlotte Tilbury gacha"],
     ],
   },
   catalog: {
@@ -475,7 +374,7 @@ const uz: Dict = {
     order: "Telegramda buyurtma berish",
     orderText: (name, price) => `Assalomu alaykum! ${name} buyurtma bermoqchiman — ${price}.`,
     bottle: "To‘liq flakon buyurtma asosida",
-    boutique: "Atir butigi",
+   
   },
   cart: {
     title: "Savat",
@@ -555,7 +454,6 @@ const uz: Dict = {
     errName: "Ismingizni kiriting",
     errText: "Kamida bir necha so‘z yozing",
     errSend: "Sharhni yuborib bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.",
-    fromChannel: "Maison De Mari kanalidan",
     loadError: "Sharhlarni yuklab bo‘lmadi.",
   },
 };

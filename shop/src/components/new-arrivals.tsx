@@ -24,7 +24,7 @@ const T = {
 export function NewArrivals({ lang }: { lang: Locale }) {
   const t = T[lang];
   const list = products
-    .filter((p) => !p.boutique && !p.channel && p.images[0])
+    .filter((p) => !p.channel && p.images[0])
     .sort((a, b) => b.post - a.post)
     .slice(0, COUNT);
   const [i, setI] = useState(0);
