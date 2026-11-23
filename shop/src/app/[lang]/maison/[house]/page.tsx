@@ -8,7 +8,8 @@ import { Reveal } from "@/components/reveal";
 import { Scent } from "@/components/scent";
 import { getHouse, houses } from "@/data/houses";
 import { LOCALES, getDict, isLocale } from "@/lib/i18n";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, TELEGRAM, telegramLink } from "@/lib/site";
+import { TelegramIcon } from "@/components/cart-drawer";
 
 export function generateStaticParams() {
   return LOCALES.flatMap((lang) => houses.map((h) => ({ lang, house: h.slug })));
@@ -61,6 +62,16 @@ export default async function HousePage({ params }: PageProps<"/[lang]/maison/[h
             <p className="rise mt-4 text-paper/70" style={{ animationDelay: "90ms" }}>
               {houseMeta(h, lang)}
             </p>
+            <a
+              href={telegramLink(TELEGRAM.maison)}
+              target="_blank"
+              rel="noopener"
+              className="rise mt-6 inline-flex items-center gap-2 rounded-full border border-gold/50 px-4 py-2 text-sm font-semibold text-gold transition-colors hover:bg-gold hover:text-[#1b120f]"
+              style={{ animationDelay: "160ms" }}
+            >
+              <TelegramIcon />
+              {getDict(lang).maison.channel}
+            </a>
           </div>
           <div className="rise-image relative mx-auto aspect-[4/5] w-full max-w-[16rem] overflow-hidden rounded-2xl md:max-w-none">
             <Image src={houseImage(h)} alt="" fill priority sizes="(min-width: 768px) 22rem, 16rem" className="object-cover" />

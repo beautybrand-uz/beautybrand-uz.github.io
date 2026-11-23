@@ -4,6 +4,8 @@ export const SITE_URL = "https://beautybrand.uz";
 
 export const TELEGRAM = {
   channel: "beauty_branduz",
+  /** Отдельный канал парфюмерного бутика Maison De Mari */
+  maison: "Maisondemari",
   /** Менеджер, которому уходит заказ */
   manager: "beautybrandcosmetics",
   managers: ["beautybrandcosmetics", "beautybranduzz"],

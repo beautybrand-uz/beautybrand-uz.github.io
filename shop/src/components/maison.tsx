@@ -5,10 +5,10 @@ import { TelegramIcon } from "./cart-drawer";
 import { Reveal } from "./reveal";
 import { products } from "@/data/products";
 import { getDict, type Locale } from "@/lib/i18n";
-import { formatPrice, telegramLink } from "@/lib/site";
+import { TELEGRAM, formatPrice, telegramLink } from "@/lib/site";
 import { houses } from "@/data/houses";
 
-export const MAISON_CHANNEL = "Maisondemari";
+export const MAISON_CHANNEL = TELEGRAM.maison;
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -67,6 +67,17 @@ export function MaisonHero({ lang }: { lang: Locale }) {
               </div>
             ))}
           </dl>
+          <div className="rise mt-8" style={{ animationDelay: "320ms" }}>
+            <a
+            href={telegramLink(TELEGRAM.maison)}
+            target="_blank"
+            rel="noopener"
+            className="inline-flex items-center gap-2 rounded-full border border-gold/50 px-4 py-2.5 text-sm font-semibold text-gold transition-colors hover:bg-gold hover:text-[#1b120f]"
+          >
+            <TelegramIcon />
+            {t.channel} · t.me/Maisondemari
+          </a>
+          </div>
         </div>
         <div className="rise-image relative isolate">
           <Mosaic big />
@@ -83,10 +94,7 @@ export function MaisonBanner({ lang }: { lang: Locale }) {
     <section className="relative isolate mt-20 overflow-hidden bg-[#1b120f] text-paper">
       <Scent />
       <Reveal>
-        <Link
-          href={`/${lang}/maison`}
-          className="shell group grid items-center gap-10 py-14 md:grid-cols-[1fr_1.2fr] md:py-20 lg:gap-20"
-        >
+        <div className="shell grid items-center gap-10 py-14 md:grid-cols-[1fr_1.2fr] md:py-20 lg:gap-20">
           <div>
             <p className="text-sm font-semibold text-gold">{t.maison.label}</p>
             <p className="mt-1 font-script text-[3rem] leading-none text-gold sm:whitespace-nowrap sm:text-[3.6rem] lg:text-[4.2rem]">Maison De Mari</p>
@@ -100,15 +108,28 @@ export function MaisonBanner({ lang }: { lang: Locale }) {
                 </div>
               ))}
             </dl>
-            <span className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-gold underline-offset-4 group-hover:underline">
-              {t.maison.cta}
-              <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden className="transition-transform group-hover:translate-x-1">
-                <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
-            </span>
+            <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <Link href={`/${lang}/maison`} className="group inline-flex items-center gap-2 text-sm font-semibold text-gold underline-offset-4 hover:underline">
+                {t.maison.cta}
+                <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden className="transition-transform group-hover:translate-x-1">
+                  <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </Link>
+              <a
+                href={telegramLink(TELEGRAM.maison)}
+                target="_blank"
+                rel="noopener"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-paper/75 underline-offset-4 hover:text-gold hover:underline"
+              >
+                <TelegramIcon />
+                {t.maison.channel}
+              </a>
+            </div>
           </div>
-          <Mosaic />
-        </Link>
+          <Link href={`/${lang}/maison`} aria-label="Maison De Mari" className="group block">
+            <Mosaic />
+          </Link>
+        </div>
       </Reveal>
     </section>
   );

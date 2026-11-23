@@ -164,6 +164,11 @@ export function Footer({ lang }: { lang: Locale }) {
                 t.me/{TELEGRAM.channel}
               </a>
             </li>
+            <li>
+              <a href={telegramLink(TELEGRAM.maison)} target="_blank" rel="noopener" className="hover:text-paper">
+                t.me/{TELEGRAM.maison} · Maison De Mari
+              </a>
+            </li>
           </ul>
         </div>
       </div>

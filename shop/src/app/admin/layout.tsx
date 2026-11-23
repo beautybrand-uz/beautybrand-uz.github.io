@@ -2,11 +2,13 @@ import type { Metadata, Viewport } from "next";
 import { Great_Vibes, Jost } from "next/font/google";
 import "../globals.css";
 import "./admin.css";
+import { SITE_URL } from "@/lib/site";
 
 const jost = Jost({ variable: "--font-jost", subsets: ["latin", "latin-ext", "cyrillic"], weight: ["300", "400", "500", "600", "700"] });
 const script = Great_Vibes({ variable: "--font-script", subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Админка — BeautyBrand Uz",
   robots: { index: false, follow: false },
 };
