@@ -373,6 +373,25 @@ const data: Product[] = [
     },
     post: 15999,
   },
+  {
+    slug: "medik8-skincare",
+    brand: "Medik8",
+    name: "Professional Skincare",
+    category: "skin",
+    price: 1_525_000,
+    variants: [
+      { label: "C-Tetra Advanced", price: 1_525_000 },
+      { label: "Crystal Retinal 10", price: 1_976_000 },
+      { label: "Press & Clear (BHA)", price: 710_000 },
+      { label: "Press & Glow (PHA)", price: 764_000 },
+    ],
+    description: {
+      ru: "Британский профессиональный уход. C-Tetra Advanced — витамин C для сияния; Crystal Retinal 10 — ретиналь; Press & Clear — BHA-тоник для пор; Press & Glow — мягкое PHA-отшелушивание.",
+      uz: "Britaniya professional parvarishi. C-Tetra Advanced — yorqinlik uchun C vitamini; Crystal Retinal 10 — retinal; Press & Clear — teshikchalar uchun BHA-tonik; Press & Glow — yumshoq PHA-eksfoliatsiya.",
+    },
+    post: 686,
+    channel: "Maisondemari",
+  },
 ];
 
 const imageMap = images as Record<string, string[]>;

@@ -141,6 +141,31 @@ export type CareDetails = {
 export type Details = ScentDetails | CareDetails;
 
 export const DETAILS: Record<string, Details> = {
+  "medik8-skincare": {
+    kind: "care",
+    points: {
+      ru: [
+        "C-Tetra Advanced — сыворотка с витамином C: сияние и ровный тон",
+        "Crystal Retinal 10 — ретиналь: обновление кожи, против морщин и постакне",
+        "Press & Clear — тоник с 2% BHA: очищает поры, против чёрных точек",
+        "Press & Glow — мягкий PHA-тоник: деликатное отшелушивание и сияние",
+      ],
+      uz: [
+        "C-Tetra Advanced — C vitaminli zardob: jilo va tekis tus",
+        "Crystal Retinal 10 — retinal: terini yangilaydi, ajin va akne izlariga qarshi",
+        "Press & Clear — 2% BHA tonik: g‘ovaklarni tozalaydi, qora nuqtalarga qarshi",
+        "Press & Glow — yumshoq PHA-tonik: nozik peeling va jilo",
+      ],
+    },
+    howTo: {
+      ru: "Утром — витамин C и обязательно SPF. Вечером — ретиналь (начинайте 2–3 раза в неделю). Тоники — на ватный диск или ладони после умывания.",
+      uz: "Ertalab — C vitamini va albatta SPF. Kechqurun — retinal (haftada 2–3 martadan boshlang). Toniklar — yuvingandan keyin paxta disk yoki kaftga.",
+    },
+    forWhom: {
+      ru: "Британский профессиональный уход по философии «CSA: витамин C днём, витамин A ночью».",
+      uz: "«CSA: kunduzi C vitamini, kechasi A vitamini» falsafasidagi britaniya professional parvarishi.",
+    },
+  },
   /* ——————————————————— Ароматы ——————————————————— */
 
   /* ——————————————————— Макияж ——————————————————— */
