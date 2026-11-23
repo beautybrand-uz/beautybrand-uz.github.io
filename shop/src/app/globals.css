@@ -626,3 +626,8 @@ body {
 }
 .reel-live { animation: reel-live 1.4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .reel-live { animation: none; } }
+
+/* список ароматов рядом с «кружочком»: тонкая золотая полоса прокрутки */
+.reel-list { scrollbar-width: thin; scrollbar-color: rgba(201, 164, 104, 0.55) transparent; }
+.reel-list::-webkit-scrollbar { width: 4px; }
+.reel-list::-webkit-scrollbar-thumb { background: rgba(201, 164, 104, 0.55); border-radius: 4px; }

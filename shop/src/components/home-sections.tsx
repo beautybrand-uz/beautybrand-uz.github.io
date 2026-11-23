@@ -12,22 +12,30 @@ import { TELEGRAM, telegramLink } from "@/lib/site";
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /**
- * «Новинки в движении»: ролик-«кружочек» как видеосообщение в Telegram, текст и свежие
- * поступления в одну компактную строку — reel-stage.tsx.
+ * «Новинки в движении» — парфюмерия Maison De Mari: ароматы сменяются в «кружочке» как видеосообщение
+ * Telegram, рядом текст и кнопка канала бутика, справа — все ароматы списком (листается) — reel-stage.tsx.
  */
 const REEL_T = {
-  ru: { kicker: "Reels · Telegram", title: "Новинки в движении", subs: "подписчиков уже смотрят", watch: "Смотреть в канале", now: "свежий ролик" },
-  uz: { kicker: "Reels · Telegram", title: "Yangiliklar harakatda", subs: "obunachi allaqachon kuzatmoqda", watch: "Kanalda ko‘rish", now: "yangi rolik" },
+  ru: {
+    kicker: "Maison De Mari · Telegram",
+    title: "Новинки в движении",
+    text: "Ароматы парфюмерного бутика: распив от 5 мл и полные флаконы под заказ. Новинки и отзывы — каждую неделю в канале бутика.",
+    cta: "Канал бутика",
+  },
+  uz: {
+    kicker: "Maison De Mari · Telegram",
+    title: "Yangiliklar harakatda",
+    text: "Atir butigi: 5 ml dan quyma va buyurtma asosida to‘liq flakonlar. Yangiliklar va sharhlar — har hafta butik kanalida.",
+    cta: "Butik kanali",
+  },
 } as const;
 
 
 export function NewArrivalsReel({ lang }: { lang: Locale }) {
   const t = getDict(lang);
   const r = REEL_T[lang];
-  const fresh = products
-    .filter((p) => !p.boutique && !p.channel && p.images[0])
-    .sort((x, y) => y.post - x.post)
-    .slice(0, 4);
+  // ароматы бутика в порядке каталога (как в канале Maison De Mari)
+  const fresh = products.filter((p) => p.boutique && p.images[0]);
   return (
     <section className="reel-band relative isolate overflow-hidden bg-[#1b1310] text-paper">
       <span aria-hidden className="pointer-events-none absolute left-[18%] top-1/2 -z-10 size-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(201,164,104,0.22),rgba(168,76,92,0.1)_38%,transparent_66%)]" />
@@ -37,27 +45,19 @@ export function NewArrivalsReel({ lang }: { lang: Locale }) {
 
       <div className="shell py-12 lg:py-14">
         <ReelStage
-          video={`${BASE}/videos/new-arrivals.mp4`}
-          poster={fresh[0]?.images[0]}
           lang={lang}
-          channel="beauty_branduz"
-          channelHref={telegramLink(TELEGRAM.channel)}
+          channel="Maisondemari"
+          channelHref={telegramLink(TELEGRAM.maison)}
           items={fresh.map((p) => ({ slug: p.slug, brand: p.brand, name: p.name, image: p.images[0], price: priceLabel(p, lang) }))}
           intro={
             <>
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#c9a468]">{r.kicker}</p>
               <h2 className="mt-2 font-display text-3xl font-medium leading-[1.05] tracking-[-0.02em] sm:text-4xl">{r.title}</h2>
-              <p className="mt-3 max-w-[40ch] text-[0.95rem] leading-relaxed text-paper/70">{t.home.newText}</p>
-              <div className="mt-6 flex flex-wrap items-center gap-5">
-                <a href={telegramLink(TELEGRAM.channel)} target="_blank" rel="noopener" className="btn bg-paper text-ink hover:bg-[#f3dfb2]">
-                  <TelegramIcon />
-                  {t.home.newCta}
-                </a>
-                <p className="leading-tight">
-                  <span className="block font-display text-2xl text-[#f3dfb2]">6 300+</span>
-                  <span className="text-xs text-paper/60">{r.subs}</span>
-                </p>
-              </div>
+              <p className="mt-3 max-w-[40ch] text-[0.95rem] leading-relaxed text-paper/70">{r.text}</p>
+              <a href={telegramLink(TELEGRAM.maison)} target="_blank" rel="noopener" className="btn mt-6 bg-paper text-ink hover:bg-[#f3dfb2]">
+                <TelegramIcon />
+                {r.cta}
+              </a>
             </>
           }
         />
