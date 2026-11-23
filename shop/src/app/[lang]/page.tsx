@@ -2,7 +2,8 @@ import { Swatch } from "@/components/swatch";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { CategoryPromos } from "@/components/category-promos";
-import { CategorySwatches, HeroShowcase } from "@/components/home-hero";
+import { CategorySwatches } from "@/components/home-hero";
+import { HeroDeck } from "@/components/hero-deck";
 import { NewArrivals } from "@/components/new-arrivals";
 import { BrandWall, HowToOrder, NewArrivalsReel } from "@/components/home-sections";
 import { StoreCompacts, WeekPalette } from "@/components/stores";
@@ -72,8 +73,8 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             ))}
           </dl>
         </div>
-        {/* Натюрморт (Higgsfield) и плавающие карточки хитов */}
-        <HeroShowcase lang={lang} image={`${BASE}/brand/hero/stilllife.webp`} />
+        {/* Колода хитов: смахнуть, листать стрелками, сама переворачивается */}
+        <HeroDeck lang={lang} />
       </section>
 
       <CategorySwatches lang={lang} labels={t.categories} />

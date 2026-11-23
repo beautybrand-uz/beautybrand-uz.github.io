@@ -517,3 +517,23 @@ body {
   .na-progress, .na-front { animation: none !important; }
   .na-back { transition: none; }
 }
+
+/* Колода хитов: фон медленно «дышит», рука-подсказка покачивается */
+@keyframes deck-glow {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.06); opacity: 0.55; }
+}
+.deck-glow {
+  animation: deck-glow 9s ease-in-out infinite;
+}
+@keyframes deck-hint {
+  0%, 70%, 100% { transform: translateX(0) rotate(0); }
+  80% { transform: translateX(-3px) rotate(-8deg); }
+  90% { transform: translateX(3px) rotate(8deg); }
+}
+.deck-hint {
+  animation: deck-hint 3.2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .deck-glow, .deck-hint { animation: none; }
+}
