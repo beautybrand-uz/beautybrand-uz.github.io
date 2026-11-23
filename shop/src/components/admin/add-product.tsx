@@ -42,6 +42,27 @@ async function toWebp(file: File): Promise<Blob> {
 }
 
 type Photo = { file?: File; url: string };
+
+/** Что редактируем: товар каталога (правка поверх него) или товар, добавленный через админку */
+export type EditTarget = {
+  slug: string;
+  isCatalog: boolean;
+  hasEdit: boolean;
+  product: {
+    brand: string;
+    name: string;
+    category: Category;
+    boutique?: boolean;
+    price: number;
+    oldPrice?: number;
+    variants?: { label: string; price: number }[];
+    usd?: { label: string; usd: number }[];
+    bottle?: string;
+    description: { ru: string; uz: string };
+    images: string[];
+  };
+  onDone: () => void;
+};
 type Row = { label: string; price: string };
 
 const num = (s: string) => Number(String(s).replace(/[^\d]/g, "")) || 0;
@@ -75,27 +96,28 @@ function Field({ label, hint, error, children, id }: { label: string; hint?: str
   );
 }
 
-export function AddProduct({ token, demo }: { token?: string; demo: boolean }) {
-  const [brand, setBrand] = useState("");
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState<Category>("makeup");
-  const [boutique, setBoutique] = useState(false);
-  const [mode, setMode] = useState<"sum" | "usd">("sum");
-  const [price, setPrice] = useState("");
-  const [oldPrice, setOldPrice] = useState("");
-  const [variants, setVariants] = useState<Row[]>([]);
-  const [usd, setUsd] = useState<Row[]>([{ label: "100 ml", price: "" }]);
-  const [bottle, setBottle] = useState("");
-  const [descRu, setDescRu] = useState("");
-  const [descUz, setDescUz] = useState("");
-  const [photos, setPhotos] = useState<Photo[]>([]);
+export function AddProduct({ token, demo, edit }: { token?: string; demo: boolean; edit?: EditTarget }) {
+  const e0 = edit?.product;
+  const [brand, setBrand] = useState(e0?.brand ?? "");
+  const [name, setName] = useState(e0?.name ?? "");
+  const [category, setCategory] = useState<Category>(e0?.category ?? "makeup");
+  const [boutique, setBoutique] = useState(!!e0?.boutique);
+  const [mode, setMode] = useState<"sum" | "usd">(e0?.usd?.length ? "usd" : "sum");
+  const [price, setPrice] = useState(e0 && !e0.usd?.length && e0.price ? String(e0.price) : "");
+  const [oldPrice, setOldPrice] = useState(e0?.oldPrice ? String(e0.oldPrice) : "");
+  const [variants, setVariants] = useState<Row[]>(e0?.variants?.map((v) => ({ label: v.label, price: String(v.price) })) ?? []);
+  const [usd, setUsd] = useState<Row[]>(e0?.usd?.length ? e0.usd.map((u) => ({ label: u.label, price: String(u.usd) })) : [{ label: "100 ml", price: "" }]);
+  const [bottle, setBottle] = useState(e0?.bottle ?? "");
+  const [descRu, setDescRu] = useState(e0?.description.ru ?? "");
+  const [descUz, setDescUz] = useState(e0?.description.uz ?? "");
+  const [photos, setPhotos] = useState<Photo[]>(e0?.images.map((url) => ({ url })) ?? []);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [state, setState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [message, setMessage] = useState("");
   const [mine, setMine] = useState<ShopProductRow[]>([]);
 
-  const slug = slugify(`${brand} ${name}`);
-  const taken = products.some((p) => p.slug === slug) || mine.some((p) => p.slug === slug);
+  const slug = edit ? edit.slug : slugify(`${brand} ${name}`);
+  const taken = !edit && (products.some((p) => p.slug === slug) || mine.some((p) => p.slug === slug));
 
   const loadMine = useCallback(async () => {
     if (demo || !token) return;
@@ -158,7 +180,11 @@ export function AddProduct({ token, demo }: { token?: string; demo: boolean }) {
     }
     if (demo || !token) {
       setState("error");
-      setMessage("Это демо: сохранять некуда. Подключите базу (supabase/products.sql), войдите в админку — и товар появится на сайте сразу после сохранения.");
+      setMessage(
+        edit
+          ? "Это демо: сохранять некуда. Подключите базу (supabase/products.sql), войдите в админку — и правки появятся на сайте сразу после сохранения."
+          : "Это демо: сохранять некуда. Подключите базу (supabase/products.sql), войдите в админку — и товар появится на сайте сразу после сохранения.",
+      );
       return;
     }
     setState("saving");
@@ -172,6 +198,7 @@ export function AddProduct({ token, demo }: { token?: string; demo: boolean }) {
         }
         const blob = await toWebp(p.file);
         const path = `${slug}/${Date.now()}-${i}.webp`;
+        // фото товаров каталога лежат на сайте: в правке они остаются ссылками, новые — грузятся в хранилище
         const res = await fetch(`${SB_URL}/storage/v1/object/product-images/${path}`, {
           method: "POST",
           headers: { apikey: SB_KEY, Authorization: `Bearer ${token}`, "Content-Type": "image/webp", "x-upsert": "true" },
@@ -195,7 +222,20 @@ export function AddProduct({ token, demo }: { token?: string; demo: boolean }) {
         description_ru: descRu.trim(),
         description_uz: descUz.trim(),
         images: urls,
+        published: true,
       };
+      if (edit) {
+        // правка: запись с этим адресом создаётся или обновляется (у товара каталога — поверх него)
+        await rest("shop_products?on_conflict=slug", {
+          method: "POST",
+          token,
+          headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+          body: JSON.stringify(row),
+        });
+        setState("saved");
+        setMessage(`Изменения «${brand.trim()} ${name.trim()}» сохранены и уже видны на сайте.`);
+        return;
+      }
       await rest("shop_products", { method: "POST", token, headers: { Prefer: "return=minimal" }, body: JSON.stringify(row) });
       setState("saved");
       setMessage(`Товар «${brand.trim()} ${name.trim()}» добавлен и уже виден на сайте.`);
@@ -235,14 +275,42 @@ export function AddProduct({ token, demo }: { token?: string; demo: boolean }) {
     </div>
   );
 
+  async function resetEdit() {
+    if (!edit || demo || !token) return;
+    setState("saving");
+    try {
+      await rest(`shop_products?slug=eq.${edit.slug}`, { method: "DELETE", token, headers: { Prefer: "return=minimal" } });
+      edit.onDone();
+    } catch {
+      setState("error");
+      setMessage("Не удалось вернуть исходный вид. Проверьте интернет и попробуйте ещё раз.");
+    }
+  }
+
   return (
     <>
       <div className="mb-6">
-        <h1 className="font-display text-3xl font-medium sm:text-4xl">Добавить товар</h1>
-        <p className="mt-2 max-w-[70ch] text-sm leading-relaxed text-[var(--a-muted)]">
-          Заполните пять шагов — справа сразу видно, как карточка будет выглядеть на сайте. После «Опубликовать» товар появляется в каталоге, в своём
-          разделе и в поиске без пересборки сайта.
-        </p>
+        {edit ? (
+          <>
+            <button type="button" onClick={edit.onDone} className="a-btn a-btn-quiet -ml-3 mb-2">
+              ← К товарам
+            </button>
+            <h1 className="font-display text-3xl font-medium sm:text-4xl">Редактировать товар</h1>
+            <p className="mt-2 max-w-[70ch] text-sm leading-relaxed text-[var(--a-muted)]">
+              {edit.isCatalog
+                ? "Это товар из каталога. Ваши правки сохранятся поверх него и сразу появятся на сайте — в карточке, на странице товара и в корзине. Вернуть исходный вид можно кнопкой внизу."
+                : "Товар, добавленный через админку. Измените что нужно и нажмите «Сохранить изменения» — сайт обновится сразу."}
+            </p>
+          </>
+        ) : (
+          <>
+            <h1 className="font-display text-3xl font-medium sm:text-4xl">Добавить товар</h1>
+            <p className="mt-2 max-w-[70ch] text-sm leading-relaxed text-[var(--a-muted)]">
+              Заполните пять шагов — справа сразу видно, как карточка будет выглядеть на сайте. После «Опубликовать» товар появляется в каталоге, в своём
+              разделе и в поиске без пересборки сайта.
+            </p>
+          </>
+        )}
       </div>
 
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_22rem]">
@@ -253,7 +321,7 @@ export function AddProduct({ token, demo }: { token?: string; demo: boolean }) {
                 <input id="ap-brand" className="a-input" list="ap-brands" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="Dior" aria-invalid={!!errors.brand} />
                 <datalist id="ap-brands">{BRANDS.map((b) => <option key={b} value={b} />)}</datalist>
               </Field>
-              <Field id="ap-name" label="Название" error={errors.name} hint={slug ? `Адрес страницы: /item/?p=${slug}` : undefined}>
+              <Field id="ap-name" label="Название" error={errors.name} hint={edit ? "Адрес страницы при правке не меняется." : slug ? `Адрес страницы: /item/?p=${slug}` : undefined}>
                 <input id="ap-name" className="a-input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Glow Stick 012 Rosewood" aria-invalid={!!errors.name} />
               </Field>
             </div>
@@ -339,15 +407,27 @@ export function AddProduct({ token, demo }: { token?: string; demo: boolean }) {
             ) : null}
           </Step>
 
-          <Step n={5} title="Проверка и публикация" hint="Проверьте превью справа: бренд, название, цену и главное фото. После публикации товар можно скрыть или удалить в списке ниже.">
+          <Step n={5} title={edit ? "Проверка и сохранение" : "Проверка и публикация"} hint={edit ? "Проверьте превью справа и сохраните — изменения сразу появятся на сайте." : "Проверьте превью справа: бренд, название, цену и главное фото. После публикации товар можно скрыть или удалить в списке ниже."}>
             {message ? (
               <p className={`rounded-xl px-4 py-3 text-sm ${state === "saved" ? "bg-[rgba(143,193,154,0.12)] text-[var(--a-green)]" : "bg-[rgba(210,122,143,0.1)] text-[var(--a-rose)]"}`} role="status">
                 {message}
               </p>
             ) : null}
-            <button type="submit" className="a-btn a-btn-gold" disabled={state === "saving"}>
-              {state === "saving" ? "Публикуем…" : "Опубликовать товар"}
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button type="submit" className="a-btn a-btn-gold" disabled={state === "saving"}>
+                {state === "saving" ? (edit ? "Сохраняем…" : "Публикуем…") : edit ? "Сохранить изменения" : "Опубликовать товар"}
+              </button>
+              {edit ? (
+                <button type="button" className="a-btn a-btn-line" onClick={edit.onDone}>
+                  {state === "saved" ? "Готово" : "Отмена"}
+                </button>
+              ) : null}
+              {edit?.isCatalog && edit.hasEdit ? (
+                <button type="button" className="a-btn a-btn-quiet hover:!text-[var(--a-rose)]" onClick={resetEdit} disabled={state === "saving"}>
+                  Вернуть как в каталоге
+                </button>
+              ) : null}
+            </div>
           </Step>
         </form>
 
@@ -383,13 +463,14 @@ export function AddProduct({ token, demo }: { token?: string; demo: boolean }) {
         </aside>
       </div>
 
+      {edit ? null : (
       <section className="mt-10">
         <h2 className="mb-3 font-display text-xl">Добавленные через админку</h2>
         {demo ? (
           <p className="a-panel px-5 py-6 text-sm text-[var(--a-muted)]">В демо список пуст. Здесь будут товары, которые вы опубликуете.</p>
         ) : mine.length ? (
           <ul className="a-panel divide-y divide-[var(--a-line)]">
-            {mine.map((r) => (
+            {mine.filter((r) => !products.some((p) => p.slug === r.slug)).map((r) => (
               <li key={r.slug} className="flex flex-wrap items-center gap-3 px-5 py-3 text-sm">
                 {r.images[0] ? (
                   // eslint-disable-next-line @next/next/no-img-element -- превью
@@ -410,6 +491,7 @@ export function AddProduct({ token, demo }: { token?: string; demo: boolean }) {
           <p className="a-panel px-5 py-6 text-sm text-[var(--a-muted)]">Пока ничего не добавлено.</p>
         )}
       </section>
+      )}
     </>
   );
 }

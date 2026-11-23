@@ -4,7 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { CATEGORIES, products, type Category } from "@/data/products";
 import { STORES, formatPrice } from "@/lib/site";
 import { currentSession, isAdmin, rest, signIn, signOut, supabaseEnabled, type Session } from "@/lib/supabase";
-import { AddProduct } from "./add-product";
+import { AddProduct, type EditTarget } from "./add-product";
+import { rowToProduct, type ShopProductRow } from "@/lib/extra-products";
 import { Analytics, BarList, DailyColumns, buildDemo, dashboardData, type AEvent, type AOrder } from "./analytics";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -385,7 +386,7 @@ function Dashboard({ session, demo, onExit }: { session: Session | null; demo: b
           ) : tab === "add" ? (
             <AddProduct token={token} demo={demo} />
           ) : (
-            <Products onAdd={() => go("add")} />
+            <Products onAdd={() => go("add")} token={session?.access_token} demo={demo} />
           )}
         </div>
       </main>
@@ -641,18 +642,67 @@ function Reviews({ reviews, loading, onModerate }: { reviews: AdminReview[]; loa
 
 /* ——————————————————— товары ——————————————————— */
 
-function Products({ onAdd }: { onAdd: () => void }) {
+type ListItem = (typeof products)[number] & { origin: "catalog" | "edited" | "admin"; hidden?: boolean };
+
+function Products({ onAdd, token, demo }: { onAdd: () => void; token?: string; demo: boolean }) {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<Category | "all" | "boutique">("all");
+  const [rows, setRows] = useState<ShopProductRow[]>([]);
+  const [editing, setEditing] = useState<EditTarget | null>(null);
+
+  // товары из админки и правки товаров каталога (таблица shop_products)
+  const load = useCallback(async () => {
+    if (demo || !token) return;
+    try {
+      setRows(await rest<ShopProductRow[]>("shop_products?select=*&order=created_at.desc", { token }));
+    } catch {
+      /* таблицы ещё нет */
+    }
+  }, [demo, token]);
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const all = useMemo<ListItem[]>(() => {
+    const bySlug = new Map(rows.map((r) => [r.slug, r]));
+    const catalog = products.map((p): ListItem => {
+      const r = bySlug.get(p.slug);
+      if (!r) return { ...p, origin: "catalog" };
+      const e = rowToProduct(r);
+      return { ...p, ...e, images: e.images.length ? e.images : p.images, dynamic: false, origin: "edited" };
+    });
+    const added = rows
+      .filter((r) => !products.some((p) => p.slug === r.slug))
+      .map((r): ListItem => ({ ...rowToProduct(r), origin: "admin", hidden: !r.published }));
+    return [...added, ...catalog];
+  }, [rows]);
+
   const list = useMemo(() => {
     const query = q.trim().toLowerCase();
-    return products.filter(
+    return all.filter(
       (p) =>
         (cat === "all" || (cat === "boutique" ? p.boutique : p.category === cat)) &&
         (!query || `${p.brand} ${p.name}`.toLowerCase().includes(query)),
     );
-  }, [q, cat]);
-  const price = (p: (typeof products)[number]) =>
+  }, [q, cat, all]);
+
+  const startEdit = (p: ListItem) => {
+    window.scrollTo({ top: 0 });
+    setEditing({
+      slug: p.slug,
+      isCatalog: p.origin !== "admin",
+      hasEdit: p.origin === "edited",
+      product: p,
+      onDone: () => {
+        setEditing(null);
+        load();
+      },
+    });
+  };
+
+  if (editing) return <AddProduct key={editing.slug} token={token} demo={demo} edit={editing} />;
+
+  const price = (p: ListItem) =>
     p.usd ? p.usd.map((u) => `${u.label}: ${u.usd} $`).join(" · ") : p.variants && p.variants.length > 1 ? `от ${sum(Math.min(...p.variants.map((v) => v.price)))}` : sum(p.price);
   return (
     <>
@@ -662,7 +712,8 @@ function Products({ onAdd }: { onAdd: () => void }) {
         </button>
       </Head>
       <p className="a-panel mb-5 px-4 py-3 text-sm text-[var(--a-muted)]">
-        Здесь все {products.length} товаров сайта. Новые товары добавляйте кнопкой «Добавить товар» — они появятся на сайте сразу. Товары из файлов проекта меняются в коде.
+        Здесь все {all.length} товаров сайта. Любой товар можно изменить кнопкой «Редактировать» — цену, название, описание, фото, варианты. Изменения
+        видны на сайте сразу, без пересборки. Новые товары — кнопкой «Добавить товар».
       </p>
       <div className="mb-4 flex flex-col gap-2 sm:flex-row">
         <input className="a-input sm:max-w-sm" type="search" placeholder="Поиск по названию или бренду" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Поиск товаров" />
@@ -675,7 +726,7 @@ function Products({ onAdd }: { onAdd: () => void }) {
         </select>
       </div>
       <div className="a-panel overflow-x-auto">
-        <table className="w-full min-w-[40rem] text-left text-sm">
+        <table className="w-full min-w-[46rem] text-left text-sm">
           <thead className="text-xs text-[var(--a-muted)]">
             <tr className="border-b border-[var(--a-line)]">
               <th className="px-4 py-3 font-medium">Товар</th>
@@ -699,14 +750,30 @@ function Products({ onAdd }: { onAdd: () => void }) {
                       <span className="block text-xs text-[var(--a-muted)]">{p.brand}</span>
                       <span className="block truncate">{p.name}</span>
                     </span>
+                    {p.origin === "edited" ? <span className="a-chip shrink-0 text-[var(--a-gold)]">изменён</span> : null}
+                    {p.origin === "admin" ? <span className="a-chip shrink-0 text-[var(--a-blue)]">{p.hidden ? "скрыт" : "из админки"}</span> : null}
                   </div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2.5 text-[var(--a-muted)]">{p.boutique ? "Maison De Mari" : CATEGORY_RU[p.category]}</td>
                 <td className="a-num whitespace-nowrap px-4 py-2.5">{price(p)}</td>
-                <td className="px-4 py-2.5 text-right">
-                  <a className="a-btn a-btn-quiet" href={`${BASE}/ru/p/${p.slug}/`} target="_blank" rel="noopener">
-                    Открыть
-                  </a>
+                <td className="px-4 py-2.5">
+                  <div className="flex justify-end gap-1.5">
+                    <button type="button" className="a-btn a-btn-line" onClick={() => startEdit(p)}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4Z" />
+                        <path d="m13.5 6.5 4 4" />
+                      </svg>
+                      Редактировать
+                    </button>
+                    <a
+                      className="a-btn a-btn-quiet"
+                      href={p.origin === "admin" ? `${BASE}/ru/item/?p=${p.slug}` : `${BASE}/ru/p/${p.slug}/`}
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      Открыть
+                    </a>
+                  </div>
                 </td>
               </tr>
             ))}

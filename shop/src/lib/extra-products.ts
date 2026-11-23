@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { registerExtra, type Category, type ProductWithImages } from "@/data/products";
+import { getProduct, isCatalogSlug, registerExtra, type Category, type ProductWithImages } from "@/data/products";
 import { rest, supabaseEnabled } from "./supabase";
 
 /** Строка таблицы shop_products (supabase/products.sql) */
@@ -53,7 +53,8 @@ export function loadExtraProducts(): Promise<ProductWithImages[]> {
       .then((rows) => {
         const list = rows.map(rowToProduct);
         registerExtra(list);
-        return list;
+        // правки товаров каталога уже применены к ним; новыми товарами считаем только остальные
+        return list.filter((p) => !isCatalogSlug(p.slug));
       })
       .catch(() => []);
   }
@@ -70,6 +71,12 @@ export function useExtraProducts() {
     };
   }, []);
   return list;
+}
+
+/** Товар с учётом правок из админки: компонент перерисуется, когда правки загрузятся */
+export function useLiveProduct(slug: string) {
+  useExtraProducts();
+  return getProduct(slug);
 }
 
 /** Ссылка на страницу товара: у товаров из админки своя страница */

@@ -434,9 +434,31 @@ export const products: ProductWithImages[] = data.map((p) => ({
 
 /** Товары из админки — подгружаются в браузере (lib/extra-products.ts) */
 const extra = new Map<string, ProductWithImages>();
+/** Товары из админки. Если slug совпадает с товаром каталога — это его правка: поля заменяются */
 export function registerExtra(list: ProductWithImages[]) {
-  for (const p of list) if (!products.some((s) => s.slug === p.slug)) extra.set(p.slug, p);
+  for (const p of list) {
+    const s = products.find((x) => x.slug === p.slug);
+    if (!s) {
+      extra.set(p.slug, p);
+      continue;
+    }
+    Object.assign(s, {
+      brand: p.brand,
+      name: p.name,
+      category: p.category,
+      price: p.price,
+      oldPrice: p.oldPrice,
+      variants: p.variants,
+      usd: p.usd,
+      bottle: p.bottle,
+      description: p.description,
+      boutique: p.boutique,
+      images: p.images.length ? p.images : s.images,
+    });
+  }
 }
+
+export const isCatalogSlug = (slug: string) => products.some((p) => p.slug === slug);
 
 export function getProduct(slug: string) {
   return products.find((p) => p.slug === slug) ?? extra.get(slug);

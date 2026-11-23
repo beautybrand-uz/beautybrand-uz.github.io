@@ -4,14 +4,17 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useCart } from "./cart";
 import { TelegramIcon } from "./cart-drawer";
-import { getProduct } from "@/data/products";
+import { useLiveProduct } from "@/lib/extra-products";
 import { track } from "@/lib/track";
 import { getDict, type Locale } from "@/lib/i18n";
 import { TELEGRAM, formatPrice, telegramLink } from "@/lib/site";
 
 type Slide = { kind: "image"; src: string } | { kind: "video"; src: string; poster: string };
 
-export function Gallery({ images, video, alt }: { images: string[]; video?: string; alt: string }) {
+export function Gallery({ images: base, video, alt, slug }: { images: string[]; video?: string; alt: string; slug?: string }) {
+  // фото из правки в админке, если она есть
+  const live = useLiveProduct(slug ?? "");
+  const images = slug && live ? live.images : base;
   const slides: Slide[] = [
     ...images.map((src) => ({ kind: "image" as const, src })),
     ...(video ? [{ kind: "video" as const, src: video, poster: images[0] ?? "" }] : []),
@@ -67,7 +70,7 @@ export function Gallery({ images, video, alt }: { images: string[]; video?: stri
 
 export function BuyBox({ slug, lang }: { slug: string; lang: Locale }) {
   const t = getDict(lang);
-  const p = getProduct(slug)!;
+  const p = useLiveProduct(slug)!;
   const { add, setOpen } = useCart();
   useEffect(() => track("view", slug), [slug]);
   // флаконы под заказ (цена в $) заказываются через Telegram, а не через корзину
@@ -164,4 +167,11 @@ export function BuyBox({ slug, lang }: { slug: string; lang: Locale }) {
       </div>
     </div>
   );
+}
+
+/** Название или описание товара с учётом правок из админки (до загрузки — текст из каталога) */
+export function LiveText({ slug, field, lang, fallback }: { slug: string; field: "name" | "description"; lang: Locale; fallback: string }) {
+  const p = useLiveProduct(slug);
+  if (!p) return <>{fallback}</>;
+  return <>{field === "name" ? p.name : p.description[lang]}</>;
 }

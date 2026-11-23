@@ -156,6 +156,7 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
   const qty = lines.filter((l) => l.slug === p.slug && l.variant === quick).reduce((n, l) => n + l.qty, 0);
   const href = productHref(lang, p);
   const sales = useSales();
+  useExtraProducts(); // перерисовать карточку, когда придут правки из админки
   const ordered = sales.orders.get(p.slug) ?? 0;
   const hit = sales.hits.has(p.slug);
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BuyBox, Gallery } from "@/components/product-client";
+import { BuyBox, Gallery, LiveText } from "@/components/product-client";
 import { ProductDetails } from "@/components/product-details";
 import { SalesNote } from "@/components/sales-note";
 import { ProductReviews } from "@/components/reviews";
@@ -62,15 +62,15 @@ export default async function ProductPage({ params }: PageProps<"/[lang]/p/[slug
 
       <div className="mt-3 grid gap-6 font-product md:grid-cols-[minmax(0,19rem)_minmax(0,1fr)] md:gap-8 xl:grid-cols-[minmax(0,21rem)_minmax(0,1fr)_minmax(0,24rem)] xl:gap-10">
         <div className="mx-auto w-full max-w-[21rem] md:mx-0">
-          <Gallery images={p.images} video={p.video} alt={`${p.brand} ${p.name}`} />
+          <Gallery images={p.images} video={p.video} alt={`${p.brand} ${p.name}`} slug={p.slug} />
         </div>
         <div className="min-w-0 md:pt-1">
           <p className="text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-cocoa">{p.brand}</p>
           <h1 className="mt-1.5 text-[1.65rem] font-semibold leading-[1.08] tracking-[-0.03em] text-balance sm:text-[2rem]">
-            {p.name}
+            <LiveText slug={p.slug} field="name" lang={lang} fallback={p.name} />
           </h1>
           <SalesNote slug={p.slug} lang={lang} />
-          <p className="mt-3 max-w-[60ch] text-[0.95rem] leading-relaxed">{p.description[lang]}</p>
+          <p className="mt-3 max-w-[60ch] text-[0.95rem] leading-relaxed"><LiveText slug={p.slug} field="description" lang={lang} fallback={p.description[lang]} /></p>
           <BuyBox slug={p.slug} lang={lang} />
           <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-1.5 border-t border-line pt-4 text-[0.82rem] text-cocoa">
             <li>{t.product.original}</li>
