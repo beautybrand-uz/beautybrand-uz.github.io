@@ -27,6 +27,12 @@ const COVER: Record<Category, string> = {
   sets: "charlotte-tilbury-hollywood-beauty-wonderland",
 };
 
+// Где на картинке главный предмет: верх кадра не обрезаем, чтобы флаконы и палетки стояли ровно
+const FOCUS: Partial<Record<Category, string>> = {
+  makeup: "object-[center_25%]",
+  skin: "object-[center_35%]",
+};
+
 // Размер плитки в сетке: макияж — главный, уход за лицом — широкий
 const SPAN: Partial<Record<Category, string>> = {
   makeup: "col-span-2 row-span-2",
@@ -61,7 +67,7 @@ export function CategoryPromos({ lang }: { lang: Locale }) {
                   alt=""
                   fill
                   sizes={big ? "(min-width: 768px) 50vw, 100vw" : "(min-width: 768px) 25vw, 50vw"}
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                  className={`object-cover transition-transform duration-700 group-hover:scale-[1.05] ${FOCUS[c] ?? "object-center"}`}
                 />
               ) : null}
               <span className="absolute inset-0 bg-[linear-gradient(180deg,rgba(42,26,21,0)_25%,rgba(42,26,21,0.55)_60%,rgba(42,26,21,0.9)_100%)]" />
