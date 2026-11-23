@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { priceLabel } from "@/lib/price";
+import { Tilt } from "./tilt";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useCart } from "./cart";
@@ -161,7 +162,8 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
   return (
     <article className="group flex h-full flex-col font-product">
       <div className="relative">
-      <Link href={href} className="relative block aspect-[4/5] overflow-hidden rounded-xl bg-well">
+      <Tilt max={7} radius="0.75rem">
+      <Link href={href} className="card-3d relative block aspect-[4/5] overflow-hidden rounded-xl bg-well">
         {p.images[0] ? (
           <Image
             src={p.images[0]}
@@ -188,7 +190,8 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
           </span>
         ) : null}
       </Link>
-      <div className="absolute bottom-2.5 right-2.5">
+      </Tilt>
+      <div className="absolute bottom-2.5 right-2.5 z-20">
           {p.usd ? (
             <Link
               href={href}

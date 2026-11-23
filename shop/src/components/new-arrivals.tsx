@@ -7,6 +7,7 @@ import { getDetails } from "@/data/details";
 import { products } from "@/data/products";
 import type { Locale } from "@/lib/i18n";
 import { priceLabel } from "@/lib/price";
+import { Tilt } from "./tilt";
 
 const COUNT = 5;
 
@@ -36,9 +37,9 @@ export function NewArrivals({ lang }: { lang: Locale }) {
 
   return (
     <section aria-labelledby="na-title" className="shell pt-16">
-      <div className="na-stage relative isolate overflow-hidden rounded-[2rem] bg-[#efe5da] px-4 py-6 sm:px-7 md:px-10 md:py-8">
+      <div className="na-stage panel-3d relative isolate overflow-hidden rounded-[2rem] bg-[#efe5da] px-4 py-6 sm:px-7 md:px-10 md:py-8">
         {/* фоновая надпись и мягкое свечение */}
-        <span aria-hidden className="pointer-events-none absolute -right-6 -top-10 -z-10 select-none font-script text-[6rem] leading-none text-[#e3d2bf] sm:text-[8.5rem]">
+        <span aria-hidden className="pointer-events-none absolute bottom-5 right-8 -z-10 hidden select-none font-script text-[6.5rem] leading-[1.2] text-[#e3d2bf] md:block lg:text-[8rem]">
           Nouveauté
         </span>
         <span aria-hidden className="pointer-events-none absolute -bottom-32 -left-24 -z-10 size-[20rem] rounded-full bg-[radial-gradient(circle,rgba(201,164,104,0.35),transparent_65%)]" />
@@ -72,7 +73,8 @@ export function NewArrivals({ lang }: { lang: Locale }) {
 
         <div className="mt-6 grid items-center gap-8 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:gap-12 lg:grid-cols-[minmax(0,17rem)_minmax(0,1fr)]">
           {/* колода: следующие две новинки выглядывают из-за текущей */}
-          <div className="relative mx-auto aspect-[4/5] w-[min(78%,17rem)] md:w-full">
+          <Tilt className="mx-auto w-[min(78%,17rem)] md:w-full" max={10} radius="1.6rem">
+          <div className="relative aspect-[4/5] w-full">
             {[2, 1].map((off) => {
               const q = list[(i + off) % n];
               return n > off ? (
@@ -90,7 +92,7 @@ export function NewArrivals({ lang }: { lang: Locale }) {
             <Link
               key={p.slug}
               href={`/${lang}/p/${p.slug}`}
-              className="na-front group absolute inset-0 block overflow-hidden rounded-[1.6rem] bg-white shadow-[0_34px_60px_-30px_rgba(42,26,21,0.7)]"
+              className="na-front card-3d group absolute inset-0 block overflow-hidden rounded-[1.6rem] bg-white shadow-[0_34px_60px_-30px_rgba(42,26,21,0.7)]"
             >
               <Image
                 src={p.images[0]}
@@ -104,6 +106,7 @@ export function NewArrivals({ lang }: { lang: Locale }) {
               </span>
             </Link>
           </div>
+          </Tilt>
 
           {/* текст меняется вместе с карточкой */}
           <div className="min-w-0">

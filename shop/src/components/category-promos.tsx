@@ -6,6 +6,7 @@ import Link from "next/link";
 import { CATEGORIES, products, type Category } from "@/data/products";
 import { getDict, type Locale } from "@/lib/i18n";
 import { formatPrice } from "@/lib/site";
+import { Tilt } from "@/components/tilt";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -49,10 +50,10 @@ export function CategoryPromos({ lang }: { lang: Locale }) {
           const cover = bannerFor(c) ?? products.find((p) => p.slug === COVER[c])?.images[0];
           const big = c === "makeup";
           return (
+            <Tilt key={c} className={SPAN[c] ?? ""} max={big ? 4 : 7} radius="1rem">
             <Link
-              key={c}
               href={c === "fragrance" ? `/${lang}/maison` : `/${lang}/c/${c}`}
-              className={`group relative flex overflow-hidden rounded-2xl bg-well ${SPAN[c] ?? ""}`}
+              className="card-3d group relative flex h-full overflow-hidden rounded-2xl bg-well"
             >
               {cover ? (
                 <Image
@@ -87,13 +88,15 @@ export function CategoryPromos({ lang }: { lang: Locale }) {
                 </span>
               </span>
             </Link>
+            </Tilt>
           );
         })}
 
         {sale?.oldPrice ? (
+          <Tilt className="col-span-2 md:col-span-1" max={7} radius="1rem">
           <Link
             href={`/${lang}/p/${sale.slug}`}
-            className="group relative col-span-2 flex items-center gap-4 overflow-hidden rounded-2xl bg-rose p-4 text-white md:col-span-1 md:flex-col md:items-start md:justify-between sm:p-5"
+            className="card-3d group relative flex h-full items-center gap-4 overflow-hidden rounded-2xl bg-rose p-4 text-white md:flex-col md:items-start md:justify-between sm:p-5"
           >
             <span>
               <span className="block text-sm font-semibold text-white/80">{t.promo.sale}</span>
@@ -107,6 +110,7 @@ export function CategoryPromos({ lang }: { lang: Locale }) {
               <span className="mt-1 block text-sm font-semibold">{formatPrice(sale.price, t.currency)}</span>
             </span>
           </Link>
+          </Tilt>
         ) : null}
       </div>
     </section>

@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { products } from "@/data/products";
 import type { Locale } from "@/lib/i18n";
 import { priceLabel } from "@/lib/price";
+import { Tilt } from "./tilt";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -71,7 +72,8 @@ export function HeroDeck({ lang }: { lang: Locale }) {
         <Image src={`${BASE}/brand/hero/stilllife.webp`} alt="" fill sizes="40vw" className="deck-glow rounded-[3rem] object-cover opacity-45 blur-2xl" />
       </div>
 
-      <section aria-roledescription="carousel" aria-label={t.label} className="relative aspect-[4/5] w-[min(100%,23rem)] lg:w-[min(100%,calc((100svh-15rem)*0.8),26rem)]">
+      <Tilt className="w-[min(100%,23rem)] lg:w-[min(100%,calc((100svh-15rem)*0.8),26rem)]" max={6} lift={1.01} radius="1.8rem">
+      <section aria-roledescription="carousel" aria-label={t.label} className="relative aspect-[4/5] w-full">
         <AnimatePresence initial={false} custom={exit}>
           {shown
             .slice()
@@ -93,6 +95,7 @@ export function HeroDeck({ lang }: { lang: Locale }) {
             ))}
         </AnimatePresence>
       </section>
+      </Tilt>
 
       {/* управление без перетаскивания: стрелки и точки */}
       <div className="mt-6 flex items-center gap-4">
@@ -194,7 +197,7 @@ function DeckCard(props: {
         tabIndex={top ? 0 : -1}
         draggable={false}
         onClick={(e) => dragged.current && e.preventDefault()}
-        className="flex h-full flex-col overflow-hidden rounded-[1.8rem] border border-white/80 bg-white p-2.5 shadow-[0_30px_60px_-28px_rgba(42,26,21,0.55)]"
+        className="card-3d relative flex h-full flex-col overflow-hidden rounded-[1.8rem] border border-white/80 bg-white p-2.5 shadow-[0_30px_60px_-28px_rgba(42,26,21,0.55)]"
       >
         <span className="relative block min-h-0 flex-1 overflow-hidden rounded-[1.35rem] bg-well">
           <Image src={image} alt={`${brand} ${name}`} fill priority={depth === 0} sizes="(min-width: 1024px) 26rem, 80vw" draggable={false} className="pointer-events-none select-none object-cover" />

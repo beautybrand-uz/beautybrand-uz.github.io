@@ -6,6 +6,7 @@ import { ProductCard } from "./catalog";
 import { MOODS, MOOD_OF, type Mood } from "@/data/moods";
 import { products } from "@/data/products";
 import { getDict, type Locale } from "@/lib/i18n";
+import { Tilt } from "./tilt";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -31,12 +32,12 @@ export function MoodFinder({ lang, images }: { lang: Locale; images: Partial<Rec
           const dim = mood !== null && !active;
           const fallback = products.find((p) => p.boutique && MOOD_OF[p.slug] === m)?.images[0] ?? "";
           return (
+            <Tilt key={m} max={8} radius="1.6rem">
             <button
-              key={m}
               type="button"
               aria-pressed={active}
               onClick={() => setMood(active ? null : m)}
-              className={`mood-card group relative aspect-[3/4] overflow-hidden rounded-[1.6rem] text-left transition-[transform,opacity,filter] duration-500 ${
+              className={`mood-card card-3d group relative block aspect-[3/4] w-full overflow-hidden rounded-[1.6rem] text-left transition-[transform,opacity,filter] duration-500 ${
                 active ? "mood-active" : ""
               } ${dim ? "opacity-55 saturate-[0.6]" : ""}`}
             >
@@ -67,6 +68,7 @@ export function MoodFinder({ lang, images }: { lang: Locale; images: Partial<Rec
                 </svg>
               </span>
             </button>
+            </Tilt>
           );
         })}
       </div>
