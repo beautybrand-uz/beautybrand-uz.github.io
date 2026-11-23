@@ -12,16 +12,14 @@ import { TELEGRAM, telegramLink } from "@/lib/site";
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /**
- * «Новинки в движении»: большая сторис с роликом из канала (полоски прогресса в такт видео)
- * и парящие вокруг карточки свежих поступлений с параллаксом — reel-stage.tsx.
+ * «Новинки в движении»: ролик-«кружочек» как видеосообщение в Telegram, текст и свежие
+ * поступления в одну компактную строку — reel-stage.tsx.
  */
 const REEL_T = {
   ru: { kicker: "Reels · Telegram", title: "Новинки в движении", subs: "подписчиков уже смотрят", watch: "Смотреть в канале", now: "свежий ролик" },
   uz: { kicker: "Reels · Telegram", title: "Yangiliklar harakatda", subs: "obunachi allaqachon kuzatmoqda", watch: "Kanalda ko‘rish", now: "yangi rolik" },
 } as const;
 
-/** Сколько товаров показано в ролике new-arrivals.mp4 — столько полосок у сторис */
-const REEL_SEGMENTS = 6;
 
 export function NewArrivalsReel({ lang }: { lang: Locale }) {
   const t = getDict(lang);
@@ -32,38 +30,36 @@ export function NewArrivalsReel({ lang }: { lang: Locale }) {
     .slice(0, 4);
   return (
     <section className="reel-band relative isolate overflow-hidden bg-[#1b1310] text-paper">
-      <span aria-hidden className="pointer-events-none absolute left-1/2 top-[62%] -z-10 size-[56rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(201,164,104,0.3),rgba(168,76,92,0.14)_38%,transparent_66%)]" />
+      <span aria-hidden className="pointer-events-none absolute left-[18%] top-1/2 -z-10 size-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(201,164,104,0.22),rgba(168,76,92,0.1)_38%,transparent_66%)]" />
       <span aria-hidden className="reel-dust pointer-events-none absolute inset-0 -z-10" />
       {/* тонкая золотая линия-разделитель сверху, чтобы блок не сливался с бутиком */}
       <span aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#c9a468]/60 to-transparent" />
 
-      <div className="shell py-16 lg:py-24">
-        <div className="mx-auto max-w-[44rem] text-center">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#c9a468]">{r.kicker}</p>
-          <h2 className="mt-3 font-display text-4xl font-medium leading-[1.05] tracking-[-0.02em] sm:text-6xl">{r.title}</h2>
-          <p className="mx-auto mt-4 max-w-[46ch] leading-relaxed text-paper/70">{t.home.newText}</p>
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-5">
-            <a href={telegramLink(TELEGRAM.channel)} target="_blank" rel="noopener" className="btn bg-paper text-ink hover:bg-[#f3dfb2]">
-              <TelegramIcon />
-              {t.home.newCta}
-            </a>
-            <p className="text-left leading-tight">
-              <span className="block font-display text-2xl text-[#f3dfb2]">6 300+</span>
-              <span className="text-xs text-paper/60">{r.subs}</span>
-            </p>
-          </div>
-        </div>
-
+      <div className="shell py-12 lg:py-14">
         <ReelStage
           video={`${BASE}/videos/new-arrivals.mp4`}
           poster={fresh[0]?.images[0]}
-          segments={REEL_SEGMENTS}
           lang={lang}
           channel="beauty_branduz"
           channelHref={telegramLink(TELEGRAM.channel)}
-          watch={r.watch}
-          now={r.now}
           items={fresh.map((p) => ({ slug: p.slug, brand: p.brand, name: p.name, image: p.images[0], price: priceLabel(p, lang) }))}
+          intro={
+            <>
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#c9a468]">{r.kicker}</p>
+              <h2 className="mt-2 font-display text-3xl font-medium leading-[1.05] tracking-[-0.02em] sm:text-4xl">{r.title}</h2>
+              <p className="mt-3 max-w-[40ch] text-[0.95rem] leading-relaxed text-paper/70">{t.home.newText}</p>
+              <div className="mt-6 flex flex-wrap items-center gap-5">
+                <a href={telegramLink(TELEGRAM.channel)} target="_blank" rel="noopener" className="btn bg-paper text-ink hover:bg-[#f3dfb2]">
+                  <TelegramIcon />
+                  {t.home.newCta}
+                </a>
+                <p className="leading-tight">
+                  <span className="block font-display text-2xl text-[#f3dfb2]">6 300+</span>
+                  <span className="text-xs text-paper/60">{r.subs}</span>
+                </p>
+              </div>
+            </>
+          }
         />
       </div>
     </section>
