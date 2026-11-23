@@ -1,9 +1,8 @@
 import { Swatch } from "@/components/swatch";
 import fs from "node:fs";
 import path from "node:path";
-import Image from "next/image";
 import Link from "next/link";
-import { Tilt } from "./tilt";
+import { ReelStage } from "./reel-stage";
 import { priceLabel } from "@/lib/price";
 import { TelegramIcon } from "./cart-drawer";
 import { BRANDS, products } from "@/data/products";
@@ -13,13 +12,16 @@ import { TELEGRAM, telegramLink } from "@/lib/site";
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /**
- * «Новинки в движении»: тёмная витрина — ролик из канала в реалистичном телефоне (рамка, «островок»,
- * кнопки, блик, отражение, 3D-наклон), слева — призыв в Telegram, справа — свежие поступления с ценами.
+ * «Новинки в движении»: большая сторис с роликом из канала (полоски прогресса в такт видео)
+ * и парящие вокруг карточки свежих поступлений с параллаксом — reel-stage.tsx.
  */
 const REEL_T = {
-  ru: { kicker: "Reels · Telegram", title: "Новинки в движении", fresh: "Свежие поступления", subs: "подписчиков уже смотрят" },
-  uz: { kicker: "Reels · Telegram", title: "Yangiliklar harakatda", fresh: "Yangi kelganlar", subs: "obunachi allaqachon kuzatmoqda" },
+  ru: { kicker: "Reels · Telegram", title: "Новинки в движении", subs: "подписчиков уже смотрят", watch: "Смотреть в канале", now: "свежий ролик" },
+  uz: { kicker: "Reels · Telegram", title: "Yangiliklar harakatda", subs: "obunachi allaqachon kuzatmoqda", watch: "Kanalda ko‘rish", now: "yangi rolik" },
 } as const;
+
+/** Сколько товаров показано в ролике new-arrivals.mp4 — столько полосок у сторис */
+const REEL_SEGMENTS = 6;
 
 export function NewArrivalsReel({ lang }: { lang: Locale }) {
   const t = getDict(lang);
@@ -30,78 +32,39 @@ export function NewArrivalsReel({ lang }: { lang: Locale }) {
     .slice(0, 4);
   return (
     <section className="reel-band relative isolate overflow-hidden bg-[#1b1310] text-paper">
-      {/* тёплый свет за телефоном и золотая пыль */}
-      <span aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 -z-10 size-[44rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(201,164,104,0.28),rgba(168,76,92,0.12)_40%,transparent_68%)]" />
+      <span aria-hidden className="pointer-events-none absolute left-1/2 top-[62%] -z-10 size-[56rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(201,164,104,0.3),rgba(168,76,92,0.14)_38%,transparent_66%)]" />
       <span aria-hidden className="reel-dust pointer-events-none absolute inset-0 -z-10" />
+      {/* тонкая золотая линия-разделитель сверху, чтобы блок не сливался с бутиком */}
+      <span aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#c9a468]/60 to-transparent" />
 
-      <div className="shell grid items-center gap-12 py-16 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-14 lg:py-24">
-        <div className="order-2 min-w-0 lg:order-1">
+      <div className="shell py-16 lg:py-24">
+        <div className="mx-auto max-w-[44rem] text-center">
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#c9a468]">{r.kicker}</p>
-          <h2 className="mt-3 font-display text-4xl font-medium leading-[1.05] tracking-[-0.02em] sm:text-5xl">{r.title}</h2>
-          <p className="mt-4 max-w-[40ch] leading-relaxed text-paper/70">{t.home.newText}</p>
-          <div className="mt-8 flex flex-wrap items-center gap-5">
+          <h2 className="mt-3 font-display text-4xl font-medium leading-[1.05] tracking-[-0.02em] sm:text-6xl">{r.title}</h2>
+          <p className="mx-auto mt-4 max-w-[46ch] leading-relaxed text-paper/70">{t.home.newText}</p>
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-5">
             <a href={telegramLink(TELEGRAM.channel)} target="_blank" rel="noopener" className="btn bg-paper text-ink hover:bg-[#f3dfb2]">
               <TelegramIcon />
               {t.home.newCta}
             </a>
-            <p className="leading-tight">
+            <p className="text-left leading-tight">
               <span className="block font-display text-2xl text-[#f3dfb2]">6 300+</span>
               <span className="text-xs text-paper/60">{r.subs}</span>
             </p>
           </div>
         </div>
 
-        {/* телефон */}
-        <div className="order-1 mx-auto lg:order-2">
-          <Tilt className="w-[min(16.5rem,68vw)] lg:w-[17.5rem]" max={9} radius="2.9rem">
-            <div className="reel-phone relative rounded-[2.9rem] p-[0.55rem]">
-              <span aria-hidden className="absolute -left-[3px] top-[22%] h-10 w-[3px] rounded-l bg-[#8f8174]" />
-              <span aria-hidden className="absolute -left-[3px] top-[34%] h-14 w-[3px] rounded-l bg-[#8f8174]" />
-              <span aria-hidden className="absolute -right-[3px] top-[30%] h-20 w-[3px] rounded-r bg-[#8f8174]" />
-              <div className="relative overflow-hidden rounded-[2.35rem] bg-black">
-                <video
-                  className="aspect-[9/16] w-full object-cover"
-                  src={`${BASE}/videos/new-arrivals.mp4`}
-                  poster={fresh[0]?.images[0]}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  aria-label={r.title}
-                />
-                <span aria-hidden className="absolute left-1/2 top-2.5 h-[1.55rem] w-[5.4rem] -translate-x-1/2 rounded-full bg-black" />
-                <span aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.16)_0%,rgba(255,255,255,0)_32%)]" />
-              </div>
-            </div>
-          </Tilt>
-          {/* отражение на «полу» */}
-          <span aria-hidden className="mx-auto mt-5 block h-4 w-[70%] rounded-[50%] bg-black/60 blur-md" />
-        </div>
-
-        {/* свежие поступления */}
-        <div className="order-3 min-w-0">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-paper/55">{r.fresh}</p>
-          <ul className="mt-4 space-y-2.5">
-            {fresh.map((p, i) => (
-              <li key={p.slug} className="reel-chip" style={{ animationDelay: `${i * 0.9}s` }}>
-                <Link
-                  href={`/${lang}/p/${p.slug}`}
-                  className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-2 pr-4 backdrop-blur transition-colors hover:border-[#c9a468]/60 hover:bg-white/[0.1]"
-                >
-                  <span className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-white">
-                    <Image src={p.images[0]} alt="" fill sizes="56px" className="object-cover transition-transform duration-500 group-hover:scale-110" />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[0.66rem] font-semibold uppercase tracking-[0.14em] text-paper/55">{p.brand}</span>
-                    <span className="block truncate text-[0.92rem] font-medium">{p.name}</span>
-                  </span>
-                  <span className="shrink-0 text-sm font-semibold text-[#f3dfb2]">{priceLabel(p, lang)}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ReelStage
+          video={`${BASE}/videos/new-arrivals.mp4`}
+          poster={fresh[0]?.images[0]}
+          segments={REEL_SEGMENTS}
+          lang={lang}
+          channel="beauty_branduz"
+          channelHref={telegramLink(TELEGRAM.channel)}
+          watch={r.watch}
+          now={r.now}
+          items={fresh.map((p) => ({ slug: p.slug, brand: p.brand, name: p.name, image: p.images[0], price: priceLabel(p, lang) }))}
+        />
       </div>
     </section>
   );

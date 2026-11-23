@@ -40,7 +40,7 @@ const localBusiness = {
     opens: h.open,
     closes: h.close,
   })),
-  sameAs: [telegramLink(TELEGRAM.channel)],
+  sameAs: [telegramLink(TELEGRAM.channel), "https://www.instagram.com/beautybranduz/", "https://www.tiktok.com/@beautybranduz"],
 };
 
 export default async function Home({ params }: PageProps<"/[lang]">) {

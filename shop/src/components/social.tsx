@@ -6,8 +6,8 @@ import { PHONE, TELEGRAM } from "@/lib/site";
  */
 export const SOCIAL = {
   telegram: `https://t.me/${TELEGRAM.channel}`,
+  instagram: "https://www.instagram.com/beautybranduz/",
   whatsapp: `https://wa.me/${PHONE.tel.replace(/\D/g, "")}`,
-  instagram: "", // например https://instagram.com/beautybrand.uz
   tiktok: "https://www.tiktok.com/@beautybranduz",
 };
 
