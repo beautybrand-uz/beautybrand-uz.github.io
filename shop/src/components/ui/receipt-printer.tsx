@@ -430,47 +430,130 @@ export function ReceiptPrinter({
             </motion.div>
           )}
 
-          {/* ---- the printer, from above ---- */}
+          {/* ---- the printer, from above: pearl-matte body, lid, black-glass control panel ---- */}
           <div
             className="absolute"
             style={{ left: u(20), top: u(640), width: u(400), height: u(240) }}
           >
-            {/* body */}
+            {/* ambient occlusion on the table, then the soft cast shadow */}
             <div
-              className="absolute inset-0"
+              aria-hidden
+              className="absolute"
               style={{
-                borderRadius: u(40),
-                background:
-                  "linear-gradient(180deg, #f6f4ef 0%, #ebe8e1 55%, #dedad1 100%)",
-                boxShadow: `inset 0 ${u(2)} ${u(1)} rgb(255 255 255 / 0.9), inset 0 ${u(-6)} ${u(10)} rgb(120 110 95 / 0.18), 0 ${u(2)} ${u(3)} rgb(60 50 40 / 0.18), ${u(10)} ${u(26)} ${u(40)} ${u(-8)} rgb(60 50 40 / 0.4)`,
+                inset: `${u(10)} ${u(4)} ${u(-14)} ${u(4)}`,
+                borderRadius: u(48),
+                background: "rgb(40 30 22 / 0.55)",
+                filter: `blur(${u(16)})`,
+                transform: `translate(${u(8)}, ${u(14)})`,
               }}
             />
-            {/* lid seam */}
+            <div
+              aria-hidden
+              className="absolute"
+              style={{ inset: `${u(2)} ${u(10)} ${u(-4)}`, borderRadius: u(44), background: "rgb(30 22 16 / 0.5)", filter: `blur(${u(3)})` }}
+            />
+
+            {/* body shell: 10-stop gradient, bevelled edge, side falloff */}
+            <div
+              className="absolute inset-0 overflow-hidden"
+              style={{
+                borderRadius: u(44),
+                background:
+                  "linear-gradient(180deg, #fbfaf7 0%, #f5f2ec 12%, #efebe4 30%, #ebe6de 48%, #e6e1d8 62%, #e0dad0 76%, #d9d2c7 88%, #cfc8bc 96%, #c4bcaf 100%)",
+                boxShadow: [
+                  `inset 0 ${u(2)} ${u(1)} rgb(255 255 255 / 0.95)`,
+                  `inset 0 ${u(-3)} ${u(2)} rgb(110 98 82 / 0.28)`,
+                  `inset ${u(6)} 0 ${u(10)} ${u(-6)} rgb(255 255 255 / 0.7)`,
+                  `inset ${u(-8)} 0 ${u(14)} ${u(-8)} rgb(110 98 82 / 0.22)`,
+                  `0 ${u(1)} ${u(1)} rgb(60 50 40 / 0.25)`,
+                ].join(", "),
+              }}
+            >
+              {/* matte grain */}
+              <div className="absolute inset-0 opacity-[0.22] mix-blend-multiply" style={{ backgroundImage: GRAIN }} />
+              {/* broad soft reflection of a window, top-left */}
+              <div
+                className="absolute"
+                style={{
+                  left: u(-40),
+                  top: u(-60),
+                  width: u(300),
+                  height: u(200),
+                  background: "radial-gradient(closest-side, rgb(255 255 255 / 0.55), transparent)",
+                }}
+              />
+            </div>
+
+            {/* lid: a separate moulding over the paper bay, with its parting line */}
             <div
               className="absolute"
               style={{
-                left: u(24),
-                right: u(24),
-                top: u(92),
+                left: u(10),
+                right: u(10),
+                top: u(8),
+                height: u(94),
+                borderRadius: `${u(36)} ${u(36)} ${u(10)} ${u(10)}`,
+                background: "linear-gradient(180deg, #fdfcf9 0%, #f6f3ed 45%, #eeeae2 100%)",
+                boxShadow: `inset 0 ${u(1.5)} 0 rgb(255 255 255), 0 ${u(1)} 0 rgb(255 255 255 / 0.6), 0 ${u(2)} ${u(3)} rgb(90 78 62 / 0.18)`,
+              }}
+            />
+            <div
+              aria-hidden
+              className="absolute"
+              style={{
+                left: u(22),
+                right: u(22),
+                top: u(103),
                 height: u(2),
                 borderRadius: u(2),
-                background: "rgb(120 110 95 / 0.25)",
-                boxShadow: `0 ${u(1)} 0 rgb(255 255 255 / 0.8)`,
+                background: "linear-gradient(90deg, transparent, rgb(95 84 70 / 0.45) 8%, rgb(95 84 70 / 0.45) 92%, transparent)",
+                boxShadow: `0 ${u(1.2)} 0 rgb(255 255 255 / 0.9)`,
               }}
             />
-            {/* paper slot */}
+            {/* lid screws */}
+            {[26, 374].map((x) => (
+              <span
+                key={x}
+                aria-hidden
+                className="absolute rounded-full"
+                style={{
+                  left: u(x - 5),
+                  top: u(80),
+                  width: u(10),
+                  height: u(10),
+                  background: "radial-gradient(circle at 35% 30%, #ffffff, #cfc8bd 55%, #9e968a)",
+                  boxShadow: `inset 0 0 0 ${u(0.6)} rgb(0 0 0 / 0.18), 0 ${u(0.8)} 0 rgb(255 255 255 / 0.9)`,
+                }}
+              >
+                <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-[30deg] bg-[#7d7468]" style={{ width: u(6), height: u(1.2) }} />
+              </span>
+            ))}
+
+            {/* paper slot: deep, with the roll visible inside */}
             <div
-              className="absolute"
+              className="absolute overflow-hidden"
               style={{
                 left: u(PAPER_X - 20 - 18),
                 width: u(PAPER_W + 36),
-                top: u(SLOT_Y - 640 - 7),
-                height: u(14),
-                borderRadius: u(7),
-                background: "linear-gradient(180deg, #1b1a18, #3a3833)",
-                boxShadow: `inset 0 ${u(2)} ${u(3)} rgb(0 0 0 / 0.8), 0 ${u(1)} 0 rgb(255 255 255 / 0.85)`,
+                top: u(SLOT_Y - 640 - 8),
+                height: u(16),
+                borderRadius: u(8),
+                background: "linear-gradient(180deg, #0e0d0c 0%, #1d1b19 40%, #2e2b27 80%, #3b3833 100%)",
+                boxShadow: `inset 0 ${u(3)} ${u(4)} rgb(0 0 0 / 0.9), inset 0 ${u(-1)} 0 rgb(255 255 255 / 0.08), 0 ${u(1.2)} 0 rgb(255 255 255 / 0.95), 0 ${u(-1)} ${u(1)} rgb(80 70 58 / 0.35)`,
               }}
-            />
+            >
+              <div
+                aria-hidden
+                className="absolute inset-x-[4%]"
+                style={{
+                  bottom: u(2),
+                  height: u(5),
+                  borderRadius: u(3),
+                  background: "linear-gradient(180deg, #8c8780, #d8d4cb 60%, #b9b4aa)",
+                  opacity: 0.55,
+                }}
+              />
+            </div>
             {/* paper lip waiting in the slot */}
             {!strip.length && (
               <div
@@ -485,93 +568,182 @@ export function ReceiptPrinter({
                 }}
               />
             )}
-            {/* status light */}
+
+            {/* speaker grille */}
             <div
-              className="absolute flex items-center"
-              style={{ left: u(250), top: u(132), gap: u(8) }}
-            >
-              <motion.span
-                className="block rounded-full"
-                style={{ width: u(9), height: u(9) }}
-                animate={
-                  phase === "printing"
-                    ? {
-                        backgroundColor: ["#ffb340", "#7a5310", "#ffb340"],
-                        boxShadow: [
-                          `0 0 ${u(8)} #ffb340`,
-                          "0 0 0px #ffb340",
-                          `0 0 ${u(8)} #ffb340`,
-                        ],
-                      }
-                    : {
-                        backgroundColor: "#4fd27a",
-                        boxShadow: `0 0 ${u(7)} rgb(79 210 122 / 0.8)`,
-                      }
-                }
-                transition={
-                  phase === "printing"
-                    ? { duration: 0.5, repeat: Infinity }
-                    : { duration: 0.3 }
-                }
-              />
-            </div>
-
-            {/* PRINT button */}
-            <button
-              type="button"
-              onClick={print}
-              aria-label={L.printAria}
-              className="absolute grid cursor-pointer place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d4231a]"
-              style={{
-                left: u(300),
-                top: u(104),
-                width: u(72),
-                height: u(72),
-                background:
-                  "radial-gradient(circle at 50% 45%, #2f2d29, #1a1917)",
-                boxShadow: `inset 0 ${u(2)} ${u(3)} rgb(0 0 0 / 0.6), 0 ${u(1)} 0 rgb(255 255 255 / 0.9)`,
-              }}
-            >
-              <span
-                className="grid place-items-center rounded-full font-bold tracking-[0.14em] text-white transition-[transform,box-shadow,filter] duration-100"
-                style={{
-                  width: u(60),
-                  height: u(60),
-                  fontSize: u(11),
-                  background:
-                    "radial-gradient(circle at 38% 30%, #ff8a7a 0%, #f2392c 38%, #c81d13 75%, #9c140d 100%)",
-                  boxShadow: pressed
-                    ? `inset 0 ${u(3)} ${u(6)} rgb(80 0 0 / 0.55)`
-                    : `inset 0 ${u(-3)} ${u(5)} rgb(80 0 0 / 0.45), inset 0 ${u(2)} ${u(2)} rgb(255 200 190 / 0.7), 0 ${u(4)} ${u(6)} rgb(0 0 0 / 0.45)`,
-                  transform: pressed
-                    ? `translateY(${u(2)}) scale(0.96)`
-                    : "none",
-                  filter: pressed ? "brightness(0.92)" : "none",
-                  textShadow: `0 ${u(1)} ${u(1)} rgb(100 0 0 / 0.6)`,
-                }}
-              >
-                {L.print}
-              </span>
-            </button>
-
-            {/* maker's mark */}
-            <span
               aria-hidden
-              className="absolute bg-clip-text font-bold tracking-[-0.02em] text-transparent"
+              className="absolute"
               style={{
                 left: u(34),
-                top: u(182),
-                fontSize: u(18),
-                backgroundImage:
-                  "linear-gradient(180deg, #6b6b70 0%, #1c1c1f 42%, #000 50%, #0b0b0d 78%, #2a2a2e 100%)",
-                filter: `drop-shadow(0 ${u(1)} 0 rgb(255 255 255 / 0.9)) drop-shadow(0 ${u(1)} ${u(1.5)} rgb(0 0 0 / 0.25))`,
+                top: u(128),
+                width: u(118),
+                height: u(42),
+                borderRadius: u(12),
+                backgroundImage: "radial-gradient(circle, rgb(40 34 28 / 0.55) 0 32%, rgb(255 255 255 / 0.65) 40%, transparent 46%)",
+                backgroundSize: `${u(9)} ${u(9)}`,
+                backgroundPosition: "center",
+                WebkitMask: "linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent)",
+                mask: "linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent)",
+              }}
+            />
+
+            {/* debossed maker's mark */}
+            <span
+              aria-hidden
+              className="font-script absolute select-none"
+              style={{
+                left: u(34),
+                top: u(176),
+                fontSize: u(30),
+                lineHeight: 1,
+                color: "#d6cfc4",
+                textShadow: `0 ${u(-1)} 0 rgb(90 78 62 / 0.55), 0 ${u(1.2)} 0 rgb(255 255 255 / 0.95)`,
               }}
             >
               {mark}
             </span>
+            <span
+              aria-hidden
+              className="absolute select-none font-semibold tracking-[0.28em] uppercase"
+              style={{ left: u(36), top: u(214), fontSize: u(6.5), color: "#a39a8d", textShadow: `0 ${u(0.8)} 0 rgb(255 255 255 / 0.9)` }}
+            >
+              Thermal · 80 mm
+            </span>
+
+            {/* black-glass control panel */}
+            <div
+              className="absolute"
+              style={{
+                left: u(196),
+                top: u(120),
+                width: u(184),
+                height: u(100),
+                borderRadius: u(22),
+                background: "linear-gradient(160deg, #3a3532 0%, #232020 30%, #161414 60%, #0d0c0c 100%)",
+                boxShadow: [
+                  `inset 0 ${u(1)} 0 rgb(255 255 255 / 0.16)`,
+                  `inset 0 ${u(-2)} ${u(4)} rgb(0 0 0 / 0.6)`,
+                  `0 0 0 ${u(1.5)} rgb(196 186 172 / 0.9)`,
+                  `0 ${u(1.5)} 0 ${u(1.5)} rgb(255 255 255 / 0.85)`,
+                  `0 ${u(-1)} ${u(2)} ${u(1)} rgb(90 78 62 / 0.35)`,
+                ].join(", "),
+              }}
+            >
+              {/* glass sheen */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 overflow-hidden"
+                style={{ borderRadius: u(22) }}
+              >
+                <div
+                  className="absolute"
+                  style={{
+                    left: u(-30),
+                    top: u(-60),
+                    width: u(160),
+                    height: u(120),
+                    transform: "rotate(-18deg)",
+                    background: "linear-gradient(180deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0))",
+                  }}
+                />
+              </div>
+
+              {/* LEDs with engraved labels */}
+              <div className="absolute flex flex-col" style={{ left: u(18), top: u(22), gap: u(12) }}>
+                <span className="flex items-center" style={{ gap: u(7) }}>
+                  <span
+                    className="block rounded-full"
+                    style={{ width: u(7), height: u(7), background: "#4fd27a", boxShadow: `0 0 ${u(6)} rgb(79 210 122 / 0.9), inset 0 ${u(-1)} ${u(1)} rgb(0 60 20 / 0.5)` }}
+                  />
+                  <span className="font-semibold tracking-[0.2em] text-[#8f877e]" style={{ fontSize: u(6.5) }}>POWER</span>
+                </span>
+                <span className="flex items-center" style={{ gap: u(7) }}>
+                  <motion.span
+                    className="block rounded-full"
+                    style={{ width: u(7), height: u(7) }}
+                    animate={
+                      phase === "printing"
+                        ? {
+                            backgroundColor: ["#ffb340", "#5a3d0c", "#ffb340"],
+                            boxShadow: [`0 0 ${u(7)} #ffb340`, "0 0 0px #ffb340", `0 0 ${u(7)} #ffb340`],
+                          }
+                        : { backgroundColor: "#3b2a10", boxShadow: "0 0 0px #ffb340" }
+                    }
+                    transition={phase === "printing" ? { duration: 0.5, repeat: Infinity } : { duration: 0.3 }}
+                  />
+                  <span className="font-semibold tracking-[0.2em] text-[#8f877e]" style={{ fontSize: u(6.5) }}>PAPER</span>
+                </span>
+              </div>
+
+              {/* FEED: a small flush key that also prints */}
+              <button
+                type="button"
+                onClick={print}
+                tabIndex={-1}
+                aria-hidden
+                className="absolute grid cursor-pointer place-items-center rounded-full font-semibold tracking-[0.18em] text-[#bdb4a9] transition-transform active:scale-95"
+                style={{
+                  left: u(16),
+                  top: u(64),
+                  width: u(52),
+                  height: u(20),
+                  fontSize: u(6.5),
+                  background: "linear-gradient(180deg, #2b2826, #1a1817)",
+                  boxShadow: `inset 0 ${u(1)} 0 rgb(255 255 255 / 0.12), 0 ${u(1.5)} ${u(2)} rgb(0 0 0 / 0.6)`,
+                }}
+              >
+                FEED
+              </button>
+
+              {/* PRINT button: rose-gold bezel, glossy red cap */}
+              <button
+                type="button"
+                onClick={print}
+                aria-label={L.printAria}
+                className="absolute grid cursor-pointer place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d4231a]"
+                style={{
+                  left: u(92),
+                  top: u(12),
+                  width: u(78),
+                  height: u(78),
+                  background:
+                    "conic-gradient(from 210deg, #f7dcc8, #c99579, #f3d2bd, #a8735a, #e9bfa6, #c38e72, #f7dcc8)",
+                  boxShadow: `inset 0 0 0 ${u(1)} rgb(255 255 255 / 0.5), 0 ${u(3)} ${u(6)} rgb(0 0 0 / 0.6)`,
+                }}
+              >
+                <span
+                  className="absolute rounded-full"
+                  style={{ inset: u(5), background: "radial-gradient(circle at 50% 40%, #1d1a18, #050505)", boxShadow: `inset 0 ${u(2)} ${u(3)} rgb(0 0 0 / 0.9)` }}
+                />
+                <span
+                  className="relative grid place-items-center rounded-full font-bold tracking-[0.14em] text-white transition-[transform,box-shadow,filter] duration-100"
+                  style={{
+                    width: u(58),
+                    height: u(58),
+                    fontSize: u(10),
+                    background:
+                      "radial-gradient(circle at 38% 28%, #ffb3a6 0%, #ff6b5c 18%, #ef3427 42%, #c81d13 72%, #8f110b 100%)",
+                    boxShadow: pressed
+                      ? `inset 0 ${u(3)} ${u(6)} rgb(80 0 0 / 0.6)`
+                      : `inset 0 ${u(-4)} ${u(6)} rgb(80 0 0 / 0.5), inset 0 ${u(2)} ${u(2)} rgb(255 210 200 / 0.75), 0 ${u(4)} ${u(6)} rgb(0 0 0 / 0.55)`,
+                    transform: pressed ? `translateY(${u(2)}) scale(0.95)` : "none",
+                    filter: pressed ? "brightness(0.9)" : "none",
+                    textShadow: `0 ${u(1)} ${u(1)} rgb(100 0 0 / 0.65)`,
+                  }}
+                >
+                  {/* specular highlight on the cap */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute rounded-full"
+                    style={{ left: u(12), top: u(7), width: u(24), height: u(12), background: "radial-gradient(closest-side, rgb(255 255 255 / 0.75), transparent)" }}
+                  />
+                  {L.print}
+                </span>
+              </button>
+            </div>
           </div>
 
-          {/* serrated tear bar over the slot, above the paper */}
+          {/* serrated stainless tear bar over the slot, screwed down at both ends */}
           <div
             className="absolute z-20"
             style={{
@@ -580,12 +752,27 @@ export function ReceiptPrinter({
               top: u(SLOT_Y - 12),
               height: u(7),
               background:
-                "linear-gradient(180deg, #f4f5f7, #a9adb5 60%, #7c8089)",
+                "linear-gradient(180deg, #ffffff 0%, #e6e8ec 25%, #b9bdc4 55%, #8d929b 80%, #6f747d 100%)",
               WebkitMask: ZIGZAG_TOP_SMALL,
               mask: ZIGZAG_TOP_SMALL,
-              filter: `drop-shadow(0 ${u(1)} ${u(1)} rgb(0 0 0 / 0.35))`,
+              filter: `drop-shadow(0 ${u(1)} ${u(1)} rgb(0 0 0 / 0.4))`,
             }}
           />
+          {[PAPER_X - 30, PAPER_X + PAPER_W + 22].map((x) => (
+            <span
+              key={x}
+              aria-hidden
+              className="absolute z-20 rounded-full"
+              style={{
+                left: u(x),
+                top: u(SLOT_Y - 13),
+                width: u(8),
+                height: u(8),
+                background: "radial-gradient(circle at 35% 30%, #ffffff, #b9bdc4 55%, #6f747d)",
+                boxShadow: `0 ${u(1)} ${u(1)} rgb(0 0 0 / 0.35)`,
+              }}
+            />
+          ))}
 
           {/* hint */}
           <motion.p
