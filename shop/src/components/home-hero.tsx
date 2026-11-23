@@ -12,9 +12,9 @@ const HITS = ["dior-glow-stick-012-rosewood", "kerastase-genesis-anti-chute-seru
 
 // Где лежит каждая карточка на картинке (в процентах от панели)
 const SPOTS = [
-  "left-[-4%] top-[14%] sm:left-[-7%]",
-  "right-[-3%] top-[42%] sm:right-[-6%]",
-  "left-[6%] bottom-[7%]",
+  "left-[-5%] top-[10%] sm:left-[-9%]",
+  "right-[-4%] top-[44%] sm:right-[-8%]",
+  "left-[-2%] bottom-[8%] sm:left-[-5%]",
 ];
 
 const T = {
@@ -27,8 +27,8 @@ export function HeroShowcase({ lang, image }: { lang: Locale; image: string }) {
   const t = T[lang];
   const hits = HITS.map((s) => products.find((p) => p.slug === s)).filter((p) => p !== undefined);
   return (
-    <div className="rise-image relative order-1 mx-auto w-full max-w-[34rem] px-4 sm:px-8 lg:order-2 lg:w-[min(100%,calc((100svh-8rem)*0.8))] lg:max-w-none lg:self-center lg:py-6">
-      <div className="relative isolate aspect-[4/5] overflow-hidden rounded-[2.2rem] bg-well shadow-[0_40px_80px_-40px_rgba(42,26,21,0.55)] [clip-path:inset(0_round_2.2rem)]">
+    <div className="rise-image relative order-1 mx-auto w-full max-w-[24rem] px-6 sm:px-10 lg:order-2 lg:w-[min(100%,calc((100svh-14rem)*0.8),27rem)] lg:max-w-none lg:self-center lg:py-6">
+      <div className="relative isolate aspect-[4/5] overflow-hidden rounded-[1.8rem] bg-well shadow-[0_40px_80px_-40px_rgba(42,26,21,0.55)] [clip-path:inset(0_round_1.8rem)]">
         <Image
           src={image}
           alt={t.alt}
@@ -37,30 +37,33 @@ export function HeroShowcase({ lang, image }: { lang: Locale; image: string }) {
           sizes="(min-width: 1024px) 45vw, 90vw"
           className="hero-kenburns object-cover"
         />
-        <span aria-hidden className="absolute inset-0 rounded-[2.2rem] ring-1 ring-inset ring-white/40" />
+        <span aria-hidden className="absolute inset-0 rounded-[1.8rem] ring-1 ring-inset ring-white/40" />
       </div>
       <ul>
         {hits.map((p, i) => (
           <li
             key={p.slug}
-            className={`hit-card absolute ${SPOTS[i]} w-[min(17rem,62%)] [&:nth-child(3)]:hidden sm:[&:nth-child(3)]:block`}
+            className={`hit-card absolute ${SPOTS[i]} w-[min(15rem,76%)]`}
             style={{ animationDelay: `${650 + i * 180}ms, ${i * 1.4}s` }}
           >
             <Link
               href={`/${lang}/p/${p.slug}`}
-              className="flex items-center gap-3 rounded-2xl border border-white/70 bg-paper/85 p-2.5 pr-4 shadow-[0_18px_40px_-18px_rgba(42,26,21,0.55)] backdrop-blur-md"
+              className="group flex items-center gap-2.5 rounded-full border border-white/70 bg-paper/80 py-1.5 pl-1.5 pr-3 shadow-[0_14px_30px_-16px_rgba(42,26,21,0.55)] backdrop-blur-md transition-colors hover:bg-paper"
             >
-              <span className="relative size-11 shrink-0 sm:size-14 overflow-hidden rounded-xl bg-white">
-                <Image src={p.images[0]} alt="" fill sizes="56px" className="object-cover" />
+              <span className="relative size-10 shrink-0 overflow-hidden rounded-full bg-white ring-2 ring-white">
+                <Image src={p.images[0]} alt="" fill sizes="40px" className="object-cover" />
               </span>
-              <span className="min-w-0">
-                <span className="flex items-center gap-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-cocoa">
-                  <span aria-hidden className="size-1.5 rounded-full bg-rose" />
+              <span className="min-w-0 flex-1 leading-tight">
+                <span className="block truncate text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-cocoa">
+                  <span aria-hidden className="mr-1 inline-block size-1.5 rounded-full bg-rose align-middle" />
                   {t.hit} · {p.brand}
                 </span>
-                <span className="mt-0.5 block truncate text-[0.9rem] font-medium">{p.name}</span>
-                <span className="block text-[0.85rem] text-rose-deep">{priceLabel(p, lang)}</span>
+                <span className="mt-0.5 block truncate text-[0.8rem] font-medium">{p.name}</span>
+                <span className="block text-[0.74rem] text-rose-deep">{priceLabel(p, lang)}</span>
               </span>
+              <svg aria-hidden width="14" height="14" viewBox="0 0 24 24" className="shrink-0 text-cocoa transition-transform duration-300 group-hover:translate-x-0.5">
+                <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
             </Link>
           </li>
         ))}
