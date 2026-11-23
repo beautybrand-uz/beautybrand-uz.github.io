@@ -16,9 +16,14 @@ const SLUGS = [
   "dior-glow-stick-012-rosewood",
   "kerastase-genesis-anti-chute-serum",
   "tom-ford-tobacco-vanille",
-  "armani-blush-balm-05",
+  "dior-backstage-glow-maximizer-007",
   "charlotte-tilbury-loose-setting-powder",
 ];
+/** Студийные фото для колоды (Higgsfield по фото из канала, упаковка настоящая) — brand/hits */
+const PHOTO: Record<string, string> = {
+  "dior-glow-stick-012-rosewood": `${BASE}/brand/hits/dior-glow-stick-012-rosewood.webp`,
+  "kerastase-genesis-anti-chute-serum": `${BASE}/brand/hits/kerastase-genesis-anti-chute-serum.webp`,
+};
 const VISIBLE = 3;
 const AUTO_MS = 5000;
 
@@ -88,7 +93,7 @@ export function HeroDeck({ lang }: { lang: Locale }) {
                 brand={p.brand}
                 name={p.name}
                 price={priceLabel(p, lang)}
-                image={p.images[0]}
+                image={PHOTO[p.slug] ?? p.images[0]}
                 onSwipe={(side) => step(1, side)}
                 reduce={!!reduce}
               />
