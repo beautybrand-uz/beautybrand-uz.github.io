@@ -6,6 +6,7 @@ import { STORES, formatPrice } from "@/lib/site";
 import { currentSession, isAdmin, rest, signIn, signOut, supabaseEnabled, type Session } from "@/lib/supabase";
 import { AddProduct, type EditTarget } from "./add-product";
 import { Receipts } from "./receipts";
+import { Avatar, MeContext, STAFF, StaffBadge, myName, staffByName, useMe, type Staff } from "./staff";
 import { rowToProduct, type ShopProductRow } from "@/lib/extra-products";
 import { Analytics, BarList, DailyColumns, buildDemo, dashboardData, type AEvent, type AOrder } from "./analytics";
 
@@ -30,6 +31,10 @@ type Order = {
   after_sale?: "exchange" | "refund" | null;
   after_sale_note?: string | null;
   after_sale_at?: string | null;
+  after_sale_by?: string | null;
+  /** кто из сотрудниц последней меняла заказ */
+  updated_by?: string | null;
+  updated_at?: string | null;
 };
 export type { Order };
 type ReviewStatus = "pending" | "approved" | "rejected";
@@ -42,6 +47,7 @@ type AdminReview = {
   text: string;
   lang: "ru" | "uz";
   status: ReviewStatus;
+  moderated_by?: string | null;
 };
 
 const ORDER_STATUS: Record<OrderStatus, { label: string; color: string }> = {
@@ -92,7 +98,7 @@ const DEMO_ORDERS: Order[] = [
   },
   {
     id: 1002, created_at: hoursAgo(5), name: "Пример: покупатель", phone: "+998 90 000 00 02", method: "delivery",
-    address: "Ташкент, Юнусабад", comment: null, lang: "uz", status: "confirmed", note: "Доставка завтра", total: 1_007_000, code: demoCode(5, 3307),
+    address: "Ташкент, Юнусабад", comment: null, lang: "uz", status: "confirmed", note: "Доставка завтра", total: 1_007_000, code: demoCode(5, 3307), updated_by: "Дилноза", updated_at: hoursAgo(4),
     items: [
       { slug: "louis-vuitton-moon-tale", name: "Louis Vuitton Moon Tale", variant: "5 ml", qty: 1, price: 360_000 },
       { slug: "bobbi-brown-extra-plump-lip-serum", name: "Bobbi Brown Extra Plump Lip Serum", variant: "Bare Rose", qty: 1, price: 383_000 },
@@ -102,14 +108,14 @@ const DEMO_ORDERS: Order[] = [
   {
     id: 1001, created_at: hoursAgo(28), name: "Пример: покупатель", phone: "+998 90 000 00 03", method: "c1", address: null,
     comment: null, lang: "ru", status: "done", note: null, total: 1_280_000, code: demoCode(28, 1958),
-    after_sale: "exchange", after_sale_note: "Пример: поменяли на набор Lilac", after_sale_at: hoursAgo(3),
+    after_sale: "exchange", after_sale_note: "Пример: поменяли на набор Lilac", after_sale_at: hoursAgo(3), after_sale_by: "Малика", updated_by: "Малика", updated_at: hoursAgo(3),
     items: [{ slug: "makeup-by-mario-brush-set", name: "Makeup by Mario Makeup Brush Set", variant: null, qty: 1, price: 1_280_000 }],
   },
 ];
 const DEMO_REVIEWS: AdminReview[] = [
   { id: "d1", created_at: hoursAgo(2), product: "dior-glow-stick-012-rosewood", name: "Пример", rating: 5, text: "Пример отзыва: оттенок очень натуральный, держится весь день.", lang: "ru", status: "pending" },
   { id: "d2", created_at: hoursAgo(9), product: "creed-spring-flower", name: "Пример", rating: 4, text: "Пример отзыва: нежный аромат, взяла распив 10 мл.", lang: "ru", status: "pending" },
-  { id: "d3", created_at: hoursAgo(40), product: "kerastase-genesis-cure", name: "Namuna", rating: 5, text: "Namuna sharh: sochim kamroq to‘kilyapti.", lang: "uz", status: "approved" },
+  { id: "d3", created_at: hoursAgo(40), product: "kerastase-genesis-cure", name: "Namuna", rating: 5, text: "Namuna sharh: sochim kamroq to‘kilyapti.", lang: "uz", status: "approved", moderated_by: "Севара" },
 ];
 
 type Tab = "overview" | "analytics" | "orders" | "receipts" | "reviews" | "products" | "add";
@@ -148,25 +154,33 @@ function Stars({ n }: { n: number }) {
 
 /* ——————————————————— вход ——————————————————— */
 
-function Login({ onDone, demo }: { onDone: (s: Session) => void; demo: () => void }) {
+function Login({ onDone, demo }: { onDone: (s: Session, name: string) => void; demo: (name: string) => void }) {
+  const [who, setWho] = useState<Staff | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
+  const pick = (s: Staff) => {
+    setWho(s);
+    setEmail(s.login);
+    setPassword("");
+    setError("");
+  };
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!email.trim() || !password) return setError("Введите почту и пароль.");
+    if (!email.trim() || !password) return setError("Введите логин (почту) и пароль.");
     setBusy(true);
     try {
       const s = await signIn(email.trim(), password);
       if (!(await isAdmin(s.access_token))) {
         signOut();
         setError("У этого аккаунта нет доступа к админке. Добавьте его в таблицу admins (см. supabase/admin.sql).");
-      } else onDone(s);
+      } else onDone(s, (await myName(s.access_token)) ?? who?.name ?? "");
     } catch (err) {
-      setError(err instanceof Error && err.message === "wrong" ? "Неверная почта или пароль." : "Не удалось подключиться к базе. Проверьте интернет и попробуйте ещё раз.");
+      setError(err instanceof Error && err.message === "wrong" ? "Неверный логин или пароль." : "Не удалось подключиться к базе. Проверьте интернет и попробуйте ещё раз.");
     } finally {
       setBusy(false);
     }
@@ -174,35 +188,72 @@ function Login({ onDone, demo }: { onDone: (s: Session) => void; demo: () => voi
 
   return (
     <main className="grid min-h-dvh place-items-center px-4 py-12">
-      <div className="a-in w-full max-w-sm">
+      <div className="a-in w-full max-w-md">
         <p className="text-center font-script text-6xl leading-none text-[var(--a-gold)]">Beautybrand</p>
         <p className="mt-2 text-center text-sm text-[var(--a-muted)]">Админка магазина</p>
-        {supabaseEnabled ? (
-          <form onSubmit={submit} noValidate className="a-panel mt-8 space-y-4 p-6">
-            <div>
-              <label htmlFor="a-email" className="mb-1.5 block text-sm font-medium">Почта</label>
-              <input id="a-email" type="email" autoComplete="username" className="a-input" value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div>
-              <label htmlFor="a-pass" className="mb-1.5 block text-sm font-medium">Пароль</label>
-              <input id="a-pass" type="password" autoComplete="current-password" className="a-input" value={password} onChange={(e) => setPassword(e.target.value)} />
-            </div>
-            {error ? <p className="text-sm text-[var(--a-rose)]" role="alert">{error}</p> : null}
-            <button type="submit" className="a-btn a-btn-gold w-full" disabled={busy}>
-              {busy ? "Входим…" : "Войти"}
-            </button>
-          </form>
+
+        {!who ? (
+          <section className="a-panel mt-8 p-6" aria-labelledby="who-title">
+            <h1 id="who-title" className="text-center font-display text-xl">Кто сегодня работает?</h1>
+            <p className="mt-1 text-center text-sm text-[var(--a-muted)]">Выберите себя — все ваши действия будут подписаны вашим именем.</p>
+            <ul className="mt-6 grid gap-2.5">
+              {STAFF.map((s) => (
+                <li key={s.name}>
+                  <button
+                    type="button"
+                    onClick={() => pick(s)}
+                    className="group flex w-full items-center gap-4 rounded-2xl border border-[var(--a-line)] bg-[var(--a-bg)] px-4 py-3.5 text-left transition-colors hover:border-[var(--a-gold)]"
+                  >
+                    <Avatar name={s.name} size={44} />
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-medium">{s.name}</span>
+                      <span className="block text-xs text-[var(--a-muted)]">{s.role}</span>
+                    </span>
+                    <span aria-hidden className="text-[var(--a-muted)] transition-transform group-hover:translate-x-1 group-hover:text-[var(--a-gold)]">→</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
         ) : (
-          <div className="a-panel mt-8 space-y-4 p-6 text-sm leading-relaxed">
-            <p className="font-medium">База данных ещё не подключена.</p>
-            <p className="text-[var(--a-muted)]">
-              Чтобы входить по почте и паролю, подключите Supabase: выполните файлы <code>supabase/reviews.sql</code> и{" "}
-              <code>supabase/admin.sql</code> и добавьте ключи SUPABASE_URL и SUPABASE_ANON_KEY в секреты GitHub.
-            </p>
-            <button type="button" className="a-btn a-btn-gold w-full" onClick={demo}>
-              Открыть демо с примерами
-            </button>
-          </div>
+          <section className="a-panel mt-8 p-6" aria-labelledby="hello-title">
+            <div className="flex items-center gap-3">
+              <Avatar name={who.name} size={44} />
+              <div className="min-w-0 flex-1">
+                <h1 id="hello-title" className="font-display text-xl">Здравствуйте, {who.name}!</h1>
+                <p className="text-xs text-[var(--a-muted)]">{who.role}</p>
+              </div>
+              <button type="button" className="a-btn a-btn-quiet" onClick={() => setWho(null)}>
+                Не я
+              </button>
+            </div>
+            {supabaseEnabled ? (
+              <form onSubmit={submit} noValidate className="mt-6 space-y-4">
+                <div>
+                  <label htmlFor="a-email" className="mb-1.5 block text-sm font-medium">Логин (почта)</label>
+                  <input id="a-email" type="email" autoComplete="username" className="a-input" value={email} onChange={(e) => setEmail(e.target.value)} />
+                </div>
+                <div>
+                  <label htmlFor="a-pass" className="mb-1.5 block text-sm font-medium">Пароль</label>
+                  <input id="a-pass" type="password" autoComplete="current-password" autoFocus className="a-input" value={password} onChange={(e) => setPassword(e.target.value)} />
+                </div>
+                {error ? <p className="text-sm text-[var(--a-rose)]" role="alert">{error}</p> : null}
+                <button type="submit" className="a-btn a-btn-gold w-full" disabled={busy}>
+                  {busy ? "Входим…" : "Войти"}
+                </button>
+              </form>
+            ) : (
+              <div className="mt-6 space-y-4 text-sm leading-relaxed">
+                <p className="text-[var(--a-muted)]">
+                  База ещё не подключена, поэтому логин и пароль пока не проверяются. Когда подключите Supabase, у каждой сотрудницы будет свой логин и
+                  пароль (см. <code>supabase/admin.sql</code>).
+                </p>
+                <button type="button" className="a-btn a-btn-gold w-full" onClick={() => demo(who.name)}>
+                  Открыть демо как {who.name}
+                </button>
+              </div>
+            )}
+          </section>
         )}
         <p className="mt-6 text-center text-sm">
           <a href={`${BASE}/ru/`} className="text-[var(--a-muted)] underline-offset-4 hover:text-[var(--a-text)] hover:underline">
@@ -220,19 +271,36 @@ export function AdminApp() {
   const [session, setSession] = useState<Session | null>(null);
   const [demo, setDemo] = useState(false);
   const [ready, setReady] = useState(false);
+  const [me, setMe] = useState("");
 
   useEffect(() => {
     if (!supabaseEnabled) return setReady(true);
     currentSession()
       .then(async (s) => {
-        if (s && (await isAdmin(s.access_token).catch(() => false))) setSession(s);
+        if (s && (await isAdmin(s.access_token).catch(() => false))) {
+          setMe((await myName(s.access_token)) ?? "");
+          setSession(s);
+        }
       })
       .finally(() => setReady(true));
   }, []);
 
   if (!ready) return <div className="min-h-dvh" aria-busy="true" />;
-  if (!session && !demo) return <Login onDone={setSession} demo={() => setDemo(true)} />;
+  if (!session && !demo)
+    return (
+      <Login
+        onDone={(s, name) => {
+          setMe(name);
+          setSession(s);
+        }}
+        demo={(name) => {
+          setMe(name);
+          setDemo(true);
+        }}
+      />
+    );
   return (
+    <MeContext.Provider value={me}>
     <Dashboard
       session={session}
       demo={demo}
@@ -240,8 +308,10 @@ export function AdminApp() {
         signOut();
         setSession(null);
         setDemo(false);
+        setMe("");
       }}
     />
+    </MeContext.Provider>
   );
 }
 
@@ -257,6 +327,7 @@ function Dashboard({ session, demo, onExit }: { session: Session | null; demo: b
   const [loading, setLoading] = useState(!demo);
   const [error, setError] = useState("");
   const token = session?.access_token;
+  const me = useMe();
 
   // вкладка в адресе (#orders), чтобы можно было сохранить ссылку
   useEffect(() => {
@@ -300,7 +371,9 @@ function Dashboard({ session, demo, onExit }: { session: Session | null; demo: b
   }, [load]);
 
   async function patchOrder(id: number, patch: Partial<Order>) {
-    setOrders((list) => list.map((o) => (o.id === id ? { ...o, ...patch } : o)));
+    const now = new Date().toISOString();
+    const signed: Partial<Order> = { ...patch, updated_by: me || null, updated_at: now, ...("after_sale" in patch ? { after_sale_by: patch.after_sale ? me || null : null } : {}) };
+    setOrders((list) => list.map((o) => (o.id === id ? { ...o, ...signed } : o)));
     if (demo || !token) return;
     try {
       await rest(`orders?id=eq.${id}`, { method: "PATCH", token, headers: { Prefer: "return=minimal" }, body: JSON.stringify(patch) });
@@ -309,7 +382,7 @@ function Dashboard({ session, demo, onExit }: { session: Session | null; demo: b
     }
   }
   async function moderate(id: string, status: ReviewStatus | "delete") {
-    setReviews((list) => (status === "delete" ? list.filter((r) => r.id !== id) : list.map((r) => (r.id === id ? { ...r, status } : r))));
+    setReviews((list) => (status === "delete" ? list.filter((r) => r.id !== id) : list.map((r) => (r.id === id ? { ...r, status, moderated_by: me || null } : r))));
     if (demo || !token) return;
     try {
       await rest(`reviews?id=eq.${id}`, {
@@ -337,6 +410,7 @@ function Dashboard({ session, demo, onExit }: { session: Session | null; demo: b
             <p className="mt-1 hidden text-xs text-[var(--a-muted)] lg:block">Админка магазина</p>
           </div>
           <div className="flex items-center gap-1 lg:hidden">
+            {me ? <Avatar name={me} size={28} /> : null}
             <ThemeToggle />
             <button type="button" onClick={onExit} className="a-btn a-btn-quiet">
               Выйти
@@ -363,7 +437,17 @@ function Dashboard({ session, demo, onExit }: { session: Session | null; demo: b
         </nav>
         <div className="absolute inset-x-0 bottom-0 hidden space-y-2 border-t border-[var(--a-line)] p-5 text-sm lg:block">
           <ThemeToggle wide />
-          <p className="truncate pt-1 text-xs text-[var(--a-muted)]">{demo ? "Демо-режим" : session?.email}</p>
+          {me ? (
+            <div className="flex items-center gap-2.5 pt-1">
+              <Avatar name={me} size={30} />
+              <div className="min-w-0 leading-tight">
+                <p className="truncate font-medium">{me}</p>
+                <p className="truncate text-xs text-[var(--a-muted)]">{demo ? "Демо-режим" : staffByName(me)?.role ?? session?.email}</p>
+              </div>
+            </div>
+          ) : (
+            <p className="truncate pt-1 text-xs text-[var(--a-muted)]">{demo ? "Демо-режим" : session?.email}</p>
+          )}
           <div className="flex gap-2">
             <a href={`${BASE}/ru/`} className="a-btn a-btn-line flex-1" target="_blank" rel="noopener">
               Сайт
@@ -482,6 +566,7 @@ function Overview({ orders, statOrders, reviews, loading, go, onReload, demo }: 
                 <span className="min-w-0 flex-1 truncate">{o.name}</span>
                 <span className="a-num">{sum(o.total)}</span>
                 <StatusChip s={ORDER_STATUS[o.status]} />
+                <StaffBadge name={o.updated_by} />
               </button>
             </li>
           ))}
@@ -535,6 +620,7 @@ function Orders({ orders, loading, onPatch, onReload, demo }: { orders: Order[];
                 <span className="text-sm text-[var(--a-muted)]">{methodLabel(o.method)}</span>
                 <span className="a-num font-semibold">{sum(o.total)}</span>
                 <StatusChip s={ORDER_STATUS[o.status]} />
+                <StaffBadge name={o.updated_by} title={o.updated_by ? `Последней меняла: ${o.updated_by}${o.updated_at ? `, ${when(o.updated_at)}` : ""}` : undefined} />
               </button>
               {open === o.id ? (
                 <div className="grid gap-6 border-t border-[var(--a-line)] px-5 py-5 md:grid-cols-[1.2fr_1fr]">
@@ -626,6 +712,11 @@ function Reviews({ reviews, loading, onModerate }: { reviews: AdminReview[]; loa
                 <span className="font-semibold">{r.name}</span>
                 <span className="text-[var(--a-muted)]"> · {productName(r.product)} · {r.lang === "ru" ? "RU" : "UZ"}</span>
               </p>
+              {r.moderated_by ? (
+                <p className="mt-2">
+                  <StaffBadge name={r.moderated_by} action={r.status === "approved" ? "опубликовала" : r.status === "rejected" ? "отклонила" : "проверила"} />
+                </p>
+              ) : null}
               <div className="mt-4 flex flex-wrap gap-2 border-t border-[var(--a-line)] pt-4">
                 {r.status !== "approved" ? (
                   <button type="button" className="a-btn a-btn-gold" onClick={() => onModerate(r.id, "approved")}>
@@ -658,7 +749,7 @@ function Reviews({ reviews, loading, onModerate }: { reviews: AdminReview[]; loa
 
 /* ——————————————————— товары ——————————————————— */
 
-type ListItem = (typeof products)[number] & { origin: "catalog" | "edited" | "admin"; hidden?: boolean };
+type ListItem = (typeof products)[number] & { origin: "catalog" | "edited" | "admin"; hidden?: boolean; by?: string | null; createdBy?: string | null };
 
 function Products({ onAdd, token, demo }: { onAdd: () => void; token?: string; demo: boolean }) {
   const [q, setQ] = useState("");
@@ -678,6 +769,16 @@ function Products({ onAdd, token, demo }: { onAdd: () => void; token?: string; d
   useEffect(() => {
     load();
   }, [load]);
+  useEffect(() => {
+    if (!demo) return;
+    const ex = (slug: string, by: string): ShopProductRow | null => {
+      const p = products.find((x) => x.slug === slug);
+      return p
+        ? { slug, created_at: new Date().toISOString(), brand: p.brand, name: p.name, category: p.category, price: p.price, old_price: p.oldPrice ?? null, variants: p.variants ?? null, usd: p.usd ?? null, bottle: p.bottle ?? null, description_ru: p.description.ru, description_uz: p.description.uz, images: p.images, boutique: !!p.boutique, published: true, updated_by: by }
+        : null;
+    };
+    setRows([ex("armani-blush-balm-05", "Севара"), ex("louis-vuitton-moon-tale", "Малика")].filter((r): r is ShopProductRow => r !== null));
+  }, [demo]);
 
   const all = useMemo<ListItem[]>(() => {
     const bySlug = new Map(rows.map((r) => [r.slug, r]));
@@ -685,12 +786,13 @@ function Products({ onAdd, token, demo }: { onAdd: () => void; token?: string; d
       const r = bySlug.get(p.slug);
       if (!r) return { ...p, origin: "catalog" };
       const e = rowToProduct(r);
-      return { ...p, ...e, images: e.images.length ? e.images : p.images, dynamic: false, origin: "edited" };
+      return { ...p, ...e, images: e.images.length ? e.images : p.images, dynamic: false, origin: "edited", by: r.updated_by ?? r.created_by };
     });
     const added = rows
       .filter((r) => !products.some((p) => p.slug === r.slug))
-      .map((r): ListItem => ({ ...rowToProduct(r), origin: "admin", hidden: !r.published }));
-    return [...added, ...catalog];
+      .map((r): ListItem => ({ ...rowToProduct(r), origin: "admin", hidden: !r.published, createdBy: r.created_by, by: r.updated_by }));
+    // сначала добавленные и изменённые сотрудницами — их видно сразу
+    return [...added, ...catalog.filter((p) => p.origin === "edited"), ...catalog.filter((p) => p.origin === "catalog")];
   }, [rows]);
 
   const list = useMemo(() => {
@@ -768,6 +870,8 @@ function Products({ onAdd, token, demo }: { onAdd: () => void; token?: string; d
                     </span>
                     {p.origin === "edited" ? <span className="a-chip shrink-0 text-[var(--a-gold)]">изменён</span> : null}
                     {p.origin === "admin" ? <span className="a-chip shrink-0 text-[var(--a-blue)]">{p.hidden ? "скрыт" : "из админки"}</span> : null}
+                    {p.createdBy ? <StaffBadge name={p.createdBy} action="добавила" /> : null}
+                    {p.by && p.by !== p.createdBy ? <StaffBadge name={p.by} action={p.origin === "edited" ? "изменила" : "правила"} /> : null}
                   </div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2.5 text-[var(--a-muted)]">{p.boutique ? "Maison De Mari" : CATEGORY_RU[p.category]}</td>

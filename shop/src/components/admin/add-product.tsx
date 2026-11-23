@@ -5,6 +5,7 @@ import { BRANDS, CATEGORIES, products, type Category } from "@/data/products";
 import type { ShopProductRow } from "@/lib/extra-products";
 import { formatPrice } from "@/lib/site";
 import { SB_KEY, SB_URL, rest } from "@/lib/supabase";
+import { StaffBadge, useMe } from "./staff";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const CATEGORY_RU: Record<Category, string> = {
@@ -98,6 +99,7 @@ function Field({ label, hint, error, children, id }: { label: string; hint?: str
 
 export function AddProduct({ token, demo, edit }: { token?: string; demo: boolean; edit?: EditTarget }) {
   const e0 = edit?.product;
+  const me = useMe();
   const [brand, setBrand] = useState(e0?.brand ?? "");
   const [name, setName] = useState(e0?.name ?? "");
   const [category, setCategory] = useState<Category>(e0?.category ?? "makeup");
@@ -233,12 +235,12 @@ export function AddProduct({ token, demo, edit }: { token?: string; demo: boolea
           body: JSON.stringify(row),
         });
         setState("saved");
-        setMessage(`Изменения «${brand.trim()} ${name.trim()}» сохранены и уже видны на сайте.`);
+        setMessage(`Изменения «${brand.trim()} ${name.trim()}» сохранены${me ? ` — ${me}` : ""} и уже видны на сайте.`);
         return;
       }
       await rest("shop_products", { method: "POST", token, headers: { Prefer: "return=minimal" }, body: JSON.stringify(row) });
       setState("saved");
-      setMessage(`Товар «${brand.trim()} ${name.trim()}» добавлен и уже виден на сайте.`);
+      setMessage(`Товар «${brand.trim()} ${name.trim()}» добавлен${me ? ` — ${me}` : ""} и уже виден на сайте.`);
       setBrand(""); setName(""); setPrice(""); setOldPrice(""); setVariants([]); setBottle(""); setDescRu(""); setDescUz(""); setPhotos([]);
       loadMine();
     } catch (e) {
@@ -480,6 +482,8 @@ export function AddProduct({ token, demo, edit }: { token?: string; demo: boolea
                   <span className="block text-xs text-[var(--a-muted)]">{r.brand}</span>
                   <span className="block truncate">{r.name}</span>
                 </span>
+                <StaffBadge name={r.created_by} action="добавила" />
+                {r.updated_by && r.updated_by !== r.created_by ? <StaffBadge name={r.updated_by} action="правила" /> : null}
                 <span className={r.published ? "a-chip text-[var(--a-green)]" : "a-chip text-[var(--a-muted)]"}>{r.published ? "На сайте" : "Скрыт"}</span>
                 <a className="a-btn a-btn-quiet" href={`${BASE}/ru/item/?p=${r.slug}`} target="_blank" rel="noopener">Открыть</a>
                 <button type="button" className="a-btn a-btn-line" onClick={() => patch(r, { published: !r.published })}>{r.published ? "Скрыть" : "Показать"}</button>

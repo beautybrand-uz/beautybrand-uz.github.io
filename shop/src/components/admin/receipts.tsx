@@ -5,6 +5,7 @@ import { ReceiptPaper } from "@/components/receipt-view";
 import { decodeReceipt, receiptUrl, type ReceiptData } from "@/lib/receipt";
 import { STORES, formatPrice } from "@/lib/site";
 import type { Order } from "./admin-app";
+import { StaffBadge } from "./staff";
 
 const sum = (n: number) => formatPrice(n, "сум");
 const when = (iso: string) =>
@@ -162,8 +163,11 @@ export function Receipts({ orders, onPatch, demo }: { orders: Order[]; onPatch: 
                     <td className="a-num whitespace-nowrap px-4 py-2.5 text-right">{sum(o.total)}</td>
                     <td className="px-4 py-2.5">
                       {o.after_sale ? (
-                        <span className="a-chip" style={{ color: AFTER[o.after_sale].color, background: "color-mix(in srgb, currentColor 13%, transparent)" }}>
-                          {AFTER[o.after_sale].label}
+                        <span className="flex flex-wrap items-center gap-1.5">
+                          <span className="a-chip" style={{ color: AFTER[o.after_sale].color, background: "color-mix(in srgb, currentColor 13%, transparent)" }}>
+                            {AFTER[o.after_sale].label}
+                          </span>
+                          <StaffBadge name={o.after_sale_by} />
                         </span>
                       ) : (
                         <span className="text-xs text-[var(--a-muted)]">—</span>
@@ -232,6 +236,11 @@ function ReceiptCard({ paper, order, onPatch, demo }: { paper: ReceiptData; orde
                 </span>
               ) : null}
             </p>
+            {order.after_sale_by ? (
+              <p>
+                <StaffBadge name={order.after_sale_by} action="оформила" />
+              </p>
+            ) : null}
             <label className="block">
               <span className="mb-1.5 block text-xs text-[var(--a-muted)]">Комментарий: что меняем или возвращаем, причина, сумма</span>
               <textarea className="a-input min-h-20" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Например: поменяли оттенок 012 на 001" />

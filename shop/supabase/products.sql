@@ -31,6 +31,26 @@ create policy "shop_products: admin write" on public.shop_products
 grant select on public.shop_products to anon, authenticated;
 grant insert, update, delete on public.shop_products to authenticated;
 
+-- кто добавил и кто последней редактировал товар (имя из таблицы admins)
+alter table public.shop_products add column if not exists created_by text;
+alter table public.shop_products add column if not exists updated_by text;
+alter table public.shop_products add column if not exists updated_at timestamptz;
+create or replace function public.shop_products_staff() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  if tg_op = 'INSERT' then
+    new.created_by := public.my_name();
+  else
+    new.created_by := old.created_by;
+  end if;
+  new.updated_by := public.my_name();
+  new.updated_at := now();
+  return new;
+end $$;
+drop trigger if exists shop_products_staff on public.shop_products;
+create trigger shop_products_staff before insert or update on public.shop_products
+  for each row execute function public.shop_products_staff();
+
 -- ——— хранилище фото: читать могут все, загружать и удалять — только админ ———
 insert into storage.buckets (id, name, public)
 values ('product-images', 'product-images', true)

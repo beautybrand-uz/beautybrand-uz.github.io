@@ -21,6 +21,10 @@ export type ShopProductRow = {
   images: string[];
   boutique: boolean;
   published: boolean;
+  /** кто из сотрудниц добавила и последней меняла (ставит база) */
+  created_by?: string | null;
+  updated_by?: string | null;
+  updated_at?: string | null;
 };
 
 export function rowToProduct(r: ShopProductRow): ProductWithImages {

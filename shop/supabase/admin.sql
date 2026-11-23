@@ -1,12 +1,14 @@
 -- Админка beautybrand.uz: заказы и права администратора.
 -- Выполнить ПОСЛЕ reviews.sql: Supabase → SQL Editor → вставить файл → Run.
 --
--- Как дать себе доступ в админку:
+-- Как дать доступ сотруднице (у каждой свой логин и пароль):
 --   1. Supabase → Authentication → Users → Add user → Create new user (почта + пароль, «Auto Confirm User»).
---   2. Выполнить в SQL Editor (подставьте свою почту):
---        insert into public.admins (user_id)
---        select id from auth.users where email = 'ваша@почта';
---   3. Открыть сайт /admin и войти с этой почтой и паролем.
+--   2. Выполнить в SQL Editor (почта и имя — как в shop/src/components/admin/staff.tsx):
+--        insert into public.admins (user_id, name)
+--        select id, 'Малика' from auth.users where email = 'malika@beautybrand.uz';
+--   3. Сотрудница открывает /admin, выбирает себя и входит своей почтой и паролем.
+--   Имя сотрудницы ставится в базу автоматически (триггеры ниже): кто изменил заказ, проверил отзыв,
+--   добавил или отредактировал товар, оформил обмен или возврат.
 
 -- ——— кто администратор ———
 create table if not exists public.admins (
@@ -14,6 +16,7 @@ create table if not exists public.admins (
   created_at timestamptz not null default now()
 );
 alter table public.admins enable row level security;
+alter table public.admins add column if not exists name text check (char_length(name) <= 40);
 
 create or replace function public.is_admin()
 returns boolean
@@ -25,6 +28,18 @@ as $$
   select exists (select 1 from public.admins where user_id = auth.uid());
 $$;
 grant execute on function public.is_admin() to anon, authenticated;
+
+-- имя вошедшей сотрудницы
+create or replace function public.my_name()
+returns text
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select name from public.admins where user_id = auth.uid();
+$$;
+grant execute on function public.my_name() to authenticated;
 
 drop policy if exists "admins: self read" on public.admins;
 create policy "admins: self read" on public.admins
@@ -44,6 +59,21 @@ create policy "reviews: admin delete" on public.reviews
   for delete to authenticated using (public.is_admin());
 
 grant update, delete on public.reviews to authenticated;
+
+-- кто проверил отзыв
+alter table public.reviews add column if not exists moderated_by text;
+alter table public.reviews add column if not exists moderated_at timestamptz;
+create or replace function public.reviews_staff() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  if new.status is distinct from old.status then
+    new.moderated_by := public.my_name();
+    new.moderated_at := now();
+  end if;
+  return new;
+end $$;
+drop trigger if exists reviews_staff on public.reviews;
+create trigger reviews_staff before update on public.reviews for each row execute function public.reviews_staff();
 
 -- ——— заказы из корзины ———
 create table if not exists public.orders (
@@ -88,6 +118,23 @@ alter table public.orders add column if not exists after_sale text check (after_
 alter table public.orders add column if not exists after_sale_note text check (char_length(after_sale_note) <= 1000);
 alter table public.orders add column if not exists after_sale_at timestamptz;
 create index if not exists orders_code on public.orders (code);
+
+-- кто последней менял заказ и кто оформил обмен/возврат
+alter table public.orders add column if not exists updated_by text;
+alter table public.orders add column if not exists updated_at timestamptz;
+alter table public.orders add column if not exists after_sale_by text;
+create or replace function public.orders_staff() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  new.updated_by := public.my_name();
+  new.updated_at := now();
+  if new.after_sale is distinct from old.after_sale then
+    new.after_sale_by := case when new.after_sale is null then null else public.my_name() end;
+  end if;
+  return new;
+end $$;
+drop trigger if exists orders_staff on public.orders;
+create trigger orders_staff before update on public.orders for each row execute function public.orders_staff();
 
 -- ——— события для аналитики спроса: просмотр товара и добавление в корзину ———
 -- Анонимно: только товар, тип события, язык и время. Без имён, телефонов и адресов.
