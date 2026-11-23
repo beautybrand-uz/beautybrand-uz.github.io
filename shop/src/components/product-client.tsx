@@ -22,7 +22,7 @@ export function Gallery({ images, video, alt }: { images: string[]; video?: stri
     <div>
       <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-well">
         {current?.kind === "image" ? (
-          <Image src={current.src} alt={alt} fill priority sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+          <Image src={current.src} alt={alt} fill priority sizes="(min-width: 768px) 21rem, 90vw" className="object-cover" />
         ) : current?.kind === "video" ? (
           <video
             key={current.src}
@@ -37,7 +37,7 @@ export function Gallery({ images, video, alt }: { images: string[]; video?: stri
         ) : null}
       </div>
       {slides.length > 1 ? (
-        <div className="mt-3 flex gap-2.5">
+        <div className="mt-2.5 flex gap-2">
           {slides.map((s, i) => (
             <button
               key={s.src}
@@ -45,7 +45,7 @@ export function Gallery({ images, video, alt }: { images: string[]; video?: stri
               onClick={() => setActive(i)}
               aria-label={s.kind === "video" ? `${alt}, видео` : `${alt}, ${i + 1}`}
               aria-current={i === active ? "true" : undefined}
-              className={`relative size-16 overflow-hidden rounded-lg bg-well ring-offset-2 ring-offset-paper transition ${
+              className={`relative size-12 overflow-hidden rounded-lg bg-well ring-offset-2 ring-offset-paper transition ${
                 i === active ? "ring-2 ring-ink" : "opacity-70 hover:opacity-100"
               }`}
             >

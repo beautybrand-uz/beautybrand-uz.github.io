@@ -240,9 +240,9 @@ export function ProductReviews({ slug, productName, lang }: { slug: string; prod
   const avg = list && list.length ? list.reduce((s, r) => s + r.rating, 0) / list.length : 0;
 
   return (
-    <section className="mt-16 border-t border-line pt-10" aria-labelledby="reviews-title">
+    <section className="mt-10 border-t border-line pt-7" aria-labelledby="reviews-title">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <h2 id="reviews-title" className="relative isolate inline-block font-display text-3xl font-medium">
+        <h2 id="reviews-title" className="relative isolate inline-block font-display text-2xl font-medium">
           <Swatch name="gold" className="-left-[0.35em] top-1/2 h-[1.9em] w-auto max-w-none -translate-y-1/2 opacity-90 -rotate-2" />
           {t.product}
         </h2>

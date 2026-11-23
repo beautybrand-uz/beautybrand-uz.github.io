@@ -18,7 +18,7 @@ export function NavLinks({ items }: { items: Item[] }) {
     <nav className="hidden items-center gap-1 lg:flex" aria-label="Разделы">
       {items.map((it) => {
         const active = it.match ? pathname.replace(/\/$/, "").endsWith(it.match) : false;
-        const cls = "nav-swatch group relative isolate px-3 py-2 text-[0.92rem] text-cocoa transition-colors hover:text-ink";
+        const cls = "nav-swatch group relative isolate whitespace-nowrap px-2.5 py-2 text-[0.92rem] text-cocoa transition-colors hover:text-ink xl:px-3";
         const inner = (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element -- декоративный мазок */}
@@ -33,7 +33,7 @@ export function NavLinks({ items }: { items: Item[] }) {
           </>
         );
         return it.external ? (
-          <a key={it.href} href={it.href} target="_blank" rel="noopener" className={cls}>
+          <a key={it.href} href={it.href} target="_blank" rel="noopener" className={`${cls} hidden xl:block`}>
             {inner}
           </a>
         ) : (
