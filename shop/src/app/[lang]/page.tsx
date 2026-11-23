@@ -2,7 +2,8 @@ import { Swatch } from "@/components/swatch";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { CategoryPromos } from "@/components/category-promos";
-import { CategorySwatches, HeroShowcase, WeekPick } from "@/components/home-hero";
+import { CategorySwatches, HeroShowcase } from "@/components/home-hero";
+import { NewArrivals } from "@/components/new-arrivals";
 import { BrandWall, HowToOrder, NewArrivalsReel } from "@/components/home-sections";
 import { StoreCompacts, WeekPalette } from "@/components/stores";
 import { SocialLinks } from "@/components/social";
@@ -78,7 +79,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       <CategorySwatches lang={lang} labels={t.categories} />
       <CategoryPromos lang={lang} />
       <Reveal>
-        <WeekPick lang={lang} />
+        <NewArrivals lang={lang} />
       </Reveal>
       <MaisonBanner lang={lang} />
       <Reveal>
