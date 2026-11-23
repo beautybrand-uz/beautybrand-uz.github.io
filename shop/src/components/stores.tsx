@@ -101,7 +101,10 @@ export function WeekPalette({ lang }: { lang: Locale }) {
     <div className="compact rounded-[1.75rem] p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="font-display text-lg">{t.hours}</p>
-        <OpenBadge lang={lang} />
+        <div className="flex flex-wrap items-center gap-2">
+          <OpenBadge lang={lang} />
+          <Countdown lang={lang} />
+        </div>
       </div>
       <ol className="mt-4 grid grid-cols-7 gap-1.5 sm:gap-2">
         {order.map((d, i) => {
@@ -126,5 +129,108 @@ export function WeekPalette({ lang }: { lang: Locale }) {
         })}
       </ol>
     </div>
+  );
+}
+
+/* ——— таймер: сколько осталось до закрытия или до открытия (время Ташкента) ——— */
+
+const CD = {
+  ru: {
+    closesIn: "До закрытия",
+    opensIn: "Откроется через",
+    today: "сегодня",
+    tomorrow: "завтра",
+    h: "ч",
+    m: "мин",
+  },
+  uz: {
+    closesIn: "Yopilishiga",
+    opensIn: "Ochilishiga",
+    today: "bugun",
+    tomorrow: "ertaga",
+    h: "soat",
+    m: "daq",
+  },
+} as const;
+
+function useTashkentSeconds() {
+  const [now, setNow] = useState<{ day: number; sec: number } | null>(null);
+  useEffect(() => {
+    const read = () => {
+      const d = new Date(Date.now() + 5 * 3600_000);
+      setNow({ day: d.getUTCDay(), sec: d.getUTCHours() * 3600 + d.getUTCMinutes() * 60 + d.getUTCSeconds() });
+    };
+    read();
+    const id = setInterval(read, 15_000);
+    return () => clearInterval(id);
+  }, []);
+  return now;
+}
+
+function Countdown({ lang }: { lang: Locale }) {
+  const t = CD[lang];
+  const now = useTashkentSeconds();
+  if (!now) return null;
+  const today = hoursFor(now.day);
+  const open = toMin(today.open) * 60;
+  const close = toMin(today.close) * 60;
+  const isOpen = now.sec >= open && now.sec < close;
+
+  let left: number;
+  let sub = "";
+  if (isOpen) {
+    left = close - now.sec;
+  } else if (now.sec < open) {
+    left = open - now.sec;
+    sub = t.today;
+  } else {
+    const next = hoursFor((now.day + 1) % 7);
+    left = 86400 - now.sec + toMin(next.open) * 60;
+    sub = t.tomorrow;
+  }
+  const mins = Math.max(1, Math.ceil(left / 60));
+  const text = `${mins >= 60 ? `${Math.floor(mins / 60)} ${t.h} ` : ""}${String(mins % 60).padStart(mins >= 60 ? 2 : 1, "0")} ${t.m}`;
+  const soon = isOpen && left <= 3600;
+  // кольцо: какая часть рабочего дня уже прошла
+  const done = isOpen ? (now.sec - open) / (close - open) : 0;
+  const R = 7;
+  const C = 2 * Math.PI * R;
+
+  return (
+    <p
+      className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[0.8rem] font-semibold ${
+        soon
+          ? "border-[#e2b866]/60 bg-[#fdf3dd] text-[#8a5a12]"
+          : isOpen
+            ? "border-line bg-white/70 text-ink"
+            : "border-line bg-white/70 text-cocoa"
+      }`}
+      aria-live="polite"
+    >
+      {isOpen ? (
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden className="-rotate-90">
+          <circle cx="9" cy="9" r={R} fill="none" stroke="currentColor" strokeOpacity="0.15" strokeWidth="2.2" />
+          <circle
+            cx="9"
+            cy="9"
+            r={R}
+            fill="none"
+            stroke={soon ? "#c98a1e" : "#c9a468"}
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeDasharray={`${C * (1 - done)} ${C}`}
+          />
+        </svg>
+      ) : (
+        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+          <circle cx="12" cy="12" r="8.5" />
+          <path d="M12 7.5V12l3 2" />
+        </svg>
+      )}
+      <span>
+        {isOpen ? t.closesIn : t.opensIn} <span className="tabular-nums">{text}</span>
+        {sub ? <span className="font-normal text-cocoa"> · {sub}</span> : null}
+      </span>
+    </p>
   );
 }
