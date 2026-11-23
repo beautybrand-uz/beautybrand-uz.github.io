@@ -39,14 +39,14 @@ type AdminReview = {
 const ORDER_STATUS: Record<OrderStatus, { label: string; color: string }> = {
   new: { label: "Новый", color: "var(--a-gold)" },
   confirmed: { label: "Подтверждён", color: "var(--a-amber)" },
-  ready: { label: "Собран", color: "#9fb7d9" },
+  ready: { label: "Собран", color: "var(--a-blue)" },
   done: { label: "Выдан", color: "var(--a-green)" },
-  cancelled: { label: "Отменён", color: "#8a7d73" },
+  cancelled: { label: "Отменён", color: "var(--a-grey)" },
 };
 const REVIEW_STATUS: Record<ReviewStatus, { label: string; color: string }> = {
   pending: { label: "На проверке", color: "var(--a-gold)" },
   approved: { label: "Опубликован", color: "var(--a-green)" },
-  rejected: { label: "Отклонён", color: "#8a7d73" },
+  rejected: { label: "Отклонён", color: "var(--a-grey)" },
 };
 const CATEGORY_RU: Record<Category, string> = {
   makeup: "Макияж",
@@ -321,9 +321,12 @@ function Dashboard({ session, demo, onExit }: { session: Session | null; demo: b
             <p className="font-script text-3xl leading-none text-[var(--a-gold)] lg:text-4xl">Beautybrand</p>
             <p className="mt-1 hidden text-xs text-[var(--a-muted)] lg:block">Админка магазина</p>
           </div>
-          <button type="button" onClick={onExit} className="a-btn a-btn-quiet lg:hidden">
-            Выйти
-          </button>
+          <div className="flex items-center gap-1 lg:hidden">
+            <ThemeToggle />
+            <button type="button" onClick={onExit} className="a-btn a-btn-quiet">
+              Выйти
+            </button>
+          </div>
         </div>
         <nav className="flex gap-1 overflow-x-auto px-3 pb-3 [scrollbar-width:none] lg:mt-4 lg:flex-col lg:px-3">
           {TABS.map((t) => (
@@ -338,13 +341,14 @@ function Dashboard({ session, demo, onExit }: { session: Session | null; demo: b
               <Icon d={t.icon} />
               {t.label}
               {counts[t.id] ? (
-                <span className="a-num ml-auto rounded-full bg-[var(--a-gold)] px-1.5 text-[0.7rem] font-bold leading-5 text-[#1b120f]">{counts[t.id]}</span>
+                <span className="a-num ml-auto rounded-full bg-[var(--a-gold)] px-1.5 text-[0.7rem] font-bold leading-5 text-[var(--a-on-gold)]">{counts[t.id]}</span>
               ) : null}
             </button>
           ))}
         </nav>
         <div className="absolute inset-x-0 bottom-0 hidden space-y-2 border-t border-[var(--a-line)] p-5 text-sm lg:block">
-          <p className="truncate text-xs text-[var(--a-muted)]">{demo ? "Демо-режим" : session?.email}</p>
+          <ThemeToggle wide />
+          <p className="truncate pt-1 text-xs text-[var(--a-muted)]">{demo ? "Демо-режим" : session?.email}</p>
           <div className="flex gap-2">
             <a href={`${BASE}/ru/`} className="a-btn a-btn-line flex-1" target="_blank" rel="noopener">
               Сайт
@@ -711,5 +715,42 @@ function Products({ onAdd }: { onAdd: () => void }) {
         {list.length === 0 ? <p className="px-4 py-8 text-center text-sm text-[var(--a-muted)]">Ничего не нашлось.</p> : null}
       </div>
     </>
+  );
+}
+
+/** Переключатель темы админки: тёмная ↔ светлая, выбор запоминается в браузере */
+function ThemeToggle({ wide }: { wide?: boolean }) {
+  const [light, setLight] = useState(false);
+  useEffect(() => setLight(document.body.dataset.theme === "light"), []);
+  const flip = () => {
+    const next = !light;
+    setLight(next);
+    if (next) document.body.dataset.theme = "light";
+    else delete document.body.dataset.theme;
+    try {
+      localStorage.setItem("admin-theme", next ? "light" : "dark");
+    } catch {}
+  };
+  const label = light ? "Тёмная тема" : "Светлая тема";
+  return (
+    <button
+      type="button"
+      onClick={flip}
+      aria-label={label}
+      title={label}
+      className={`a-btn a-btn-line ${wide ? "w-full" : "size-10 px-0"}`}
+    >
+      <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+        {light ? (
+          <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" />
+        ) : (
+          <>
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4" />
+          </>
+        )}
+      </svg>
+      {wide ? label : null}
+    </button>
   );
 }

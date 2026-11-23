@@ -86,6 +86,7 @@ export function buildDemo(): { orders: AOrder[]; events: AEvent[] } {
 
 /* ——————————————— расчёты ——————————————— */
 
+type CatRow = { category: Category; label: string; qty: number; revenue: number; orders: number; views: number; adds: number; items: number };
 type ProductRow = { slug: string; name: string; brand: string; category: Category; qty: number; revenue: number; orders: number; views: number; adds: number; rating: number | null };
 
 function compute(orders: AOrder[], events: AEvent[], reviews: AReview[], days: number) {
@@ -136,6 +137,32 @@ function compute(orders: AOrder[], events: AEvent[], reviews: AReview[], days: n
 
   const productRows = [...rows.values()];
 
+  // по разделам: заказ считается один раз на раздел, даже если в нём два товара оттуда
+  const catRows = new Map<Category, CatRow>();
+  const cat = (c: Category) => {
+    let r = catRows.get(c);
+    if (!r) catRows.set(c, (r = { category: c, label: CATEGORY_RU[c], qty: 0, revenue: 0, orders: 0, views: 0, adds: 0, items: 0 }));
+    return r;
+  };
+  for (const o of live) {
+    const seen = new Set<Category>();
+    for (const i of o.items) {
+      const c = bySlug.get(i.slug)?.category;
+      if (c && !seen.has(c)) {
+        cat(c).orders += 1;
+        seen.add(c);
+      }
+    }
+  }
+  for (const r of productRows) {
+    const c = cat(r.category);
+    c.qty += r.qty;
+    c.revenue += r.revenue;
+    c.views += r.views;
+    c.adds += r.adds;
+    if (r.qty) c.items += 1;
+  }
+
   const catRevenue = new Map<Category, number>();
   const brandRevenue = new Map<string, number>();
   for (const r of productRows) {
@@ -160,6 +187,7 @@ function compute(orders: AOrder[], events: AEvent[], reviews: AReview[], days: n
     revenue, orders: live.length, avg: live.length ? revenue / live.length : 0, qty, views, adds,
     daily: [...daily.entries()].map(([k, v]) => ({ key: k, value: v })),
     productRows,
+    catRows: [...catRows.values()],
     categories: CATEGORIES.map((c) => ({ label: CATEGORY_RU[c], value: catRevenue.get(c) ?? 0 })).filter((c) => c.value > 0).sort((a, b) => b.value - a.value),
     brands: [...brandRevenue.entries()].map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value).slice(0, 8),
     heat,
@@ -336,6 +364,17 @@ function Stat({ label, value, note }: { label: string; value: string; note?: str
 /* ——————————————— раздел «Аналитика» ——————————————— */
 
 type SortKey = "revenue" | "qty" | "orders" | "views" | "adds" | "conv" | "rating";
+type CatSortKey = "label" | "revenue" | "qty" | "orders" | "views" | "adds" | "conv";
+const CAT_COLS: { key: CatSortKey | "share"; label: string }[] = [
+  { key: "label", label: "Раздел" },
+  { key: "revenue", label: "Выручка" },
+  { key: "share", label: "Доля" },
+  { key: "qty", label: "Продано, шт" },
+  { key: "orders", label: "Заказов" },
+  { key: "views", label: "Просмотры" },
+  { key: "adds", label: "В корзину" },
+  { key: "conv", label: "Конверсия" },
+];
 const COLS: { key: SortKey; label: string }[] = [
   { key: "revenue", label: "Выручка" },
   { key: "qty", label: "Продано, шт" },
@@ -350,11 +389,24 @@ export function Analytics({ orders, events, reviews, demo }: { orders: AOrder[];
   const [days, setDays] = useState(30);
   const [sort, setSort] = useState<SortKey>("revenue");
   const [all, setAll] = useState(false);
+  const [catSort, setCatSort] = useState<CatSortKey>("revenue");
+  const [section, setSection] = useState<Category | "all">("all");
   const a = useMemo(() => compute(orders, events, reviews, days), [orders, events, reviews, days]);
   const conv = (r: ProductRow) => (r.views ? r.orders / r.views : 0);
-  const rows = [...a.productRows].sort((x, y) =>
-    sort === "conv" ? conv(y) - conv(x) : sort === "rating" ? (y.rating ?? -1) - (x.rating ?? -1) : (y[sort] as number) - (x[sort] as number),
+  const rows = a.productRows
+    .filter((r) => section === "all" || r.category === section)
+    .sort((x, y) =>
+      sort === "conv" ? conv(y) - conv(x) : sort === "rating" ? (y.rating ?? -1) - (x.rating ?? -1) : (y[sort] as number) - (x[sort] as number),
+    );
+  const catConv = (r: CatRow) => (r.views ? r.orders / r.views : 0);
+  const catTotal = a.catRows.reduce((s, r) => s + r.revenue, 0);
+  const catRows = [...a.catRows].sort((x, y) =>
+    catSort === "conv" ? catConv(y) - catConv(x) : catSort === "label" ? x.label.localeCompare(y.label, "ru") : y[catSort] - x[catSort],
   );
+  const pickSection = (c: Category | "all") => {
+    setSection(c);
+    setAll(false);
+  };
   const shown = all ? rows : rows.slice(0, 12);
   const noEvents = !demo && events.length === 0;
 
@@ -396,7 +448,68 @@ export function Analytics({ orders, events, reviews, demo }: { orders: AOrder[];
         </Card>
       </div>
 
-      <Card title="Спрос по товарам" sub="Нажмите на заголовок столбца, чтобы отсортировать. Конверсия — доля просмотров, закончившихся заказом." className="mt-3">
+      <Card title="Продажи по разделам" sub="Нажмите на заголовок столбца, чтобы отсортировать, или на раздел — чтобы увидеть его товары ниже." className="mt-3">
+        <div className="-mx-5 overflow-x-auto">
+          <table className="w-full min-w-[46rem] text-left text-sm">
+            <thead className="text-xs text-[var(--a-muted)]">
+              <tr className="border-b border-[var(--a-line)]">
+                {CAT_COLS.map((c, i) => {
+                  const key: CatSortKey = c.key === "share" ? "revenue" : c.key;
+                  const on = catSort === key && c.key !== "share";
+                  return (
+                    <th key={c.key} className={`py-2.5 font-medium ${i ? "px-3 text-right" : "px-5"}`}>
+                      <button type="button" onClick={() => setCatSort(key)} aria-pressed={on} className={`whitespace-nowrap hover:text-[var(--a-text)] ${on ? "text-[var(--a-gold)]" : ""}`}>
+                        {c.label}
+                        {on ? (key === "label" ? " ↑" : " ↓") : ""}
+                      </button>
+                    </th>
+                  );
+                })}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--a-line)]">
+              {catRows.map((r) => {
+                const share = catTotal ? r.revenue / catTotal : 0;
+                const active = section === r.category;
+                return (
+                  <tr key={r.category} className={`cursor-pointer hover:bg-[var(--a-raised)]/40 ${active ? "bg-[var(--a-raised)]/60" : ""}`} onClick={() => pickSection(active ? "all" : r.category)}>
+                    <td className="px-5 py-3">
+                      <button type="button" aria-pressed={active} className={`text-left ${active ? "text-[var(--a-gold)]" : ""}`}>
+                        {r.label}
+                      </button>
+                      <span className="block text-xs text-[var(--a-muted)]">{r.items} товаров с продажами</span>
+                    </td>
+                    <td className="a-num whitespace-nowrap px-3 text-right">{r.revenue ? sum(r.revenue) : "—"}</td>
+                    <td className="px-3">
+                      <span className="flex items-center justify-end gap-2">
+                        <span className="h-1.5 w-20 overflow-hidden rounded-full bg-[var(--a-line)]">
+                          <span className="block h-full rounded-full" style={{ width: `${share * 100}%`, background: C1 }} />
+                        </span>
+                        <span className="a-num w-10 text-right">{Math.round(share * 100)}%</span>
+                      </span>
+                    </td>
+                    <td className="a-num px-3 text-right">{r.qty || "—"}</td>
+                    <td className="a-num px-3 text-right">{r.orders || "—"}</td>
+                    <td className="a-num px-3 text-right">{r.views || "—"}</td>
+                    <td className="a-num px-3 text-right">{r.adds || "—"}</td>
+                    <td className="a-num px-3 text-right">{r.views ? `${Math.round(catConv(r) * 100)}%` : "—"}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {catRows.length === 0 ? <p className="px-5 py-8 text-center text-sm text-[var(--a-muted)]">За этот период данных нет.</p> : null}
+        </div>
+      </Card>
+
+      <Card title="Спрос по товарам" sub="Выберите раздел и нажмите на заголовок столбца, чтобы отсортировать. Конверсия — доля просмотров, закончившихся заказом." className="mt-3">
+        <div className="mb-4 flex flex-wrap gap-1.5" role="group" aria-label="Раздел">
+          {(["all", ...CATEGORIES.filter((c) => a.catRows.some((r) => r.category === c))] as const).map((c) => (
+            <button key={c} type="button" aria-pressed={section === c} onClick={() => pickSection(c)} className="a-tab rounded-full border border-[var(--a-line)] px-3 py-1 text-sm text-[var(--a-muted)] hover:text-[var(--a-text)]">
+              {c === "all" ? "Все разделы" : CATEGORY_RU[c]}
+            </button>
+          ))}
+        </div>
         <div className="-mx-5 overflow-x-auto">
           <table className="w-full min-w-[46rem] text-left text-sm">
             <thead className="text-xs text-[var(--a-muted)]">
@@ -416,7 +529,10 @@ export function Analytics({ orders, events, reviews, demo }: { orders: AOrder[];
               {shown.map((r) => (
                 <tr key={r.slug} className="hover:bg-[var(--a-raised)]/40">
                   <td className="max-w-[16rem] px-5 py-2.5">
-                    <span className="block text-xs text-[var(--a-muted)]">{r.brand}</span>
+                    <span className="block text-xs text-[var(--a-muted)]">
+                      {r.brand}
+                      {section === "all" ? ` · ${CATEGORY_RU[r.category]}` : ""}
+                    </span>
                     <span className="block truncate">{r.name}</span>
                   </td>
                   <td className="a-num whitespace-nowrap px-3 text-right">{r.revenue ? sum(r.revenue) : "—"}</td>

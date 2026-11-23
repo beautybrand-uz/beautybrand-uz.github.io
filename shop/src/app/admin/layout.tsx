@@ -13,11 +13,18 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#15100d" };
 
-/** Отдельный корневой макет: у админки своя тёмная тема и нет шапки магазина */
+/** Отдельный корневой макет: у админки своя тема (тёмная или светлая) и нет шапки магазина */
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru" className={`${jost.variable} ${script.variable} antialiased`}>
-      <body className="admin min-h-dvh">{children}</body>
+      <body className="admin min-h-dvh" suppressHydrationWarning>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem("admin-theme")==="light")document.body.dataset.theme="light"}catch(e){}`,
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

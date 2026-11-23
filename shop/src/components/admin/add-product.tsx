@@ -327,7 +327,7 @@ export function AddProduct({ token, demo }: { token?: string; demo: boolean }) {
                   <li key={p.url} className="group relative aspect-[4/5] overflow-hidden rounded-xl bg-[var(--a-raised)]">
                     {/* eslint-disable-next-line @next/next/no-img-element -- локальное превью */}
                     <img src={p.url} alt="" className="size-full object-cover" />
-                    {i === 0 ? <span className="absolute left-1.5 top-1.5 rounded-full bg-[var(--a-gold)] px-2 py-0.5 text-[0.65rem] font-bold text-[#1b120f]">Главное</span> : null}
+                    {i === 0 ? <span className="absolute left-1.5 top-1.5 rounded-full bg-[var(--a-gold)] px-2 py-0.5 text-[0.65rem] font-bold text-[var(--a-on-gold)]">Главное</span> : null}
                     <span className="absolute inset-x-1 bottom-1 flex justify-between gap-1">
                       <button type="button" className="rounded-full bg-black/60 px-2 text-xs text-white" onClick={() => movePhoto(i, -1)} aria-label="Левее">←</button>
                       <button type="button" className="rounded-full bg-black/60 px-2 text-xs text-white" onClick={() => setPhotos((ph) => ph.filter((_, j) => j !== i))} aria-label="Убрать фото">✕</button>

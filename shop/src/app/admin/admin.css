@@ -12,12 +12,45 @@
   --a-rose: #d27a8f;
   --a-green: #8fc19a;
   --a-amber: #e2b866;
+  --a-blue: #9fb7d9;
+  --a-grey: #8a7d73;
+  --a-on-gold: #1b120f;
+  --a-placeholder: #7f7166;
+  --a-glow: rgba(207, 174, 120, 0.08);
   color-scheme: dark;
   background:
-    radial-gradient(1200px 600px at 85% -10%, rgba(207, 174, 120, 0.08), transparent 60%),
+    radial-gradient(1200px 600px at 85% -10%, var(--a-glow), transparent 60%),
     var(--a-bg);
   color: var(--a-text);
   font-family: var(--font-jost), system-ui, sans-serif;
+  transition: background-color 300ms ease, color 300ms ease;
+}
+/* Светлая тема: молочная бумага, белые панели, золото темнее — чтобы текст читался */
+.admin[data-theme="light"] {
+  --a-bg: #f6f1ea;
+  --a-panel: #ffffff;
+  --a-raised: #efe6da;
+  --a-line: rgba(110, 80, 45, 0.14);
+  --a-line-strong: rgba(110, 80, 45, 0.3);
+  --a-text: #2a1a15;
+  --a-muted: #6f5f54;
+  --a-gold: #96702f;
+  --a-gold-deep: #7d5c24;
+  --a-rose: #b04a63;
+  --a-green: #3d8450;
+  --a-amber: #a0711a;
+  --a-blue: #3f6aa3;
+  --a-grey: #7a6d63;
+  --a-on-gold: #ffffff;
+  --a-placeholder: #9a8b80;
+  --a-glow: rgba(207, 174, 120, 0.22);
+  color-scheme: light;
+}
+.admin[data-theme="light"] .a-panel {
+  box-shadow: 0 1px 2px rgba(42, 26, 21, 0.04), 0 12px 30px -22px rgba(42, 26, 21, 0.25);
+}
+.admin[data-theme="light"] .a-btn-gold:hover {
+  background: var(--a-gold-deep);
 }
 .admin ::selection {
   background: rgba(207, 174, 120, 0.35);
@@ -48,7 +81,7 @@
   font-size: 16px;
 }
 .a-input::placeholder {
-  color: #7f7166;
+  color: var(--a-placeholder);
 }
 .a-input:focus {
   outline: none;
@@ -80,7 +113,7 @@
 }
 .a-btn-gold {
   background: var(--a-gold);
-  color: #1b120f;
+  color: var(--a-on-gold);
 }
 .a-btn-gold:hover {
   background: #e0c493;
