@@ -90,40 +90,7 @@ export function ReceiptView({ lang }: { lang: Locale }) {
 
   return (
     <div className="mx-auto grid max-w-3xl items-start gap-8 md:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
-      {/* бумажный чек */}
-      <div className="receipt-paper relative mx-auto w-full max-w-[22rem] bg-[#fdfdfa] px-6 pb-8 pt-6 font-mono text-[0.82rem] leading-relaxed text-[#262624] shadow-[0_24px_40px_-24px_rgba(40,35,25,0.45)]">
-        <p className="text-center text-base font-bold uppercase tracking-[0.08em]">BeautyBrand Uz</p>
-        <p className="text-center text-[0.7rem]">{RT.address}</p>
-        <hr className="my-3 border-dashed border-[#2a2a2a]/40" />
-        <p>
-          {RT.order} #{r.c}
-        </p>
-        <p>{receiptDate(r.d, lang)}</p>
-        <p>{receiptWhere(r)}</p>
-        <hr className="my-3 border-dashed border-[#2a2a2a]/40" />
-        <ul className="space-y-1">
-          {items.map((x, k) => (
-            <li key={k} className="flex justify-between gap-3">
-              <span className="min-w-0">
-                {x.qty} x {x.name}
-                {x.variant ? ` (${x.variant})` : ""}
-              </span>
-              <span className="shrink-0 tabular-nums">{formatPrice(x.qty * x.price, cur)}</span>
-            </li>
-          ))}
-        </ul>
-        <hr className="my-3 border-dashed border-[#2a2a2a]/40" />
-        <p className="flex justify-between text-[0.95rem] font-bold">
-          <span>{RT.total}</span>
-          <span className="tabular-nums">{formatPrice(r.t, cur)}</span>
-        </p>
-        <hr className="my-3 border-dashed border-[#2a2a2a]/40" />
-        <div className="flex flex-col items-center gap-2">
-          <QRCodeSVG value={receiptUrl(r)} level="M" marginSize={0} bgColor="transparent" fgColor="#262624" size={132} />
-          <p className="text-center text-[0.68rem]">{RT.scan}</p>
-          <p className="tracking-[0.25em]">{r.c}</p>
-        </div>
-      </div>
+      <ReceiptPaper r={r} lang={lang} />
 
       <div>
         <h2 className="font-display text-2xl font-medium">
@@ -155,6 +122,48 @@ export function ReceiptView({ lang }: { lang: Locale }) {
             </ul>
           </>
         ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** Бумажный чек: магазин, номер, дата, получение, товары, итог, QR — на сайте и в админке */
+export function ReceiptPaper({ r, lang, className = "" }: { r: ReceiptData; lang: Locale; className?: string }) {
+  const RT = RECEIPT_T[lang];
+  const cur = getDict(lang).currency;
+  const items = receiptItems(r);
+  return (
+    <div className={`receipt-paper relative mx-auto w-full max-w-[22rem] bg-[#fdfdfa] px-6 pb-8 pt-6 font-mono text-[0.82rem] leading-relaxed text-[#262624] shadow-[0_24px_40px_-24px_rgba(40,35,25,0.45)] ${className}`}>
+      <p className="text-center text-base font-bold uppercase tracking-[0.08em]">BeautyBrand Uz</p>
+      <p className="text-center text-[0.7rem]">{RT.address}</p>
+      <hr className="my-3 border-dashed border-[#2a2a2a]/40" />
+      <p>
+        {RT.order} #{r.c}
+      </p>
+      <p>{receiptDate(r.d, lang)}</p>
+      <p>{receiptWhere(r)}</p>
+      <hr className="my-3 border-dashed border-[#2a2a2a]/40" />
+      <ul className="space-y-1">
+        {items.map((x, k) => (
+          <li key={k} className="flex justify-between gap-3">
+            <span className="min-w-0">
+              {x.qty} x {x.name}
+              {x.variant ? ` (${x.variant})` : ""}
+            </span>
+            <span className="shrink-0 tabular-nums">{formatPrice(x.qty * x.price, cur)}</span>
+          </li>
+        ))}
+      </ul>
+      <hr className="my-3 border-dashed border-[#2a2a2a]/40" />
+      <p className="flex justify-between text-[0.95rem] font-bold">
+        <span>{RT.total}</span>
+        <span className="tabular-nums">{formatPrice(r.t, cur)}</span>
+      </p>
+      <hr className="my-3 border-dashed border-[#2a2a2a]/40" />
+      <div className="flex flex-col items-center gap-2">
+        <QRCodeSVG value={receiptUrl(r)} level="M" marginSize={0} bgColor="transparent" fgColor="#262624" size={132} />
+        <p className="text-center text-[0.68rem]">{RT.scan}</p>
+        <p className="tracking-[0.25em]">{r.c}</p>
       </div>
     </div>
   );

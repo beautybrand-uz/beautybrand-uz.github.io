@@ -5,6 +5,7 @@ import { CATEGORIES, products, type Category } from "@/data/products";
 import { STORES, formatPrice } from "@/lib/site";
 import { currentSession, isAdmin, rest, signIn, signOut, supabaseEnabled, type Session } from "@/lib/supabase";
 import { AddProduct, type EditTarget } from "./add-product";
+import { Receipts } from "./receipts";
 import { rowToProduct, type ShopProductRow } from "@/lib/extra-products";
 import { Analytics, BarList, DailyColumns, buildDemo, dashboardData, type AEvent, type AOrder } from "./analytics";
 
@@ -24,7 +25,13 @@ type Order = {
   lang: "ru" | "uz";
   status: OrderStatus;
   note: string | null;
+  /** номер чека BB-… и обмен/возврат по нему */
+  code?: string | null;
+  after_sale?: "exchange" | "refund" | null;
+  after_sale_note?: string | null;
+  after_sale_at?: string | null;
 };
+export type { Order };
 type ReviewStatus = "pending" | "approved" | "rejected";
 type AdminReview = {
   id: string;
@@ -70,17 +77,22 @@ const productName = (slug: string) => {
 
 // ——— примеры для демо-режима (база ещё не подключена) ———
 const hoursAgo = (h: number) => new Date(Date.now() - h * 3600_000).toISOString();
+const demoCode = (h: number, n: number) => {
+  const d = new Date(Date.now() - h * 3600_000 + 5 * 3600_000);
+  const p = (x: number) => String(x).padStart(2, "0");
+  return `BB-${String(d.getUTCFullYear()).slice(2)}${p(d.getUTCMonth() + 1)}${p(d.getUTCDate())}-${n}`;
+};
 const DEMO_ORDERS: Order[] = [
   {
     id: 1003, created_at: hoursAgo(1), name: "Пример: покупатель", phone: "+998 90 000 00 01", method: "c5", address: null,
-    comment: "Позвоните перед выдачей", lang: "ru", status: "new", note: null, total: 1_430_000,
+    comment: "Позвоните перед выдачей", lang: "ru", status: "new", note: null, total: 1_430_000, code: demoCode(1, 4821),
     items: [
       { slug: "dior-glow-stick-012-rosewood", name: "Dior Glow Stick 012 Rosewood", variant: null, qty: 2, price: 715_000 },
     ],
   },
   {
     id: 1002, created_at: hoursAgo(5), name: "Пример: покупатель", phone: "+998 90 000 00 02", method: "delivery",
-    address: "Ташкент, Юнусабад", comment: null, lang: "uz", status: "confirmed", note: "Доставка завтра", total: 1_007_000,
+    address: "Ташкент, Юнусабад", comment: null, lang: "uz", status: "confirmed", note: "Доставка завтра", total: 1_007_000, code: demoCode(5, 3307),
     items: [
       { slug: "louis-vuitton-moon-tale", name: "Louis Vuitton Moon Tale", variant: "5 ml", qty: 1, price: 360_000 },
       { slug: "bobbi-brown-extra-plump-lip-serum", name: "Bobbi Brown Extra Plump Lip Serum", variant: "Bare Rose", qty: 1, price: 383_000 },
@@ -89,7 +101,8 @@ const DEMO_ORDERS: Order[] = [
   },
   {
     id: 1001, created_at: hoursAgo(28), name: "Пример: покупатель", phone: "+998 90 000 00 03", method: "c1", address: null,
-    comment: null, lang: "ru", status: "done", note: null, total: 1_280_000,
+    comment: null, lang: "ru", status: "done", note: null, total: 1_280_000, code: demoCode(28, 1958),
+    after_sale: "exchange", after_sale_note: "Пример: поменяли на набор Lilac", after_sale_at: hoursAgo(3),
     items: [{ slug: "makeup-by-mario-brush-set", name: "Makeup by Mario Makeup Brush Set", variant: null, qty: 1, price: 1_280_000 }],
   },
 ];
@@ -99,11 +112,12 @@ const DEMO_REVIEWS: AdminReview[] = [
   { id: "d3", created_at: hoursAgo(40), product: "kerastase-genesis-cure", name: "Namuna", rating: 5, text: "Namuna sharh: sochim kamroq to‘kilyapti.", lang: "uz", status: "approved" },
 ];
 
-type Tab = "overview" | "analytics" | "orders" | "reviews" | "products" | "add";
+type Tab = "overview" | "analytics" | "orders" | "receipts" | "reviews" | "products" | "add";
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: "overview", label: "Дашборд", icon: "M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z" },
   { id: "analytics", label: "Аналитика", icon: "M4 20V10m6 10V4m6 16v-7m4 7H3" },
   { id: "orders", label: "Заказы", icon: "M5 8h14l-1.2 11.1a2 2 0 0 1-2 1.9H8.2a2 2 0 0 1-2-1.9L5 8Zm4 2V6.5a3 3 0 0 1 6 0V10" },
+  { id: "receipts", label: "Чеки", icon: "M6 3h12v18l-3-2-3 2-3-2-3 2V3Zm3 5h6m-6 4h6m-6 4h3" },
   { id: "reviews", label: "Отзывы", icon: "M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" },
   { id: "products", label: "Товары", icon: "M4 7l8-4 8 4-8 4-8-4Zm0 0v10l8 4m-8-14 8 4m0 10V11m0 10 8-4V7" },
   { id: "add", label: "Добавить товар", icon: "M12 5v14M5 12h14" },
@@ -381,6 +395,8 @@ function Dashboard({ session, demo, onExit }: { session: Session | null; demo: b
             <Analytics orders={statOrders} events={statEvents} reviews={reviews} demo={demo} />
           ) : tab === "orders" ? (
             <Orders orders={orders} loading={loading} onPatch={patchOrder} onReload={load} demo={demo} />
+          ) : tab === "receipts" ? (
+            <Receipts orders={orders} onPatch={patchOrder} demo={demo} />
           ) : tab === "reviews" ? (
             <Reviews reviews={reviews} loading={loading} onModerate={moderate} />
           ) : tab === "add" ? (

@@ -192,7 +192,7 @@ export function ProductCard({ p, lang, priority }: { p: ProductWithImages; lang:
         ) : null}
       </Link>
       </Tilt>
-      <div className="absolute bottom-2.5 right-2.5 z-20">
+      <div className="absolute bottom-2.5 right-2.5 z-[2]">
           {p.usd ? (
             <Link
               href={href}

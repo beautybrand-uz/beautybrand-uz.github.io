@@ -83,6 +83,11 @@ grant select, update on public.orders to authenticated;
 
 -- номер чека (BB-251123-4821) — по нему менеджер находит заказ при обмене или возврате
 alter table public.orders add column if not exists code text check (char_length(code) <= 40);
+-- обмен / возврат по чеку (раздел «Чеки» в админке)
+alter table public.orders add column if not exists after_sale text check (after_sale in ('exchange', 'refund'));
+alter table public.orders add column if not exists after_sale_note text check (char_length(after_sale_note) <= 1000);
+alter table public.orders add column if not exists after_sale_at timestamptz;
+create index if not exists orders_code on public.orders (code);
 
 -- ——— события для аналитики спроса: просмотр товара и добавление в корзину ———
 -- Анонимно: только товар, тип события, язык и время. Без имён, телефонов и адресов.
